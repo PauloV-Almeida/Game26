@@ -14,15 +14,15 @@ namespace Entidades
 		{
 			dano = DMG;
 			ataque_corpo.setOrigin(ataque_corpo.getSize().x / 2, ataque_corpo.getSize().y / 2);
-			ataque_corpo.setTexture(pGG->carregar_texturas("./assets/jogador1.png"));
+			ataque_corpo.setTexture(pGG->carregar_texturas("./assets/valkiria.png"));
 			n_vidas = 20;
 			if (id_jogador == 1)
 			{
-				texturas = pGG->carregar_texturas("./assets/jogador1.png");
+				texturas = pGG->carregar_texturas("./assets/valkiria.png");
 			}
 			else if (id_jogador == 2)
 			{
-				texturas = pGG->carregar_texturas("./assets/jogador1.png");
+				texturas = pGG->carregar_texturas("./assets/valkiria.png");
 			}
 
 			corpo.setTexture(texturas);
@@ -44,17 +44,17 @@ namespace Entidades
 			ataque_corpo.setOrigin(ataque_corpo.getSize().x / 2, ataque_corpo.getSize().y / 2);
 			if (id_jogador == 1)
 			{
-				pGG->carregar_texturas("./assets/jogador1-esquerda.png");
-				texturas = pGG->carregar_texturas("./assets/jogador1-direita.png");
+				pGG->carregar_texturas("./assets/valkiria.png");
+				texturas = pGG->carregar_texturas("./assets/valkiria.png");
 			}
 			else if (id_jogador == 2)
 			{
-				pGG->carregar_texturas("./assets/jogador1-esquerda.png");
-				texturas = pGG->carregar_texturas("./assets/jogador1-direita.png");
+				pGG->carregar_texturas("./assets/valkiria.png");
+				texturas = pGG->carregar_texturas("./assets/valkiria.png");
 			}
 			corpo.setTexture(texturas);
 
-			texturas = pGG->carregar_texturas("./assets/jogador1.png");
+			texturas = pGG->carregar_texturas("./assets/valkiria.png");
 			ataque_corpo.setTexture(texturas);
 		}
 
@@ -116,11 +116,11 @@ namespace Entidades
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 					vel.x -= VELOCIDADE;
-					corpo.setTexture(pGG->carregar_texturas("./assets/jogador1-esquerda.png"));
+					corpo.setTexture(pGG->carregar_texturas("./assets/valkiria.png"));
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 					vel.x += VELOCIDADE;
-					corpo.setTexture(pGG->carregar_texturas("./assets/jogador1-direita.png"));
+					corpo.setTexture(pGG->carregar_texturas("./assets/valkiria.png"));
 				}
 				else
 					vel.x *= 0.8f;
@@ -147,11 +147,11 @@ namespace Entidades
 
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 					vel.x -= VELOCIDADE;
-					corpo.setTexture(pGG->carregar_texturas("./assets/jogador1-direita.png"));
+					corpo.setTexture(pGG->carregar_texturas("./assets/valkiria.png"));
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
 					vel.x += VELOCIDADE;
-					corpo.setTexture(pGG->carregar_texturas("./assets/jogador1-esquerda.png"));
+					corpo.setTexture(pGG->carregar_texturas("./assets/valkiria.png"));
 				}
 				else
 					vel.x *= 0.8f;
