@@ -14,7 +14,7 @@ namespace Entidades
 			int n_vidas;
 			bool noChao;
 		public:
-			Personagem(int indice = -1, sf::Vector2f pos = sf::Vector2f(0.f, 0.f), sf::Vector2f vel = sf::Vector2f(256.f, 256.f), sf::Vector2f tam = sf::Vector2f(0.f, 0.f));
+			Personagem(int indice = -1, sf::Vector2f pos = sf::Vector2f(0.f, 0.f), sf::Vector2f vel = sf::Vector2f(128.f, 128.f), sf::Vector2f tam = sf::Vector2f(0.f, 0.f));
 			virtual ~Personagem();
 			virtual void executar() = 0;
 			
