@@ -4,120 +4,225 @@
 
 namespace Listas
 {
-    template<class TYPE>
+    template<class TL>
     class Lista
     {
     public:
-        Lista() :
-            pPrimeiro(NULL),
-            tamanho(0)
-        {
-        }
-        ~Lista()
-        {
-            clear();
-            pPrimeiro = NULL;
-        }
-        template <class TE>
+        template<class TE>
         class Elemento
         {
         private:
-            TE* data;
-            Elemento<TE>* pProximo;
+            TE* pInfo;
+            Elemento<TE>* pProx;
+
         public:
-            Elemento() :data(NULL), pProximo(NULL)
-            {
-            }
+            Elemento() :
+                pInfo(nullptr),
+                pProx(nullptr)
+            {}
+
             ~Elemento()
             {
-                if (data)
-                {
-                    delete data;
-                }
-                data = NULL;
+                delete pInfo;
+                pInfo = nullptr;
+                pProx = nullptr;
             }
-            TE* get_data() {if(data) return data; }
-            Elemento<TE>* get_Proximo() { return pProximo; }
 
-            void set_data(TE* dt) { data = dt; }
-            void set_Proximo(Elemento<TE>* prox) { pProximo = prox; }
+            void setInfo(TE* info)
+            {
+                pInfo = info;
+            }
+
+            TE* getInfo() const
+            {
+                return pInfo;
+            }
+
+            void setProx(Elemento<TE>* prox)
+            {
+                pProx = prox;
+            }
+
+            Elemento<TE>* getProx() const
+            {
+                return pProx;
+            }
         };
-        template <class TE>
+
+        template<class TE>
         class Iterator
         {
         private:
             Elemento<TE>* atual;
+
         public:
-            Iterator(Elemento<TE>* c = nullptr) :
-                atual(c) {
+            Iterator(Elemento<TE>* elemento = nullptr) :
+                atual(elemento)
+            {}
+
+            ~Iterator()
+            {
+                atual = nullptr;
             }
-            ~Iterator() {}
 
             Iterator& operator++()
             {
-                atual = atual->prox;
+                if (atual)
+                {
+                    atual = atual->getProx();
+                }
+
                 return *this;
-            }
-            Iterator& operator++(int)
-            {
-                atual = atual->get_Proximo();
-                return *this;
-            }
-            bool operator==(const Elemento<TE>* outro) const
-            {
-                return atual == outro;
             }
 
-            bool operator!=(const Elemento<TE>* outro) const
+            Iterator operator++(int)
             {
-                return !(atual == outro);
+                Iterator copia = *this;
+
+                if (atual)
+                {
+                    atual = atual->getProx();
+                }
+
+                return copia;
             }
-            void operator=(const Elemento<TE>* outro)
+
+            bool operator==(const Iterator<TE>& outro) const
             {
-                atual = outro;
+                return atual == outro.atual;
             }
-            TE* operator*()
+
+            bool operator!=(const Iterator<TE>& outro) const
             {
-                if(atual)
-                 return atual->get_data();
+                return atual != outro.atual;
             }
-            const Elemento<TE>* get_atual() const { return atual; }
+
+            TE* operator*() const
+            {
+                if (atual)
+                {
+                    return atual->getInfo();
+                }
+
+                return nullptr;
+            }
+
+            Elemento<TE>* getAtual() const
+            {
+                return atual;
+            }
         };
+
     private:
-        Elemento<TYPE>* pPrimeiro;
+        Elemento<TL>* pPrimeiro;
+        Elemento<TL>* pUltimo;
         int tamanho;
+
     public:
-        Iterator<TYPE> get_Primeiro() { return Iterator<TYPE>(pPrimeiro); }
-        void clear()
+        Lista() :
+            pPrimeiro(nullptr),
+            pUltimo(nullptr),
+            tamanho(0)
+        {}
+
+        ~Lista()
         {
-            Elemento<TYPE>* aux = NULL;
+            limpar();
+        }
+
+        Lista(const Lista&) = delete;
+        Lista& operator=(const Lista&) = delete;
+
+        void incluir(TL* info)
+        {
+            if (!info)
+            {
+                return;
+            }
+
+            Elemento<TL>* novo = new Elemento<TL>();
+
+            novo->setInfo(info);
+            novo->setProx(nullptr);
+
+            if (pPrimeiro == nullptr)
+            {
+                pPrimeiro = novo;
+                pUltimo = novo;
+            }
+            else
+            {
+                pUltimo->setProx(novo);
+                pUltimo = novo;
+            }
+
+            tamanho++;
+        }
+
+        void limpar()
+        {
+            Elemento<TL>* aux = nullptr;
+
             while (pPrimeiro)
             {
                 aux = pPrimeiro;
-                pPrimeiro = pPrimeiro->get_Proximo();
-                if (aux)
-                    delete aux;
+                pPrimeiro = pPrimeiro->getProx();
+
+                delete aux;
             }
-            tamanho = 0;
-            //novo:
+
             pPrimeiro = nullptr;
+            pUltimo = nullptr;
+            tamanho = 0;
         }
-        const int get_Tamanho() const
+
+        int getTamanho() const
         {
             return tamanho;
         }
-        void empurrar(TYPE* elem)
+
+        Iterator<TL> getPrimeiro()
         {
-            if (!elem)
-                return;
-            Elemento<TYPE>* aux = new Elemento<TYPE>();
-            if (aux)
+            return Iterator<TL>(pPrimeiro);
+        }
+
+        Iterator<TL> get_Primeiro()
+        {
+            return getPrimeiro();
+        }
+
+        Iterator<TL> getFim()
+        {
+            return Iterator<TL>(nullptr);
+        }
+
+        Iterator<TL> get_Fim()
+        {
+            return getFim();
+        }
+
+        TL* operator[](int indice)
+        {
+            if (indice < 0 || indice >= tamanho)
             {
-                aux->set_data(elem);
-                aux->set_Proximo(pPrimeiro);
-                pPrimeiro = aux;
-                tamanho++;
+                return nullptr;
             }
+
+            Elemento<TL>* aux = pPrimeiro;
+            int contador = 0;
+
+            while (aux)
+            {
+                if (contador == indice)
+                {
+                    return aux->getInfo();
+                }
+
+                aux = aux->getProx();
+                contador++;
+            }
+
+            return nullptr;
         }
     };
 }

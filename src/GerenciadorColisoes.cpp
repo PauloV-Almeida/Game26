@@ -92,7 +92,7 @@ namespace Gerenciadores
 		LOs.clear();
 
 		if (LInisPtr) {
-			auto itrIni = LInisPtr->get_Primeiro();
+			auto itrIni = LInisPtr->getPrimeiro();
 			while (itrIni != nullptr)
 			{
 				Entidades::Entidade* e = *itrIni;
@@ -104,7 +104,7 @@ namespace Gerenciadores
 		}
 
 		if (LObsPtr) {
-			auto itrObs = LObsPtr->get_Primeiro();
+			auto itrObs = LObsPtr->getPrimeiro();
 			while (itrObs != nullptr)
 			{
 				Entidades::Entidade* e = *itrObs;
@@ -116,14 +116,14 @@ namespace Gerenciadores
 		}
 
 		int cntJ = 0;
-		auto itrCount = LJogs->get_Primeiro();
+		auto itrCount = LJogs->getPrimeiro();
 		while (itrCount != NULL)
 		{
 			cntJ++; itrCount++;
 		}
 		// debug: conta jogadores
 
-		auto itr = LJogs->get_Primeiro();
+		auto itr = LJogs->getPrimeiro();
 		while (itr != NULL)
 		{
 			Entidades::Entidade* e = *itr;

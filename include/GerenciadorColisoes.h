@@ -42,7 +42,7 @@ namespace Gerenciadores
 			if (!ListaIni) return;
 			LInisPtr = ListaIni;
 			LIs.clear();
-			auto itr = ListaIni->get_Primeiro();
+			auto itr = ListaIni->getPrimeiro();
 			while (itr != nullptr)
 			{
 				Entidades::Entidade* e = *itr;
@@ -59,7 +59,7 @@ namespace Gerenciadores
 			if (!ListaObs) return;
 			LObsPtr = ListaObs;
 			LOs.clear();
-			auto itr = ListaObs->get_Primeiro();
+			auto itr = ListaObs->getPrimeiro();
 			while (itr != nullptr)
 			{
 				Entidades::Entidade* e = *itr;

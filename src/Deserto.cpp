@@ -47,7 +47,7 @@ namespace Fases
 
 		if (pEG->get_AtualEstadoID() == id_estado)
 		{
-			Listas::Lista<Entidades::Entidade>::Iterator<Entidades::Entidade> it = jogadores.get_Primeiro();
+			Listas::Lista<Entidades::Entidade>::Iterator<Entidades::Entidade> it = jogadores.getPrimeiro();
 			Entidades::Personagens::Jogador* p1 = dynamic_cast<Entidades::Personagens::Jogador*>(*it);
 			it++;
 			/*if (jogadores.get_tamanho() == 1)

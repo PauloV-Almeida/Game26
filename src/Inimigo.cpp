@@ -85,7 +85,7 @@ namespace Entidades
 			}
 
 			bool encontrou = false;
-			auto itr = LJogs->get_Primeiro();
+			auto itr = LJogs->getPrimeiro();
 			while (itr != NULL)
 			{
 				Entidades::Entidade* e = *itr;
