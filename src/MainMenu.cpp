@@ -2,8 +2,8 @@
 
 namespace Menus
 {
-	MainMenu::MainMenu():
-		Menu(4, 0, "MEGABONK"),
+    MainMenu::MainMenu():
+        Menu(4, 0, "Ragnarok"),
 		AtualFase(1),
 		AtualJogador(0),
 		Fase1("Deserto"),

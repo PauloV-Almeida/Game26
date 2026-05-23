@@ -1,6 +1,6 @@
-#include "../include/Megabonk.h"
+#include "../include/Ragnarok.h"
 
-MegaBonk::MegaBonk() :
+Ragnarok::Ragnarok() :
 	pGG(Gerenciadores::GerenciadorGrafico::get_instance()),
 	pGE(Gerenciadores::GerenciadorEventos::get_instance()),
 	pGEst(Gerenciadores::GerenciadorEstado::get_instance()),
@@ -13,11 +13,11 @@ MegaBonk::MegaBonk() :
 
 
 
-MegaBonk::~MegaBonk()
+Ragnarok::~Ragnarok()
 {
 }
 
-void MegaBonk::executar()
+void Ragnarok::executar()
 {
 	
 	while (pGG->abreJanela()) {

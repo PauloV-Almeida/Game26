@@ -1,9 +1,9 @@
-#include "../include/Megabonk.h"
+#include "../include/Ragnarok.h"
 
 
 int main()
 {
-    MegaBonk jogo;
+    Ragnarok jogo;
 
     return 0;
 }

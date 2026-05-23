@@ -20,7 +20,7 @@ namespace Gerenciadores
 	}
 
 	GerenciadorGrafico::GerenciadorGrafico(): 
-		janela(new sf::RenderWindow(sf::VideoMode(LARGURA, ALTURA), "Megabonk++")),
+		janela(new sf::RenderWindow(sf::VideoMode(LARGURA, ALTURA), "Ragnarok++")),
 		texturas()
 
 	{

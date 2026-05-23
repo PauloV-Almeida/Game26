@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -31,7 +31,7 @@
     <ClCompile Include="src\Jogador.cpp" />
     <ClCompile Include="src\ListaEntidades.cpp" />
     <ClCompile Include="src\MainMenu.cpp" />
-    <ClCompile Include="src\MegaBonk.cpp" />
+    <ClCompile Include="src\Ragnarok.cpp" />
     <ClCompile Include="src\Ente.cpp" />
     <ClCompile Include="src\GerenciadorEventos.cpp" />
     <ClCompile Include="src\GerenciadorGrafico.cpp" />
@@ -79,7 +79,7 @@
     <ClInclude Include="include\Lista.h" />
     <ClInclude Include="include\ListaEntidades.h" />
     <ClInclude Include="include\MainMenu.h" />
-    <ClInclude Include="include\Megabonk.h" />
+    <ClInclude Include="include\Ragnarok.h" />
     <ClInclude Include="include\Menu.h" />
     <ClInclude Include="include\MenuObserver.h" />
     <ClInclude Include="include\Observer.h" />
@@ -110,7 +110,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{4ac03484-2d2c-4fb3-bbd7-a331f19058ea}</ProjectGuid>
-    <RootNamespace>Megabonk</RootNamespace>
+    <RootNamespace>Ragnarok</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

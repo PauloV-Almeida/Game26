@@ -9,7 +9,7 @@
 #include "MainMenu.h"
 
 
-class MegaBonk
+class Ragnarok
 {
 private:
 	Gerenciadores::GerenciadorGrafico* pGG;
@@ -19,8 +19,8 @@ private:
 	Fases::Deserto fDeserto_2p;
 	Menus::MainMenu main_menu;
 public:
-	MegaBonk();
-	~MegaBonk();
+	Ragnarok();
+	~Ragnarok();
 
 	void executar();
 };
