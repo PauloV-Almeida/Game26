@@ -26,6 +26,8 @@ namespace Entidades
 			void set_posicao(sf::Vector2f pos) { corpo.setPosition(pos); }
 			const bool get_vivo() const { return vivo; }
 			const int get_vidas() const { return n_vidas; }
+			void set_noChao(bool n) { noChao = n; }
+			bool get_noChao() const { return noChao; }
 
 		};
 	}

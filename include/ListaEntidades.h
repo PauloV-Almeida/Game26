@@ -18,6 +18,7 @@ namespace Listas
         ListaEntidades& operator=(const ListaEntidades&) = delete;
 
         void executar();
+		void percorrer();
         void desenhar();
 
         void incluir(Entidades::Entidade* ent);

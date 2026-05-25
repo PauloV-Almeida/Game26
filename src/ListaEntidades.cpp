@@ -10,7 +10,12 @@ namespace Listas
         limpar();
     }
 
-    void ListaEntidades::executar()
+   void  ListaEntidades::executar()
+    {
+        percorrer();
+    }
+
+    void ListaEntidades::percorrer()
     {
         for (auto it = LEs.getPrimeiro(); it != LEs.getFim(); ++it)
         {
