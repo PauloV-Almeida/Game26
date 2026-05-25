@@ -190,23 +190,6 @@ namespace Entidades
 				vel.x = 0.0f;
 			}
 		}
-
-		void Jogador::colidir(Obstaculos::Obstaculo* pObs, std::string direcao)
-		{
-			if (direcao == "Embaixo")
-			{
-				noChao = true;
-				vel.y = 0.0f;
-			}
-			else if (direcao == "Cima" || direcao == "Emcima")
-			{
-				vel.y = 0.0f;
-			}
-			else if (direcao == "Esquerda" || direcao == "Direita")
-			{
-				vel.x = 0.0f;
-			}
-		}
 			
 		void Jogador::ataque()
 		{

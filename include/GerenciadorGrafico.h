@@ -4,8 +4,8 @@
 #include <iostream>
 
 
-#define LARGURA 800
-#define ALTURA 600
+#define LARGURA 1920
+#define ALTURA 1080
 #define FONTE_PATH "./assets/PressStart2P-Regular.ttf"
 
 namespace Gerenciadores
