@@ -14,7 +14,8 @@ namespace Entidades
 		gColisao(nullptr),
 		vel(velo),
 		deCastigo(false),
-		massa(1)
+		massa(1),
+		dano(0)
 	{
 	
 	}
