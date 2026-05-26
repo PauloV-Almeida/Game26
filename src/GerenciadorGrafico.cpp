@@ -19,12 +19,15 @@ namespace Gerenciadores
 		return instance;
 	}
 
-	GerenciadorGrafico::GerenciadorGrafico(): 
-		janela(new sf::RenderWindow(sf::VideoMode(LARGURA, ALTURA), "Ragnarok++")),
+	GerenciadorGrafico::GerenciadorGrafico() :
+		janela(new sf::RenderWindow(sf::VideoMode(LARGURA_JANELA, ALTURA_JANELA), "Ragnarok++")),
+		viewMundo(sf::FloatRect(0.f, 0.f, LARGURA_MUNDO, ALTURA_MUNDO)),
 		texturas()
-
 	{
 		janela->setFramerateLimit(120);
+
+		configurarView();
+
 		fonte = new sf::Font;
 		if (!fonte->loadFromFile(FONTE_PATH))
 		{
@@ -40,6 +43,19 @@ namespace Gerenciadores
 		texturas.clear();
 		delete(janela);
 		delete(fonte);
+	}
+
+	void GerenciadorGrafico::configurarView()
+	{
+		if (janela)
+		{
+			janela->setView(viewMundo);
+		}
+	}
+
+	sf::View GerenciadorGrafico::getViewMundo() const
+	{
+		return viewMundo;
 	}
 
 	sf::RenderWindow* GerenciadorGrafico::get_janela() const {

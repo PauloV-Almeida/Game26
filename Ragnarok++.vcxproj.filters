@@ -5,7 +5,7 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Arquivos de Cabeçalho">
+    <Filter Include="Arquivos de Cabeï¿½alho">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
@@ -90,7 +90,10 @@
     <ClCompile Include="src\MenuObserver.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="src\Esqueleto.cpp">
+    <ClCompile Include="src\Andarilho.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Valkiria.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -112,82 +115,85 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx\stdafx.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Ente.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\GerenciadorGrafico.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Ragnarok.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\GerenciadorEventos.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Lista.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\ListaEntidades.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\GerenciadorColisoes.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Entidades.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Personagem.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Jogador.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Inimigo.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Fase.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Deserto.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Obstaculo.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Plataforma.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Observer.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Subject.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\GerenciadorEstado.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Estado.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Menu.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\MenuObserver.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\MainMenu.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Botao.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Texto.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
-    <ClInclude Include="include\Esqueleto.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
+    <ClInclude Include="include\Andarilho.h">
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Valkiria.h">
+      <Filter>Arquivos de Cabeï¿½alho</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

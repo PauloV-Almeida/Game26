@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\Botao.cpp" />
     <ClCompile Include="src\Entidades.cpp" />
-    <ClCompile Include="src\Esqueleto.cpp" />
+    <ClCompile Include="src\Andarilho.cpp" />
     <ClCompile Include="src\Estado.cpp" />
     <ClCompile Include="src\Fase.cpp" />
     <ClCompile Include="src\Deserto.cpp" />
@@ -44,6 +44,7 @@
     <ClCompile Include="src\Plataforma.cpp" />
     <ClCompile Include="src\Subject.cpp" />
     <ClCompile Include="src\Texto.cpp" />
+    <ClCompile Include="src\Valkiria.cpp" />
     <ClCompile Include="stdafx\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +67,7 @@
     <ClInclude Include="include\Botao.h" />
     <ClInclude Include="include\Ente.h" />
     <ClInclude Include="include\Entidades.h" />
-    <ClInclude Include="include\Esqueleto.h" />
+    <ClInclude Include="include\Andarilho.h" />
     <ClInclude Include="include\Estado.h" />
     <ClInclude Include="include\Fase.h" />
     <ClInclude Include="include\Deserto.h" />
@@ -88,6 +89,7 @@
     <ClInclude Include="include\Plataforma.h" />
     <ClInclude Include="include\Subject.h" />
     <ClInclude Include="include\Texto.h" />
+    <ClInclude Include="include\Valkiria.h" />
     <ClInclude Include="stdafx\stdafx.h" />
   </ItemGroup>
   <ItemGroup>

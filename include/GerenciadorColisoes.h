@@ -21,8 +21,15 @@ namespace Gerenciadores
         std::list<Entidades::Obstaculos::Obstaculo*> LOs;
         //std::set<Entidades::Projetil*> LPs;
 
+        std::vector<sf::FloatRect> colisoresMapa;
+
         Entidades::Personagens::Jogador* pJog1;
         Entidades::Personagens::Jogador* pJog2;
+
+        float limiteEsquerdo;
+        float limiteDireito;
+        float limiteSuperior;
+        float limiteInferior;
 
     private:
         bool verificarColisao(
@@ -31,6 +38,15 @@ namespace Gerenciadores
             std::string* direcao1,
             std::string* direcao2
         );
+
+        bool verificarColisaoMapa(
+            Entidades::Entidade* pEnt,
+            const sf::FloatRect& bloco,
+            std::string* direcao
+        );
+
+        void tratarColisaoComLimites(Entidades::Entidade* pEnt);
+        void tratarColisaoComMapa(Entidades::Entidade* pEnt);
 
         void tratarColisoesJogObstaculos(Entidades::Personagens::Jogador* pJog);
         void tratarColisoesJogInimigos(Entidades::Personagens::Jogador* pJog);
@@ -42,7 +58,11 @@ namespace Gerenciadores
     public:
         GerenciadorColisoes(
             Entidades::Personagens::Jogador* pJ1 = nullptr,
-            Entidades::Personagens::Jogador* pJ2 = nullptr
+            Entidades::Personagens::Jogador* pJ2 = nullptr,
+            float limEsq = 0.f,
+            float limDir = 1920.f,
+            float limInf = 1080.f,
+            float limSup = 0.f
         );
 
         ~GerenciadorColisoes();
@@ -50,6 +70,8 @@ namespace Gerenciadores
         void incluirInimigo(Entidades::Personagens::Inimigo* pIni);
         void incluirObstaculo(Entidades::Obstaculos::Obstaculo* pObs);
         //void incluirProjetil(Entidades::Projetil* pProj);
+
+        void setColisoresMapa(const std::vector<sf::FloatRect>& colisores);
 
         void executar();
     };

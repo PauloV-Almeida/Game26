@@ -1,18 +1,25 @@
 #include "../include/GerenciadorColisoes.h"
 
-#include <cmath>
-
 namespace Gerenciadores
 {
     GerenciadorColisoes::GerenciadorColisoes(
         Entidades::Personagens::Jogador* pJ1,
-        Entidades::Personagens::Jogador* pJ2
+        Entidades::Personagens::Jogador* pJ2,
+        float limEsq,
+        float limDir,
+        float limInf,
+        float limSup
     ) :
         LIs(),
         LOs(),
         //LPs(),
+        colisoresMapa(),
         pJog1(pJ1),
-        pJog2(pJ2)
+        pJog2(pJ2),
+        limiteEsquerdo(limEsq),
+        limiteDireito(limDir),
+        limiteSuperior(limSup),
+        limiteInferior(limInf)
     {}
 
     GerenciadorColisoes::~GerenciadorColisoes()
@@ -20,6 +27,7 @@ namespace Gerenciadores
         LIs.clear();
         LOs.clear();
         //LPs.clear();
+        colisoresMapa.clear();
 
         pJog1 = nullptr;
         pJog2 = nullptr;
@@ -48,6 +56,11 @@ namespace Gerenciadores
             LPs.insert(pProj);
         }
     }*/
+
+    void GerenciadorColisoes::setColisoresMapa(const std::vector<sf::FloatRect>& colisores)
+    {
+        colisoresMapa = colisores;
+    }
 
     bool GerenciadorColisoes::verificarColisao(
         Entidades::Entidade* pe1,
@@ -135,31 +148,157 @@ namespace Gerenciadores
         return false;
     }
 
-    void GerenciadorColisoes::tratarColisoesJogObstaculos(
-        Entidades::Personagens::Jogador* pJog
+    bool GerenciadorColisoes::verificarColisaoMapa(
+        Entidades::Entidade* pEnt,
+        const sf::FloatRect& bloco,
+        std::string* direcao
     )
     {
-        if (!pJog || !pJog->get_vivo())
+        if (!pEnt || !direcao)
+        {
+            return false;
+        }
+
+        sf::Vector2f pos = pEnt->get_posicao();
+        sf::Vector2f tam = pEnt->get_tamanho();
+
+        sf::FloatRect corpoEnt(
+            pos.x - tam.x / 2.0f,
+            pos.y - tam.y / 2.0f,
+            tam.x,
+            tam.y
+        );
+
+        if (!corpoEnt.intersects(bloco))
+        {
+            return false;
+        }
+
+        float centroEntX = corpoEnt.left + corpoEnt.width / 2.0f;
+        float centroEntY = corpoEnt.top + corpoEnt.height / 2.0f;
+
+        float centroBlocoX = bloco.left + bloco.width / 2.0f;
+        float centroBlocoY = bloco.top + bloco.height / 2.0f;
+
+        float distanciaX = centroEntX - centroBlocoX;
+        float distanciaY = centroEntY - centroBlocoY;
+
+        float somaMetadeX = corpoEnt.width / 2.0f + bloco.width / 2.0f;
+        float somaMetadeY = corpoEnt.height / 2.0f + bloco.height / 2.0f;
+
+        float intersecaoX = somaMetadeX - std::fabs(distanciaX);
+        float intersecaoY = somaMetadeY - std::fabs(distanciaY);
+
+        sf::Vector2f novaPos = pos;
+        sf::Vector2f vel = pEnt->get_vel();
+
+        if (intersecaoX < intersecaoY)
+        {
+            if (distanciaX > 0.0f)
+            {
+                novaPos.x += intersecaoX;
+                *direcao = "Esquerda";
+            }
+            else
+            {
+                novaPos.x -= intersecaoX;
+                *direcao = "Direita";
+            }
+
+            vel.x = 0.0f;
+        }
+        else
+        {
+            if (distanciaY > 0.0f)
+            {
+                novaPos.y += intersecaoY;
+                *direcao = "Emcima";
+            }
+            else
+            {
+                novaPos.y -= intersecaoY;
+                *direcao = "Embaixo";
+            }
+
+            vel.y = 0.0f;
+        }
+
+        pEnt->set_posicao(novaPos);
+        pEnt->set_vel(vel);
+
+        Entidades::Personagens::Personagem* pPers =
+            dynamic_cast<Entidades::Personagens::Personagem*>(pEnt);
+
+        if (pPers && *direcao == "Embaixo")
+        {
+            pPers->set_noChao(true);
+        }
+
+        return true;
+    }
+
+    void GerenciadorColisoes::tratarColisaoComLimites(Entidades::Entidade* pEnt)
+    {
+        if (!pEnt || !pEnt->get_vivo())
         {
             return;
         }
 
-        for (auto it = LOs.begin(); it != LOs.end(); ++it)
+        sf::Vector2f pos = pEnt->get_posicao();
+        sf::Vector2f tam = pEnt->get_tamanho();
+        sf::Vector2f vel = pEnt->get_vel();
+
+        float meiaLargura = tam.x / 2.0f;
+        float meiaAltura = tam.y / 2.0f;
+
+        Entidades::Personagens::Personagem* pPers =
+            dynamic_cast<Entidades::Personagens::Personagem*>(pEnt);
+
+        if (pos.y + meiaAltura > limiteInferior)
         {
-            Entidades::Obstaculos::Obstaculo* pObs = *it;
+            pos.y = limiteInferior - meiaAltura;
+            vel.y = 0.0f;
 
-            if (!pObs || !pObs->get_vivo())
+            if (pPers)
             {
-                continue;
+                pPers->set_noChao(true);
             }
+        }
 
-            std::string dirJog;
-            std::string dirObs;
+        if (pos.y - meiaAltura < limiteSuperior)
+        {
+            pos.y = limiteSuperior + meiaAltura;
+            vel.y = 0.0f;
+        }
 
-            if (verificarColisao(pJog, pObs, &dirJog, &dirObs))
-            {
-                pObs->obstaculizar(pJog, dirJog);
-            }
+        if (pos.x - meiaLargura < limiteEsquerdo)
+        {
+            pos.x = limiteEsquerdo + meiaLargura;
+            vel.x = 0.0f;
+        }
+
+        if (pos.x + meiaLargura > limiteDireito)
+        {
+            pos.x = limiteDireito - meiaLargura;
+            vel.x = 0.0f;
+        }
+
+        pEnt->set_posicao(pos);
+        pEnt->set_vel(vel);
+    }
+
+    void GerenciadorColisoes::tratarColisaoComMapa(Entidades::Entidade* pEnt)
+    {
+        if (!pEnt || !pEnt->get_vivo())
+        {
+            return;
+        }
+
+        for (unsigned int i = 0; i < colisoresMapa.size(); i++)
+        {
+            std::string direcao;
+
+            verificarColisaoMapa(pEnt, colisoresMapa[i], &direcao);
         }
     }
 
@@ -188,6 +327,34 @@ namespace Gerenciadores
             {
                 pJog->colidir(pIni, dirJog);
                 pIni->danificar(pJog);
+            }
+        }
+    }
+
+    void GerenciadorColisoes::tratarColisoesJogObstaculos(
+        Entidades::Personagens::Jogador* pJog
+    )
+    {
+        if (!pJog || !pJog->get_vivo())
+        {
+            return;
+        }
+
+        for (auto it = LOs.begin(); it != LOs.end(); ++it)
+        {
+            Entidades::Obstaculos::Obstaculo* pObs = *it;
+
+            if (!pObs || !pObs->get_vivo())
+            {
+                continue;
+            }
+
+            std::string dirJog;
+            std::string dirObs;
+
+            if (verificarColisao(pJog, pObs, &dirJog, &dirObs))
+            {
+                pObs->obstaculizar(pJog, dirJog);
             }
         }
     }
@@ -226,52 +393,40 @@ namespace Gerenciadores
     /*void GerenciadorColisoes::tratarColisoesProjeteisInimigs()
     {
         /*
-            Implementaremos depois que você mandar Projetil.h / Projetil.cpp.
-
-            Aqui provavelmente ficará algo como:
-
-            for (auto itP = LPs.begin(); itP != LPs.end(); ++itP)
-            {
-                Projetil* pProj = *itP;
-
-                for (unsigned int i = 0; i < LIs.size(); i++)
-                {
-                    Inimigo* pIni = LIs[i];
-
-                    if (verificarColisao(pProj, pIni, &dirProj, &dirIni))
-                    {
-                        pIni->receber_dano(pProj->get_dano());
-                        pProj->set_vivo(false);
-                    }
-                }
-            }
+            Será implementado quando Projetil estiver pronto.
         
     }*/
 
     /*void GerenciadorColisoes::tratarColisoesProjeteisObstacs()
     {
         /*
-            Implementaremos depois que você mandar Projetil.h / Projetil.cpp.
-
-            Aqui provavelmente ficará:
-
-            Projétil x Obstáculo
-                projétil deixa de existir
-                ou obstáculo trata com obstaculizar()
+            Será implementado quando Projetil estiver pronto.
         
     }*/
 
     void GerenciadorColisoes::executar()
     {
-        tratarColisoesJogObstaculos(pJog1);
-        tratarColisoesJogInimigos(pJog1);
+        tratarColisaoComLimites(pJog1);
+        tratarColisaoComLimites(pJog2);
 
+        tratarColisaoComMapa(pJog1);
+        tratarColisaoComMapa(pJog2);
+
+        for (unsigned int i = 0; i < LIs.size(); i++)
+        {
+            tratarColisaoComLimites(LIs[i]);
+            tratarColisaoComMapa(LIs[i]);
+        }
+
+        tratarColisoesJogObstaculos(pJog1);
         tratarColisoesJogObstaculos(pJog2);
+
+        tratarColisoesJogInimigos(pJog1);
         tratarColisoesJogInimigos(pJog2);
 
         tratarColisoesInimigsObstacs();
 
-       // tratarColisoesProjeteisInimigs();
+        //tratarColisoesProjeteisInimigs();
         //tratarColisoesProjeteisObstacs();
     }
 }
