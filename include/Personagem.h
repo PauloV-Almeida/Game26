@@ -4,8 +4,8 @@
 
 namespace Entidades
 {
-	namespace Personagens
-	{
+    namespace Personagens
+    {
         class Personagem : public Entidade
         {
         protected:
@@ -23,9 +23,19 @@ namespace Entidades
             );
 
             virtual ~Personagem();
+
             virtual void executar() = 0;
 
-            void receber_dano(int dmg) { n_vidas -= dmg; }
+            void receber_dano(int dmg)
+            {
+                n_vidas -= dmg;
+
+                if (n_vidas <= 0)
+                {
+                    n_vidas = 0;
+                    vivo = false;
+                }
+            }
 
             void set_vivo(bool a) { vivo = a; }
             void set_noChao(bool n) { noChao = n; }
@@ -40,6 +50,9 @@ namespace Entidades
             const bool get_vivo() const { return vivo; }
             const int get_vidas() const { return n_vidas; }
             bool get_noChao() const { return noChao; }
+
+            virtual void salvarDataBuffer();
+            virtual void salvar(std::ostream& out) = 0;
         };
-	}
+    }
 }

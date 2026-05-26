@@ -3,38 +3,72 @@
 #include "Personagem.h"
 #include "Jogador.h"
 #include "../stdafx/stdafx.h"
-#include "ListaEntidades.h"
+
 #define VEL_MAX_INI 3.0f
-#define RAIOY 50.0f
-#define RAIOX 50.0f
+
+#define RAIO_PERSEGUIR_X 220.0f
+#define RAIO_PERSEGUIR_Y 100.0f
+
+#define RAIO_ATAQUE_X 45.0f
+#define RAIO_ATAQUE_Y 45.0f
+
+#define NIVEL_MALDADE_MAX 5
 
 namespace Entidades
 {
-	namespace Obstaculos
-	{
-		class Obstaculo;
-	}
+    namespace Personagens
+    {
+        class Jogador;
 
-	namespace Personagens
-	{
-		class Jogador;
+        class Inimigo : public Personagem
+        {
+        protected:
+            int nivel_maldade;
+            int dano_base;
 
-		class Inimigo :public Personagem
-		{
-		protected:
-			int nivel_maldade;
-			Listas::ListaEntidades* LJogs;
-		public:
-			Inimigo(int indice = -1,sf::Vector2f pos = sf::Vector2f(10.f, 0.f), sf::Vector2f vel = sf::Vector2f(0.f, 0.f), sf::Vector2f tam = sf::Vector2f(50.f, 50.f));
-			~Inimigo();
-			virtual void executar()= 0;
-			virtual void danificar() = 0;
-			virtual void colidir(Jogador* pJog, std::string direcao = "") = 0;
-			virtual void colidir(Obstaculos::Obstaculo* pObs, std::string direcao = "") = 0;
-			void mover();
-			void movimentoaleatorio();
-			void persegue(sf::Vector2f posJogador, sf::Vector2f posInimigo);
-			void set_ListaJogadores(Listas::ListaEntidades* ListaJg) { LJogs = ListaJg; }
-		};
-	}
+            Jogador* pJog1;
+            Jogador* pJog2;
+
+            int direcaoAleatoria;
+            int tempoTrocaDirecao;
+
+        protected:
+            Jogador* escolherAlvo();
+
+            bool jogadorNoRaioPerseguicao(Jogador* pJog);
+            bool jogadorNoRaioAtaque(Jogador* pJog);
+
+            void aplicarGravidade();
+            void limitarVelocidade();
+
+            void andarAleatorio();
+            void perseguir(Jogador* pJog);
+
+            void aumentarMaldade();
+            int calcularDanoAtual() const;
+
+        public:
+            Inimigo(
+                int indice = -1,
+                sf::Vector2f pos = sf::Vector2f(10.f, 0.f),
+                sf::Vector2f vel = sf::Vector2f(0.f, 0.f),
+                sf::Vector2f tam = sf::Vector2f(50.f, 50.f),
+                Jogador* pJ1 = nullptr,
+                Jogador* pJ2 = nullptr
+            );
+
+            virtual ~Inimigo();
+
+            virtual void executar() = 0;
+            virtual void danificar(Jogador* pJog) = 0;
+
+            virtual void mover();
+
+            int get_nivel_maldade() const { return nivel_maldade; }
+            void set_nivel_maldade(int n) { nivel_maldade = n; }
+
+            virtual void salvarDataBuffer();
+            virtual void salvar(std::ostream& out) = 0;
+        };
+    }
 }

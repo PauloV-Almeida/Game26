@@ -187,7 +187,7 @@ namespace Gerenciadores
             if (verificarColisao(pJog, pIni, &dirJog, &dirIni))
             {
                 pJog->colidir(pIni, dirJog);
-                pIni->colidir(pJog, dirIni);
+                pIni->danificar(pJog);
             }
         }
     }
