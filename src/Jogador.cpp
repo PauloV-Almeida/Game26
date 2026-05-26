@@ -2,273 +2,363 @@
 
 namespace Entidades
 {
-	namespace Personagens
-	{
-		Jogador::Jogador(int indice, sf::Vector2f pos, sf::Vector2f velo, sf::Vector2f tam) :
-			ataque_corpo(sf::Vector2f(tam.x * 2, tam.y * 2)),
-			atacando(false),
-			Personagem(0, pos, velo, tam),
-			venceu(false),
-			id_jogador(indice),
-			direita(true)
-		{
-			dano = DMG;
-			ataque_corpo.setOrigin(ataque_corpo.getSize().x / 2, ataque_corpo.getSize().y / 2);
-			ataque_corpo.setTexture(pGG->carregar_texturas("./assets/jogador1.png"));
-			n_vidas = 20;
-			if (id_jogador == 1)
-			{
-				texturas = pGG->carregar_texturas("./assets/jogador1.png");
-			}
-			else if (id_jogador == 2)
-			{
-				texturas = pGG->carregar_texturas("./assets/jogador2.png");
-			}
+    namespace Personagens
+    {
+        Jogador::Jogador(int indice, sf::Vector2f pos, sf::Vector2f velo, sf::Vector2f tam) :
+            Personagem(indice, pos, velo, tam),
+            ataque_corpo(sf::Vector2f(tam.x * 2.f, tam.y * 2.f)),
+            atacando(false),
+            id_jogador(indice),
+            venceu(false),
+            direita(true),
+            ataque_direcao("Direita")
+        {
+            dano = DMG;
+            n_vidas = 20;
 
-			corpo.setTexture(texturas);
-		}
+            ataque_corpo.setOrigin(ataque_corpo.getSize().x / 2.f, ataque_corpo.getSize().y / 2.f);
 
-		Jogador::Jogador(int indice, bool viv, int nV, sf::Vector2f pos, sf::Vector2f velo, sf::Vector2f tam) :
-			ataque_corpo(corpo.getSize() * 2.f),
-			atacando(false),
-			Personagem(0, pos, velo, tam),
-			venceu(false),
-			id_jogador(indice),
-			direita(true),
-			ataque_direcao("Acima")
-		{
-			dano = DMG;
-			vivo = viv;
-			n_vidas = nV;
+            if (id_jogador == 1)
+            {
+                texturas = pGG->carregar_texturas("./assets/jogador1.png");
+            }
+            else if (id_jogador == 2)
+            {
+                texturas = pGG->carregar_texturas("./assets/jogador2.png");
+            }
+            else
+            {
+                texturas = pGG->carregar_texturas("./assets/jogador1.png");
+            }
 
-			ataque_corpo.setOrigin(ataque_corpo.getSize().x / 2, ataque_corpo.getSize().y / 2);
-			if (id_jogador == 1)
-			{
-				pGG->carregar_texturas("./assets/valkiria.png");
-				texturas = pGG->carregar_texturas("./assets/jogador1.png");
-			}
-			else if (id_jogador == 2)
-			{
-				pGG->carregar_texturas("./assets/valkiria.png");
-				texturas = pGG->carregar_texturas("./assets/jogador2.png");
-			}
-			corpo.setTexture(texturas);
+            corpo.setTexture(texturas);
+            ataque_corpo.setTexture(texturas);
+        }
 
-			texturas = pGG->carregar_texturas("./assets/jogador1.png");
-			ataque_corpo.setTexture(texturas);
-		}
+        Jogador::Jogador(int indice, bool viv, int nV, sf::Vector2f pos, sf::Vector2f velo, sf::Vector2f tam) :
+            Personagem(indice, pos, velo, tam),
+            ataque_corpo(sf::Vector2f(tam.x * 2.f, tam.y * 2.f)),
+            atacando(false),
+            id_jogador(indice),
+            venceu(false),
+            direita(true),
+            ataque_direcao("Direita")
+        {
+            dano = DMG;
+            vivo = viv;
+            n_vidas = nV;
 
-		Jogador::~Jogador()
-		{
+            ataque_corpo.setOrigin(ataque_corpo.getSize().x / 2.f, ataque_corpo.getSize().y / 2.f);
 
-		}
+            if (id_jogador == 1)
+            {
+                texturas = pGG->carregar_texturas("./assets/jogador1.png");
+            }
+            else if (id_jogador == 2)
+            {
+                texturas = pGG->carregar_texturas("./assets/jogador2.png");
+            }
+            else
+            {
+                texturas = pGG->carregar_texturas("./assets/jogador1.png");
+            }
 
-		void Jogador::desenhar()
-		{
-			if (vivo)
-			{
-				if (atacando)
-				{
-					if (ataque_direcao == "Direita")
-					{
-						ataque_corpo.rotate(90);
-						pGG->desenhar(&ataque_corpo);
-						ataque_corpo.rotate(-90);
-					}
-					else if (ataque_direcao == "Esquerda")
-					{
-						ataque_corpo.rotate(-90);
-						pGG->desenhar(&ataque_corpo);
-						ataque_corpo.rotate(90);
-					}
-					else if (ataque_direcao == "Abaixo")
-					{
-						ataque_corpo.rotate(180);
-						pGG->desenhar(&ataque_corpo);
-						ataque_corpo.rotate(180);
-					}
-					else
-					{
-						pGG->desenhar(&ataque_corpo);
-					}
-					atacando = false;
-				}
-				pGG->desenhar(&corpo);
-			}
-		}
+            corpo.setTexture(texturas);
+            ataque_corpo.setTexture(texturas);
+        }
 
-		void Jogador::executar()
-		{
-			if (n_vidas <= 0)
-				vivo = false;
+        Jogador::~Jogador()
+        {}
 
-			mover();
+        bool Jogador::teclaEsquerdaPressionada() const
+        {
+            if (id_jogador == 1)
+            {
+                return sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+            }
 
-			ataque();
-		}
+            return sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+        }
 
-		void Jogador::mover(char direcao)
-		{
-			if (id_jogador == 1)
-			{
-				if (!noChao)
-					vel.y += GRAVIDADE;
+        bool Jogador::teclaDireitaPressionada() const
+        {
+            if (id_jogador == 1)
+            {
+                return sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+            }
 
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-					vel.x -= VELOCIDADE;
-					corpo.setTexture(pGG->carregar_texturas("./assets/jogador1-esquerda.png"));
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-					vel.x += VELOCIDADE;
-					corpo.setTexture(pGG->carregar_texturas("./assets/jogador1-direita.png"));
-				}
-				else
-					vel.x *= 0.8f;
+            return sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+        }
 
-				if (vel.x > VEL_MAX)
-					vel.x = VEL_MAX;
-				if (vel.x < -VEL_MAX)
-					vel.x = -VEL_MAX;
+        bool Jogador::teclaPuloPressionada() const
+        {
+            if (id_jogador == 1)
+            {
+                return sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+            }
 
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && noChao)
-				{
-					vel.y -= 6.0;
-					noChao = false;
-				}
-				corpo.move(vel.x, vel.y);
+            return sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+        }
 
-				noChao = false;
-			}
+        bool Jogador::teclaAtaquePressionada() const
+        {
+            if (id_jogador == 1)
+            {
+                return sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+            }
 
-			else if (id_jogador == 2)
-			{
-				if (!noChao)
-					vel.y += GRAVIDADE;
+            return sf::Keyboard::isKeyPressed(sf::Keyboard::Enter);
+        }
 
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-					vel.x -= VELOCIDADE;
-					corpo.setTexture(pGG->carregar_texturas("./assets/jogador2-esquerda.png"));
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-					vel.x += VELOCIDADE;
-					corpo.setTexture(pGG->carregar_texturas("./assets/jogador2-direita.png"));
-				}
-				else
-					vel.x *= 0.8f;
+        std::string Jogador::obterDirecaoAtaque() const
+        {
+            if (id_jogador == 1)
+            {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+                    return "Acima";
 
-				if (vel.x > VEL_MAX)
-					vel.x = VEL_MAX;
-				if (vel.x < -VEL_MAX)
-					vel.x = -VEL_MAX;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+                    return "Abaixo";
 
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && noChao)
-				{
-					vel.y -= 6.0;
-					noChao = false;
-				}
-				corpo.move(vel.x, vel.y);
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+                    return "Esquerda";
 
-				noChao = false;
-			}
-		}
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+                    return "Direita";
+            }
+            else if (id_jogador == 2)
+            {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                    return "Acima";
 
-		void Jogador::colidir(Inimigo* pIni, std::string direcao)
-		{
-			receber_dano(pIni->get_dano());
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                    return "Abaixo";
 
-			if (direcao == "Embaixo")
-			{
-				noChao = true;
-				vel.y = 0.0f;
-			}
-			else if (direcao == "Cima" || direcao == "Emcima")
-			{
-				vel.y = 0.0f;
-			}
-			else if (direcao == "Esquerda" || direcao == "Direita")
-			{
-				vel.x = 0.0f;
-			}
-		}
-			
-		void Jogador::ataque()
-		{
-			if ((id_jogador == 1 && !sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) ||
-				(id_jogador == 2 && !sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)))
-			{
-				return;
-			}
-			dano = DMG;
-			atacando = true;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                    return "Esquerda";
 
-			std::string direcao = "";
-			if (id_jogador == 1)
-			{
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-				{
-					direcao = "Acima";
-					ataque_direcao = "Acima";
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-				{
-					direcao = "Esquerda";
-					ataque_direcao = "Esquerda";
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-				{
-					direcao = "Direita";
-					ataque_direcao = "Direita";
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-				{
-					direcao = "Abaixo";
-					ataque_direcao = "Abaixo";
-				}
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                    return "Direita";
+            }
 
-			}
-			else if (id_jogador == 2)
-			{
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-				{
-					direcao = "Acima";
-					ataque_direcao = "Acima";
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-				{
-					direcao = "Esquerda";
-					ataque_direcao = "Esquerda";
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-				{
-					direcao = "Direita";
-					ataque_direcao = "Direita";
-				}
-				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-				{
-					direcao = "Abaixo";
-					ataque_direcao = "Abaixo";
-				}
-			}
-			if (direcao == "Acima")
-			{
-				ataque_corpo.setPosition(sf::Vector2f(corpo.getPosition().x, corpo.getPosition().y - corpo.getSize().y / 2 - ataque_corpo.getSize().y / 2));
-			}
-			else if (direcao == "Direita")
-			{
-				ataque_corpo.setPosition(sf::Vector2f(corpo.getPosition().x + corpo.getSize().x / 2 + ataque_corpo.getSize().x / 2, corpo.getPosition().y));
-			}
-			if (direcao == "Abaixo")
-			{
-				ataque_corpo.setPosition(sf::Vector2f(corpo.getPosition().x, corpo.getPosition().y + corpo.getSize().y / 2 + ataque_corpo.getSize().y / 2));
-			}
-			else if (direcao == "Esquerda")
-			{
-				ataque_corpo.setPosition(sf::Vector2f(corpo.getPosition().x - corpo.getSize().x / 2 - ataque_corpo.getSize().x / 2, corpo.getPosition().y));
-			}
-			pGG->desenhar(&ataque_corpo);
+            if (direita)
+                return "Direita";
 
-			dano = 0;
-		}
+            return "Esquerda";
+        }
 
-	}//Personagens
+        void Jogador::atualizarTexturaMovimento()
+        {
+            if (id_jogador == 1)
+            {
+                if (direita)
+                    corpo.setTexture(pGG->carregar_texturas("./assets/jogador1-direita.png"));
+                else
+                    corpo.setTexture(pGG->carregar_texturas("./assets/jogador1-esquerda.png"));
+            }
+            else if (id_jogador == 2)
+            {
+                if (direita)
+                    corpo.setTexture(pGG->carregar_texturas("./assets/jogador2-direita.png"));
+                else
+                    corpo.setTexture(pGG->carregar_texturas("./assets/jogador2-esquerda.png"));
+            }
+        }
+
+        void Jogador::limitarVelocidadeHorizontal()
+        {
+            if (vel.x > VEL_MAX)
+            {
+                vel.x = VEL_MAX;
+            }
+            else if (vel.x < -VEL_MAX)
+            {
+                vel.x = -VEL_MAX;
+            }
+        }
+
+        void Jogador::atualizarCorpoAtaque(const std::string& direcao)
+        {
+            sf::Vector2f pos = corpo.getPosition();
+            sf::Vector2f tam = corpo.getSize();
+            sf::Vector2f tamAtaque = ataque_corpo.getSize();
+
+            if (direcao == "Acima")
+            {
+                ataque_corpo.setPosition(
+                    sf::Vector2f(
+                        pos.x,
+                        pos.y - tam.y / 2.f - tamAtaque.y / 2.f
+                    )
+                );
+            }
+            else if (direcao == "Abaixo")
+            {
+                ataque_corpo.setPosition(
+                    sf::Vector2f(
+                        pos.x,
+                        pos.y + tam.y / 2.f + tamAtaque.y / 2.f
+                    )
+                );
+            }
+            else if (direcao == "Direita")
+            {
+                ataque_corpo.setPosition(
+                    sf::Vector2f(
+                        pos.x + tam.x / 2.f + tamAtaque.x / 2.f,
+                        pos.y
+                    )
+                );
+            }
+            else if (direcao == "Esquerda")
+            {
+                ataque_corpo.setPosition(
+                    sf::Vector2f(
+                        pos.x - tam.x / 2.f - tamAtaque.x / 2.f,
+                        pos.y
+                    )
+                );
+            }
+        }
+
+        void Jogador::executar()
+        {
+            if (n_vidas <= 0)
+            {
+                vivo = false;
+                return;
+            }
+
+            mover();
+            ataque();
+        }
+
+        void Jogador::mover(char direcao)
+        {
+            if (!vivo)
+            {
+                return;
+            }
+
+            if (!noChao)
+            {
+                vel.y += GRAVIDADE;
+            }
+
+            if (teclaEsquerdaPressionada())
+            {
+                vel.x -= VELOCIDADE;
+                direita = false;
+                atualizarTexturaMovimento();
+            }
+            else if (teclaDireitaPressionada())
+            {
+                vel.x += VELOCIDADE;
+                direita = true;
+                atualizarTexturaMovimento();
+            }
+            else
+            {
+                vel.x *= 0.8f;
+            }
+
+            limitarVelocidadeHorizontal();
+
+            if (teclaPuloPressionada() && noChao)
+            {
+                vel.y = -6.0f;
+                noChao = false;
+            }
+
+            corpo.move(vel.x, vel.y);
+
+            /*
+                Depois que o jogador se move, ele começa assumindo que não está no chão.
+                Se ele realmente estiver em cima de uma plataforma, o GerenciadorColisoes
+                vai detectar a colisão e a Plataforma::obstaculizar() vai marcar noChao = true.
+            */
+            noChao = false;
+        }
+
+        void Jogador::colidir(Inimigo* pIni, std::string direcao)
+        {
+            if (!pIni)
+            {
+                return;
+            }
+
+            receber_dano(pIni->get_dano());
+
+            if (direcao == "Embaixo")
+            {
+                noChao = true;
+                vel.y = 0.0f;
+            }
+            else if (direcao == "Cima" || direcao == "Emcima")
+            {
+                vel.y = 0.0f;
+            }
+            else if (direcao == "Esquerda" || direcao == "Direita")
+            {
+                vel.x = 0.0f;
+            }
+        }
+
+        void Jogador::ataque()
+        {
+            if (!vivo)
+            {
+                return;
+            }
+
+            if (!teclaAtaquePressionada())
+            {
+                atacando = false;
+                dano = 0;
+                return;
+            }
+
+            dano = DMG;
+            atacando = true;
+
+            ataque_direcao = obterDirecaoAtaque();
+            atualizarCorpoAtaque(ataque_direcao);
+        }
+
+        void Jogador::desenhar()
+        {
+            if (!vivo)
+            {
+                return;
+            }
+
+            pGG->desenhar(&corpo);
+
+            if (atacando)
+            {
+                if (ataque_direcao == "Direita")
+                {
+                    ataque_corpo.rotate(90);
+                    pGG->desenhar(&ataque_corpo);
+                    ataque_corpo.rotate(-90);
+                }
+                else if (ataque_direcao == "Esquerda")
+                {
+                    ataque_corpo.rotate(-90);
+                    pGG->desenhar(&ataque_corpo);
+                    ataque_corpo.rotate(90);
+                }
+                else if (ataque_direcao == "Abaixo")
+                {
+                    ataque_corpo.rotate(180);
+                    pGG->desenhar(&ataque_corpo);
+                    ataque_corpo.rotate(180);
+                }
+                else
+                {
+                    pGG->desenhar(&ataque_corpo);
+                }
+            }
+        }
+    }
 }

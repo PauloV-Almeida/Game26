@@ -15,32 +15,64 @@ namespace Entidades
 	namespace Personagens
 	{
 		class Inimigo;
-		class Jogador : public Personagem
-		{
-		protected:
-			sf::RectangleShape ataque_corpo;
-			bool atacando;
-			int id_jogador;
-			bool venceu;
-			bool direita;
-			std::string ataque_direcao;
-		public:
-			Jogador(int indice = 1, sf::Vector2f pos = sf::Vector2f(10.f, 0.f), sf::Vector2f vel = sf::Vector2f(0.f, 0.f), sf::Vector2f tam = sf::Vector2f(5.f, 5.f));
-			Jogador(int indice, bool viv, int nV, sf::Vector2f pos, sf::Vector2f velo, sf::Vector2f tam);
-			~Jogador();
+        class Jogador : public Personagem
+        {
+        protected:
+            sf::RectangleShape ataque_corpo;
 
-			void executar();
-			void mover(char direcao = '0');
-			void colidir(Inimigo* pIni, std::string direcao = "");
-			void ataque();
-			void set_venceu(bool v) { venceu = v; };
-			bool get_venceu() { return venceu; };
+            bool atacando;
+            int id_jogador;
+            bool venceu;
+            bool direita;
 
-			sf::Vector2f get_ataque_posicao() { return ataque_corpo.getPosition(); }
-			sf::Vector2f get_ataque_tamanho() { return ataque_corpo.getSize(); }
+            std::string ataque_direcao;
 
-			void desenhar();
-			
-		};
+        private:
+            bool teclaEsquerdaPressionada() const;
+            bool teclaDireitaPressionada() const;
+            bool teclaPuloPressionada() const;
+            bool teclaAtaquePressionada() const;
+
+            std::string obterDirecaoAtaque() const;
+            void atualizarTexturaMovimento();
+            void limitarVelocidadeHorizontal();
+            void atualizarCorpoAtaque(const std::string& direcao);
+
+        public:
+            Jogador(
+                int indice = 1,
+                sf::Vector2f pos = sf::Vector2f(10.f, 0.f),
+                sf::Vector2f vel = sf::Vector2f(0.f, 0.f),
+                sf::Vector2f tam = sf::Vector2f(5.f, 5.f)
+            );
+
+            Jogador(
+                int indice,
+                bool viv,
+                int nV,
+                sf::Vector2f pos,
+                sf::Vector2f velo,
+                sf::Vector2f tam
+            );
+
+            ~Jogador();
+
+            void executar();
+            void mover(char direcao = '0');
+
+            void colidir(Inimigo* pIni, std::string direcao = "");
+
+            void ataque();
+
+            void set_venceu(bool v) { venceu = v; }
+            bool get_venceu() { return venceu; }
+
+            int get_id_jogador() const { return id_jogador; }
+
+            sf::Vector2f get_ataque_posicao() { return ataque_corpo.getPosition(); }
+            sf::Vector2f get_ataque_tamanho() { return ataque_corpo.getSize(); }
+
+            void desenhar();
+        };
 	}
 }

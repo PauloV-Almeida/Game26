@@ -2,7 +2,6 @@
 
 #include "Ente.h"
 //#include "../observers/Observer.h"
-
 #include <fstream>
 
 namespace Gerenciadores
