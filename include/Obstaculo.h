@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entidades.h"
+#include <string>
 
 #define OBSTACULO_TAMANHO 20
 
@@ -14,23 +15,37 @@ namespace Entidades
             sf::RectangleShape corpo;
             bool existir;
             bool danoso;
+
         public:
-            Obstaculo(int index = -1, sf::Vector2f pos = sf::Vector2f(100.f, 600.f));
-            ~Obstaculo();
+            Obstaculo(
+                int indice = -1,
+                sf::Vector2f pos = sf::Vector2f(100.f, 600.f),
+                sf::Vector2f tam = sf::Vector2f(OBSTACULO_TAMANHO, OBSTACULO_TAMANHO)
+            );
+
+            virtual ~Obstaculo();
+
             virtual void executar() = 0;
             virtual void mover();
+
             void desenhar();
-            //virtual void obstaculizar(Entidades::Entidade* outro, std::string  direcao = "") = 0;
-            
+
             void set_vivo(bool a) { existir = a; }
+
             const bool get_vivo() const { return existir; }
+
             sf::Vector2f get_posicao() { return corpo.getPosition(); }
             sf::Vector2f get_tamanho() { return corpo.getSize(); }
+
             void set_posicao(sf::Vector2f pos) { corpo.setPosition(pos); }
-			void set_danoso(bool d) { danoso = d; }
+
+            void set_danoso(bool d) { danoso = d; }
             const bool get_danoso() const { return danoso; }
-			virtual void obstaculizar(Entidades::Entidade* outro, std::string  direcao = "") = 0;
+
+            virtual void obstaculizar(Entidades::Entidade* outro, std::string direcao = "") = 0;
+
+            virtual void salvarDataBuffer();
+            virtual void salvar(std::ostream& out) = 0;
         };
     }
-
 }

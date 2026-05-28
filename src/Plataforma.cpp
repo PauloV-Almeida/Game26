@@ -1,51 +1,89 @@
 #include "../include/Plataforma.h"
-#include "../include/Jogador.h"
-#include "../include/Inimigo.h"
 
 namespace Entidades
 {
     namespace Obstaculos
     {
-        Plataforma::Plataforma(sf::Vector2f pos, bool veri) :
-            Obstaculo(11, pos),
-            pVerifica(veri)
+        Plataforma::Plataforma(int indice, sf::Vector2f pos, sf::Vector2f tam) :
+            Obstaculo(indice, pos, tam),
+            altura(static_cast<int>(tam.y))
         {
-            if (pVerifica)
-                corpo.setFillColor(sf::Color::Cyan);
-            else
-            {
-                texturas = pGG->carregar_texturas("./assets/obstaculo3.png");
-                corpo.setTexture(texturas);
-            }
-        }
-        Plataforma:: ~Plataforma()
-        {
+            danoso = false;
 
+            texturas = pGG->carregar_texturas("./assets/plataforma_gelo.png");
+            corpo.setTexture(texturas);
         }
+
+        Plataforma::~Plataforma()
+        {}
+
         void Plataforma::executar()
         {
-            mover();
+            // Plataforma fixa. Não precisa mover.
         }
-        void Plataforma::mover()
+
+        void Plataforma::obstaculizar(Entidades::Entidade* outro, std::string direcao)
         {
-            if (pVerifica)
+            if (!outro || !outro->get_vivo())
             {
-                // plataforma móvel: aplica gravidade/movimento
-                vel.y += GRAVIDADE;
-                if (deCastigo)
+                return;
+            }
+
+            sf::Vector2f vel = outro->get_vel();
+
+            Entidades::Personagens::Personagem* personagem =
+                dynamic_cast<Entidades::Personagens::Personagem*>(outro);
+
+            if (direcao == "Embaixo")
+            {
+                vel.y = 0.0f;
+
+                if (personagem)
                 {
-                    vel.y -= GRAVIDADE;
+                    personagem->set_noChao(true);
                 }
-                corpo.setPosition(corpo.getPosition() + vel);
+
+                /*
+                    Efeito de gelo:
+                    se a entidade já está se movendo na horizontal,
+                    ela escorrega mais um pouco.
+                */
+                vel.x *= ESCORREGAMENTO_GELO;
+
+                if (vel.x > VELOCIDADE_MAX_GELO)
+                {
+                    vel.x = VELOCIDADE_MAX_GELO;
+                }
+                else if (vel.x < -VELOCIDADE_MAX_GELO)
+                {
+                    vel.x = -VELOCIDADE_MAX_GELO;
+                }
             }
-            else
+            else if (direcao == "Emcima" || direcao == "Cima")
             {
-                // plataforma fixa: garante velocidade zero (não cai)
-                vel = sf::Vector2f(0.f, 0.f);
+                vel.y = 0.0f;
             }
+            else if (direcao == "Esquerda" || direcao == "Direita")
+            {
+                vel.x = 0.0f;
+            }
+
+            outro->set_vel(vel);
         }
-        void Plataforma::obstaculizar(Entidade* outro, std::string direcao)
+
+        void Plataforma::salvarDataBuffer()
         {
+            Obstaculo::salvarDataBuffer();
+
+            bufferSalvar
+                << "Plataforma" << ' '
+                << altura << '\n';
+        }
+
+        void Plataforma::salvar(std::ostream& out)
+        {
+            salvarDataBuffer();
+            out << getBufferSalvar();
         }
     }
 }

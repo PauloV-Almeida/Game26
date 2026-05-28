@@ -96,6 +96,9 @@
     <ClCompile Include="src\Valkiria.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="src\EspinhoVenenoso.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />
@@ -112,6 +115,7 @@
     <None Include="salvar\fase1\reset_ini_2jog.dat" />
     <None Include="salvar\fase1\reset_jog1.dat" />
     <None Include="salvar\fase1\reset_jog2.dat" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx\stdafx.h">
@@ -193,6 +197,9 @@
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Valkiria.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EspinhoVenenoso.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
   </ItemGroup>

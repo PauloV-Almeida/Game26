@@ -4,7 +4,6 @@
 
 #include "Entidades.h"
 #include "Jogador.h"
-#include "Esqueleto.h"
 #include "Plataforma.h"
 #include "ListaEntidades.h"
 #include "GerenciadorGrafico.h"

@@ -22,6 +22,7 @@
     <ClCompile Include="src\Botao.cpp" />
     <ClCompile Include="src\Entidades.cpp" />
     <ClCompile Include="src\Andarilho.cpp" />
+    <ClCompile Include="src\EspinhoVenenoso.cpp" />
     <ClCompile Include="src\Estado.cpp" />
     <ClCompile Include="src\Fase.cpp" />
     <ClCompile Include="src\Deserto.cpp" />
@@ -51,6 +52,7 @@
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
     <None Include="LICENSE" />
+    <None Include="packages.config" />
     <None Include="README.md" />
     <None Include="salvar\fase1\cenario.dat" />
     <None Include="salvar\fase1\inimigo_1jog.dat" />
@@ -68,6 +70,7 @@
     <ClInclude Include="include\Ente.h" />
     <ClInclude Include="include\Entidades.h" />
     <ClInclude Include="include\Andarilho.h" />
+    <ClInclude Include="include\EspinhoVenenoso.h" />
     <ClInclude Include="include\Estado.h" />
     <ClInclude Include="include\Fase.h" />
     <ClInclude Include="include\Deserto.h" />
@@ -226,5 +229,12 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets" Condition="Exists('packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este projeto faz referência a pacotes do NuGet que não estão presentes neste computador. Use a Restauração de Pacotes do NuGet para baixá-los.  Para obter mais informações, consulte http://go.microsoft.com/fwlink/?LinkID=322105. O arquivo ausente é {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\nlohmann.json.3.12.0\build\native\nlohmann.json.targets'))" />
+  </Target>
 </Project>
