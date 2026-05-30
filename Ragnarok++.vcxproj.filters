@@ -115,7 +115,6 @@
     <None Include="salvar\fase1\reset_ini_2jog.dat" />
     <None Include="salvar\fase1\reset_jog1.dat" />
     <None Include="salvar\fase1\reset_jog2.dat" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx\stdafx.h">
