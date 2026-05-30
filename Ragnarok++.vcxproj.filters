@@ -54,7 +54,7 @@
     <ClCompile Include="src\Fase.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="src\Deserto.cpp">
+    <ClCompile Include="src\FlorestaGelo.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="src\Obstaculo.cpp">
@@ -156,7 +156,7 @@
     <ClInclude Include="include\Fase.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
-    <ClInclude Include="include\Deserto.h">
+    <ClInclude Include="include\FlorestaGelo.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Obstaculo.h">

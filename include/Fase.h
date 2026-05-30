@@ -1,17 +1,12 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-
-#include "Entidades.h"
 #include "Jogador.h"
 #include "Plataforma.h"
 #include "ListaEntidades.h"
-#include "GerenciadorGrafico.h"
 #include "GerenciadorColisoes.h"
 #include "GerenciadorEventos.h"
 #include "GerenciadorEstado.h"
 #include "Estado.h"
-
 
 
 #include <fstream>
@@ -31,18 +26,14 @@ namespace Fases
 	class Fase : public Ente, public Estados::Estado
 	{
 	protected:
-		Listas::ListaEntidades jogadores;
-		Listas::ListaEntidades inimigos;
-		Listas::ListaEntidades obstaculos;
+		Gerenciadores::GerenciadorColisoes gColisoes;
+		Gerenciadores::GerenciadorEventos* pGE;
+		Listas::ListaEntidades listaEntidades;
+
 
 		std::string salvarArq;
 		std::string infoFase;
 		std::string salvarBase;
-
-
-		Gerenciadores::GerenciadorColisoes gColisoes;
-		Gerenciadores::GerenciadorEventos* pGE;
-
 
 		int n_nasceu;
 		bool carregado;
@@ -50,12 +41,13 @@ namespace Fases
 		sf::RectangleShape corpo;
 
 	protected:
-		Entidades::Entidade* criarEsqueleto(std::ifstream& arquivo);
+		Entidades::Entidade* criarAndarilho(std::ifstream& arquivo);
 		Entidades::Entidade* criarPlataformas(std::ifstream& arquivo);
 		
 
-		//virtual void criarInimigos(Entidades::Entidade* ini) = 0;
-		//virtual void criarObstaculos(Entidades::Entidade* obs) = 0;
+		virtual void criarInimigos(Entidades::Entidade* ini) = 0;
+		virtual void criarObstaculos(Entidades::Entidade* obs) = 0;
+
 		void criarCenario(std::string arquivo,  std::string save);
 		void carregaCenario(std::string saveCenarioArq);
 	public:
