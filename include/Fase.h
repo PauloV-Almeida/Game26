@@ -30,8 +30,8 @@ namespace Fases
 		Entidades::Personagens::Jogador* pJog2;
 
 	protected:
-		Entidades::Entidade* criarAndarilho();
-		Entidades::Entidade* criarPlataformas();
+		void criarAndarilho();
+		void criarPlataformas();
 		
 
 		virtual void criarInimigos() = 0;
