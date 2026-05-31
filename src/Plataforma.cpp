@@ -10,7 +10,7 @@ namespace Entidades
         {
             danoso = false;
 
-            texturas = pGG->carregar_texturas("./assets/plataforma_gelo.png");
+            texturas = pGG->carregar_texturas("./assets/plataforma.png");
             corpo.setTexture(texturas);
         }
 

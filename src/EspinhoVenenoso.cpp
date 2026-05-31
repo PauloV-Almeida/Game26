@@ -13,7 +13,7 @@ namespace Entidades
             danoso = true;
             dano = DANO_ESPINHO;
 
-            texturas = pGG->carregar_texturas("./assets/espinho_venenoso.png");
+            texturas = pGG->carregar_texturas("./assets/espinho_venenoso1.png");
             corpo.setTexture(texturas);
         }
 
