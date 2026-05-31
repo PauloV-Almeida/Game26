@@ -287,8 +287,6 @@ namespace Entidades
                 return;
             }
 
-            receber_dano(pIni->get_dano());
-
             if (direcao == "Embaixo")
             {
                 noChao = true;
@@ -359,6 +357,24 @@ namespace Entidades
                     pGG->desenhar(&ataque_corpo);
                 }
             }
+        }
+        void Jogador::salvarDataBuffer()
+        {
+            Personagem::salvarDataBuffer();
+
+            bufferSalvar
+                << "Jogador" << ' '
+                << id_jogador << ' '
+                << venceu << ' '
+                << direita << ' '
+                << atacando << ' '
+                << ataque_direcao << '\n';
+        }
+
+        void Jogador::salvar(std::ostream& out)
+        {
+            salvarDataBuffer();
+            out << getBufferSalvar();
         }
     }
 }

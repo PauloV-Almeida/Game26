@@ -73,6 +73,9 @@ namespace Entidades
             sf::Vector2f get_ataque_tamanho() { return ataque_corpo.getSize(); }
 
             void desenhar();
+
+            void salvarDataBuffer();
+            void salvar(std::ostream& out);
         };
 	}
 }

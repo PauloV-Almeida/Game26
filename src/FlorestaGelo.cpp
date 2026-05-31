@@ -2,7 +2,7 @@
 
 namespace Fases
 {
-    FlorestaGelo::FlorestaGelo(
+    FlorestaGelo::FlorestaGelo(int idEstado,
         Entidades::Personagens::Jogador* j1,
         Entidades::Personagens::Jogador* j2
     ) :
@@ -187,10 +187,6 @@ namespace Fases
 
     void FlorestaGelo::executar()
     {
-        if (pGE)
-        {
-            pGE->executar();
-        }
 
         listaEntidades.executar();
 

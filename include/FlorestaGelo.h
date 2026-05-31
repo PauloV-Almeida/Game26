@@ -35,7 +35,7 @@ namespace Fases
         void tratarElementoMapa(int valor, sf::Vector2f pos);
 
     public:
-        FlorestaGelo(
+        FlorestaGelo(int idEstado,
             Entidades::Personagens::Jogador* j1,
             Entidades::Personagens::Jogador* j2 = nullptr
         );
