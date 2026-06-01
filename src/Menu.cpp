@@ -11,11 +11,11 @@ namespace Menus
 	{
 		for (int i = 0; i < MAX_BOTOES; i++)
 		{
-			botoes.push_back(new Botao(sf::Vector2f(LARGURA/2, (i+2)*(20 + TAM_Y))));
+			botoes.push_back(new Botao(sf::Vector2f(LARGURA_JANELA/2, (i+2)*(20 + TAM_Y))));
 		}
 		botoes[0]->escolherCor();
 
-		corpo.setSize(sf::Vector2f(800.f , 600.f));
+		corpo.setSize(sf::Vector2f(1920.f , 1080.f));
 		texturas = pGG->carregar_texturas("./assets/imgMenu.png");
 		corpo.setTexture(texturas);
 	}

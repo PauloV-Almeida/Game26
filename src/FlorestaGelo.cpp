@@ -10,7 +10,7 @@ namespace Fases
             1,
             j1,
             j2,
-            "./assets/mapas/mapaFloGelo.txt"
+            "./assets/mapaFloGelo.txt"
         ),
         minInimigos(3),
         maxInimigos(6),

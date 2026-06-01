@@ -3,7 +3,7 @@
 #include "../stdafx/stdafx.h"
 #include "GerenciadorGrafico.h"
 
-#define GRAVIDADE 0.3
+#define GRAVIDADE 0.25
 #define VELOCIDADE 0.1
 #define VEL_MAX 5.0
 
