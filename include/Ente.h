@@ -2,23 +2,25 @@
 
 #include "../stdafx/stdafx.h"
 #include "GerenciadorGrafico.h"
+#include "Id.h"
 
 #define GRAVIDADE 0.25
-#define VELOCIDADE 0.1
-#define VEL_MAX 5.0
 
 class Ente
 {
 protected:
-
-    const int id;
+    sf::Clock clock;
+    Id id;
     static Gerenciadores::GerenciadorGrafico* pGG;
-    sf::Texture* texturas;
+    sf::Drawable* figura;
 public:
     Ente();
     virtual ~Ente();
-
-    virtual void desenhar() = 0;
-
     virtual void executar() = 0;
+    virtual void desenhar();
+
+	Id getId();
+	sf::Drawable* getFigura();
+
+	void setFigura(sf::Drawable* figura);
 };

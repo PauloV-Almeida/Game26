@@ -201,6 +201,9 @@
     <ClInclude Include="include\EspinhoVenenoso.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
+    <ClInclude Include="include\Texturas.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\jogador1.png">

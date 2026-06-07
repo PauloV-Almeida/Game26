@@ -1,11 +1,6 @@
 #include "../include/GerenciadorGrafico.h"
-#include <windows.h>
-#include <direct.h>
-#include <vector>
-#include <fstream>
-#include <iostream>
+#include "../include/Ente.h"
 
-#define GETCWD_BUF_SIZE 1024
 
 namespace Gerenciadores
 {
@@ -20,96 +15,221 @@ namespace Gerenciadores
 	}
 
 	GerenciadorGrafico::GerenciadorGrafico() :
-		janela(new sf::RenderWindow(sf::VideoMode(LARGURA_JANELA, ALTURA_JANELA), "Ragnarok++")),
-		viewMundo(sf::FloatRect(0.f, 0.f, LARGURA_MUNDO, ALTURA_MUNDO)),
-		texturas()
+		janLargura(LARGURA_JANELA),
+		janAltura(ALTURA_JANELA),
+		padraoView(sf::FloatRect(0.f, 0.f, janLargura, janAltura))
 	{
-		janela->setFramerateLimit(120);
-
-		configurarView();
-
-		fonte = new sf::Font;
-		if (!fonte->loadFromFile(FONTE_PATH))
-		{
-			std::cout << "ERROR: FONTE N CARREGADA" << std::endl;
-			exit(1);
-		}
+		janela = new sf::RenderWindow(sf::VideoMode(janLargura, janAltura), "Ragnarok++", sf::Style::Close | sf::Style::Titlebar);
+		font = new sf::Font();
+		carregarTexturas();
+	
 	}
 
 	GerenciadorGrafico::~GerenciadorGrafico()
 	{
-		for (std::map<const std::string, sf::Texture*>::iterator it = texturas.begin(); it != texturas.end(); it++)
-			delete it->second;
-		texturas.clear();
-		delete(janela);
-		delete(fonte);
-	}
-
-	void GerenciadorGrafico::configurarView()
-	{
 		if (janela)
-		{
-			janela->setView(viewMundo);
-		}
-	}
-
-	sf::View GerenciadorGrafico::getViewMundo() const
-	{
-		return viewMundo;
-	}
-
-	sf::RenderWindow* GerenciadorGrafico::get_janela() const {
-		return janela;
+			delete janela;
+		if (font)
+			delete font;
 	}
 
 	void GerenciadorGrafico::mostrar() {
-		if(abreJanela())
-			janela->display();
+		janela->display();
+	}
+
+	void GerenciadorGrafico::carregarTexturas()
+	{
+		carregarTexturaInimigos();
+		carregarTexturaCenario();
+		//carregarProjeteis();
+		carregarTexturaJogador();
+		carregarFundo();	
+	}
+	
+	void GerenciadorGrafico::carregarTexturaInimigos()
+	{
+		sf::Texture tempText;
+		try {
+			if (!tempText.loadFromFile("../texturas/valkiria.PNG")) {
+				throw std::exception("Falha ao carregar textura Valkiria.PNG");
+			}
+			mapTexturas.insert({ Texturas::valkiria, tempText });
+
+			if (!tempText.loadFromFile("../texturas/andarilho.PNG")) {
+				throw std::exception("Falha ao carregar textura andarilho.PNG");
+			}
+			mapTexturas.insert({ Texturas::andarilho, tempText });
+
+			if (!tempText.loadFromFile("../texturas/boss.PNG")) {
+				throw std::exception("Falha ao carregar textura boss.PNG");
+			}
+			mapTexturas.insert({ Texturas::boss, tempText });
+
+		}
+		catch (const std::exception& e) {
+			std::cerr << "Exceção capturada durante o carregamento das texturas dos inimigos: \n" << e.what() << "\n";
+			exit(1);
+		}
+	}
+
+	void GerenciadorGrafico::carregarTexturaCenario()
+	{
+		sf::Texture tempText;
+		try {
+			if (!tempText.loadFromFile("../texturas/espinho_venenoso.PNG")) {
+				throw std::exception("Falha ao carregar textura espinho_venenoso.PNG");
+			}
+			mapTexturas.insert({ Texturas::espinho, tempText });
+
+			if (!tempText.loadFromFile("../texturas/arvore.PNG")) {
+				throw std::exception("Falha ao carregar textura arvore.PNG");
+			}
+			mapTexturas.insert({ Texturas::parede, tempText });
+
+			if (!tempText.loadFromFile("../texturas/tileset_32x32.PNG")) {
+				throw std::exception("Falha ao carregar textura tileset_32x32.PNG");
+			}
+			mapTexturas.insert({ Texturas::chao, tempText });
+
+		}
+		catch (const std::exception& e) {
+			std::cerr << "Exceção capturada durante o carregamento das texturas do cenário:\n " << e.what() << "\n";
+			exit(1);
+		}
+	}
+
+	/*void GerenciadorGrafico::carregarProjeteis()
+	{
+		sf::Texture tempText;
+		try {
+			if (!tempText.loadFromFile("..//textures//fireball.PNG")) {
+				throw std::exception("Falha ao carregar textura fireball.PNG");
+			}
+			mapTexturas.insert({ Texturas::fireball, tempText });
+
+			if (!tempText.loadFromFile("..//textures//orb.PNG")) {
+
+				throw std::exception("Falha ao carregar textura orb");
+			}
+			mapTexturas.insert({ Texturas::projetil, tempText });
+		}
+		catch (const std::exception& e) {
+			std::cerr << "Exceção capturada durante o carregamento das texturas dos projeteis:\n " << e.what() << "\n";
+			exit(1);
+		}
+
+	}*/
+
+	void GerenciadorGrafico::carregarFundo()
+	{
+		sf::Texture tempText;
+		try {
+			if (!font->loadFromFile(FONTE_PATH)) {
+				throw std::exception("Erro ao carregar a fonte");
+			}
+			if (!fundo1.loadFromFile(("../Fundo/Floresta_Gelo.PNG"))) {
+				throw std::exception("Falha ao carregar textura Floresta_Gelo");
+			}
+			fundoSprite1.setTexture(fundo1);
+			fundoSprite1.setScale(4, 4);
+
+			if (!fundo2.loadFromFile(("../Fundo/Arena_Gelo.PNG"))) {
+				throw std::exception("Falha ao carregar textura Arena_Gelo");
+			}
+			fundoSprite2.setTexture(fundo2);
+			fundoSprite2.setScale(4, 4);
+
+			if (!tempText.loadFromFile("../Fundo/imgMenu.PNG")) {
+				std::cout << "Falha ao carregar imgMenu.png";
+			}
+			mapTexturas.insert({ Texturas::fundoMenu, tempText });
+		}
+		catch (const std::exception& e) {
+			std::cerr << "Exceção capturada durante o carregamento das texturas de background: " << e.what() << "\n";
+			exit(1);
+		}
+	}
+
+	void GerenciadorGrafico::carregarTexturaJogador()
+	{
+		sf::Texture tempText;
+		try {
+			if (!tempText.loadFromFile("../texturas/jogador1.PNG")) {
+				throw std::exception("Falha ao carregar textura jogador1.PNG");
+			}
+			mapTexturas.insert({ Texturas::jogador, tempText });
+			sf::Image playerInvertido;
+			if (!playerInvertido.loadFromFile("../texturas/jogador1.PNG")) {
+				throw std::exception("Falha ao carregar textura jogador1.PNG");
+			}
+			playerInvertido.flipHorizontally();
+			if (!tempText.loadFromImage(playerInvertido)) {
+				throw std::exception("Falha ao inverter imagem do jogador");
+			}
+			mapTexturas.insert({ Texturas::jogadorEsq, tempText });
+		}
+		catch (const std::exception& e) {
+			std::cerr << "Exceção capturada durante o carregamento das texturas do jogador:\n " << e.what() << "\n";
+			exit(1);
+		}
+
+	}
+
+	void GerenciadorGrafico::desenharFundo()
+	{
+		janela->draw(fundoSprite1);
+		janela->draw(fundoSprite2);
+	}
+
+	void GerenciadorGrafico::desenharEnte(Ente* ente)
+	{
+		if (janela && ente && ente->getFigura())
+		{
+			janela->draw(*ente->getFigura());
+		}
+	}
+
+	bool GerenciadorGrafico::estaAberto()
+	{
+		return janela->isOpen();
+	}
+
+	sf::RenderWindow* GerenciadorGrafico::get_janela()
+	{
+		return janela;
+	}
+
+	sf::Texture* GerenciadorGrafico::getTextura(Texturas idText)
+	{
+		return &mapTexturas.at(idText);
 	}
 
 	void GerenciadorGrafico::limpar() {
-		if(abreJanela())
-			janela->clear();
+		janela->clear();
 	}
 
-	void GerenciadorGrafico::desenhar(sf::RectangleShape* corpo) {
-		janela->draw(*corpo);
-	}
-
-	void GerenciadorGrafico::desenhar(sf::CircleShape* corpo) {
-		janela->draw(*corpo);
-	}
-
-	void GerenciadorGrafico::desenhar(sf::Text* texto) {
-		janela->draw(*texto);
-	}
-
-	sf::Texture* GerenciadorGrafico::carregar_texturas(std::string path)
+	const sf::FloatRect GerenciadorGrafico::getPadraoView()
 	{
-		std::map<const std::string, sf::Texture*>::iterator it = texturas.find(path);
-		if (it != texturas.end())
-			return it->second;
-
-		sf::Texture* text = new sf::Texture();
-
-		if (!text->loadFromFile(path))
-		{
-			std::cout << "Erro ao carregar textura: " << path << std::endl;
-		}
-		texturas[path] = text;
-
-		return text;
+		return padraoView;
 	}
-	void GerenciadorGrafico::fechaJanela() {
+
+	sf::Font* GerenciadorGrafico::getFont()
+	{
+		return font;
+	}
+
+	void GerenciadorGrafico::setFrameLimit(int fps)
+	{
+		janela->setFramerateLimit(fps);
+	}
+
+	void GerenciadorGrafico::fechar()
+	{
 		janela->close();
 	}
 
-	const bool GerenciadorGrafico::abreJanela() {
-		return (janela->isOpen());
+	void GerenciadorGrafico::setView(sf::View view)
+	{
+		janela->setView(view);
 	}
-
-	sf::Font* GerenciadorGrafico::getFonte() const {
-		return fonte;
-	}
-
 }

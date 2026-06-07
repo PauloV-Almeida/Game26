@@ -91,6 +91,7 @@
     <ClInclude Include="include\Plataforma.h" />
     <ClInclude Include="include\Subject.h" />
     <ClInclude Include="include\Texto.h" />
+    <ClInclude Include="include\Texturas.h" />
     <ClInclude Include="include\Valkiria.h" />
     <ClInclude Include="stdafx\stdafx.h" />
   </ItemGroup>
