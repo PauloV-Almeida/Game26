@@ -1,432 +1,307 @@
 #include "../include/GerenciadorColisoes.h"
+#include <iostream>
+namespace Gerenciadores {
+
+	void GerenciadorColisao::executar()
+	{
+		colision();
+
+	}
+	GerenciadorColisao::GerenciadorColisao()
+		:tamVetorX(100),
+		tamVetorY(100),
+		jogador1(nullptr),
+		jogador2(nullptr)
+	{
+		for (int i = 0; i < tamVetorX; i++) {
+			for (int j = 0; j < tamVetorY; j++) {
+				estruturaArray[i][j] = nullptr;
+			}
+		}
+
+	}
+
+	GerenciadorColisao::~GerenciadorColisao()
+	{
+
+	}
+
+	const bool GerenciadorColisao::verificarColisao(Entidades::Entidade* pe1, Entidades::Entidade* pe2)
+	{
+		if (!pe1->ativado() || !pe2->ativado()) {
+			return 0;
+		}
+		sf::FloatRect ent1Bounds = pe1->getLimites();
+		sf::FloatRect ent2Bounds = pe2->getLimites();
+		return ent1Bounds.intersects(ent2Bounds);
+	}
+
+
+	void GerenciadorColisao::tratarColisoesJogsInimigos()
+	{
+		if (jogador1) {
+			for (auto& inimigo : inimigos) {
+				if (inimigo->ativado()) {
+					if (verificarColisao(jogador1, inimigo)) {
+						inimigo->danificar(jogador1);
+					}
+				}
+			}
+		}
+		if (jogador2) {
+			for (auto& inimigo : inimigos) {
+				if (inimigo->ativado()) {
+					if (verificarColisao(jogador2, inimigo)) {
+						inimigo->danificar(jogador2);
+					}
+				}
+			}
+		}
+	}
+
+	void GerenciadorColisao::tratarColisoesJogsObstaculos()
+	{
+		if (jogador1) {
+			for (auto& obstac : obstaculos) {
+				if (verificarColisao(obstac, jogador1)) {
+					if (obstac->ehColidivel()) {
+						empurrarPersonagem(jogador1, obstac);
+					}
+					obstac->obstaculizar(jogador1);
+				}
+			}
+
+		}
+		if (jogador2) {
+			for (auto& obstac : obstaculos) {
+				if (verificarColisao(obstac, jogador2)) {
+					if (obstac->ehColidivel()) {
+						empurrarPersonagem(jogador2, obstac);
+					}
+					obstac->obstaculizar(jogador2);
+				}
+			}
+
+		}
+
+
+	}
+
+	void GerenciadorColisao::tratarColisoesJogsEstruturas()
+	{
+		if (jogador1) {
+			int minX = static_cast<int>(jogador1->getPosicao().x / 100) - 3;
+			int minY = static_cast<int>(jogador1->getPosicao().y / 100) - 3;
+
+			int maxX = static_cast<int>(jogador1->getPosicao().x / 100) + 3;
+			int maxY = static_cast<int>(jogador1->getPosicao().y / 100) + 3;
+			for (int i = minX; i < maxX; i++) {
+				for (int j = minY; j < maxY; j++) {
+					if (j >= 0 && i >= 0 && i < 100 && j < 100) {
+						if (estruturaArray[i][j]) {
+							if (verificarColisao(estruturaArray[i][j], jogador1)) {
+								empurrarPersonagem(jogador1, estruturaArray[i][j]);
+							}
+						}
+
+					}
+				}
+			}
+		}
+		if (jogador2) {
+			int minX = static_cast<int>(jogador2->getPosicao().x / 100) - 3;
+			int minY = static_cast<int>(jogador2->getPosicao().y / 100) - 3;
+
+			int maxX = static_cast<int>(jogador2->getPosicao().x / 100) + 3;
+			int maxY = static_cast<int>(jogador2->getPosicao().y / 100) + 3;
+			for (int i = minX; i < maxX; i++) {
+				for (int j = minY; j < maxY; j++) {
+					if (j >= 0 && i >= 0 && i < 100 && j < 100) {
+						if (estruturaArray[i][j]) {
+							if (verificarColisao(estruturaArray[i][j], jogador2)) {
+								empurrarPersonagem(jogador2, estruturaArray[i][j]);
+							}
+						}
+
+					}
+				}
+			}
+
+		}
+	}
+
+	void GerenciadorColisao::tratarColisoesObstaculosEstruturas()
+	{
+		for (auto& obst : obstaculos) {
+			for (const auto& estrut : estruturas) {
+				if (verificarColisao(obst, estrut)) {
+					obst->setVelocidade(0, 0);
+				}
+			}
+		}
+	}
+
+	/*void GerenciadorColisao::tratarColisaoProjeteis()
+	{
+		for (auto& projet : projeteis) {
+			if (projet->ativado()) {
+				sf::FloatRect projBounds = projet->getBounds();
+				for (const auto& obst : obstaculos) {
+					if (verificarColisao(obst, projet)) {
+						projet->desativar();
+					}
+				}
+				for (const auto& estrut : estruturas) {
+					if (verificarColisao(estrut, projet)) {
+						projet->desativar();
+					}
+				}
+
+				for (auto& charact : inimigos) {
+					if (verificarColisao(projet, charact)) {
+						if (charact->getTipo() != projet->getTipo()) {
+							projet->desativar();
+							projet->danifica(charact);
+							projet->aumentaPontosDono();
+
+						}
+					}
+				}
+
+				if (verificarColisao(projet, jogador1)) {
+					if (projet->getTipo() == TipoPersonagem::INIMIGO) {
+						projet->danifica(jogador1);
+						projet->desativar();
+					}
+				}
+				if (jogador2) {
+					if (verificarColisao(projet, jogador2)) {
+						if (projet->getTipo() == TipoPersonagem::INIMIGO) {
+							projet->danifica(jogador2);
+							projet->desativar();
+						}
+					}
+				}
+			}
+		}
+	}*/
+
+	void GerenciadorColisao::tratarColisaoInimigos()
+	{
+		for (auto& charact : inimigos) {
+			if (charact->ativado()) {
+				for (const auto& obstac : obstaculos) {
+					if (verificarColisao(obstac, charact)) {
+						if (obstac->ehColidivel()) {
+							empurrarPersonagem(charact, obstac);
+						}
+						obstac->obstaculizar(charact);
+					}
+				}
+			}
+		}
+
+		for (auto& charact : inimigos) {
+			if (charact->ativado()) {
+				int minX = static_cast<int>(charact->getPosicao().x / 100) - 3;
+				int minY = static_cast<int>(charact->getPosicao().y / 100) - 3;
+
+				int maxX = static_cast<int>(charact->getPosicao().x / 100) + 3;
+				int maxY = static_cast<int>(charact->getPosicao().y / 100) + 3;
+				for (int i = minX; i < maxX; i++) {
+					for (int j = minY; j < maxY; j++) {
+						if (j >= 0 && i >= 0 && i < 100 && j < 100) {
+							if (estruturaArray[i][j]) {
+								if (verificarColisao(estruturaArray[i][j], charact)) {
+									empurrarPersonagem(charact, estruturaArray[i][j]);
+								}
+							}
+
+						}
+					}
+				}
+			}
+		}
+	}
+
+	void GerenciadorColisao::incluirInimigo(Entidades::Personagens::Inimigo* inimigo)
+	{
+		inimigos.emplace_back(inimigo);
+	}
+	void GerenciadorColisao::incluirObstaculo(Entidades::Obstaculos::Obstaculo* obstaculo)
+	{
+		obstaculos.emplace_back(obstaculo);
+	}
+	/*void GerenciadorColisao::incluirProjetil(Entidades::Projetil* projetil)
+	{
+		projeteis.emplace_back(projetil);
+	}*/
+	void GerenciadorColisao::incluirEstrutura(Entidades::Estrutura* estrutura)
+	{
+		estruturas.emplace_back(estrutura);
+		std::cout << "\nPos x: " << estrutura->getPosicao().x / 100 << ",pos Y: " << estrutura->getPosicao().y;
+		estruturaArray[static_cast<int>(estrutura->getPosicao().x / 100)][static_cast<int>(estrutura->getPosicao().y / 100)] = estrutura;
+	}
+	void GerenciadorColisao::incluirJogador1(Entidades::Personagens::Jogador* jogador)
+	{
+		jogador1 = jogador;
+	}
+	void GerenciadorColisao::incluirJogador2(Entidades::Personagens::Jogador* jogador)
+	{
+		jogador2 = jogador;
+	}
+	void GerenciadorColisao::empurrarPersonagem(Entidades::Personagens::Personagem* personagem, Entidades::Entidade* entidade)
+	{
+
+	
+		sf::FloatRect characterBounds = personagem->getLimites();
+		sf::FloatRect entBounds = entidade->getLimites();
+
+		//Centro do personagem
+		float charCenterX = characterBounds.left + characterBounds.width / 2.f;
+		float charCenterY = characterBounds.top + characterBounds.height / 2.f;
+
+		//Centro do obstaculo
+		float entCenterX = entBounds.left + entBounds.width / 2.0f;
+		float entCenterY = entBounds.top + entBounds.height / 2.0f;
+
+		//Sobreposição em cada eixo
+
+		float overlapX = std::min(characterBounds.left + characterBounds.width, entBounds.left + entBounds.width) - std::max(characterBounds.left, entBounds.left);
+		//interseção no eixo X
+
+
+		float overlapY = std::min(characterBounds.top + characterBounds.height, entBounds.top + entBounds.height) - std::max(characterBounds.top, entBounds.top);
+		//interseção no eixo y
+
+		// Determinar a direção da colisão pela menor sobreposição
+		if (overlapX < overlapY) {
+			if (charCenterX < entCenterX) {
+				personagem->colidiu(entidade, Directions::RIGHT);
+			}
+			else {
+				personagem->colidiu(entidade, Directions::LEFT);
+			}
+		}
+		else {
+
+			if (charCenterY < entCenterY) {
+				personagem->colidiu(entidade, Directions::DOWN);
+			}
+			else {
+				personagem->colidiu(entidade, Directions::UP);
+			}
+		}
+	}
+	void GerenciadorColisao::colision()
+	{
+		
+		tratarColisaoProjeteis();
+		tratarColisaoInimigos();
+		tratarColisoesJogsObstaculos();
+		tratarColisoesJogsEstruturas();
+		tratarColisoesJogsInimigos();
+		tratarColisoesObstaculosEstruturas();
+	}
 
-namespace Gerenciadores
-{
-    GerenciadorColisoes::GerenciadorColisoes(
-        Entidades::Personagens::Jogador* pJ1,
-        Entidades::Personagens::Jogador* pJ2,
-        float limEsq,
-        float limDir,
-        float limInf,
-        float limSup
-    ) :
-        LIs(),
-        LOs(),
-        //LPs(),
-        colisoresMapa(),
-        pJog1(pJ1),
-        pJog2(pJ2),
-        limiteEsquerdo(limEsq),
-        limiteDireito(limDir),
-        limiteSuperior(limSup),
-        limiteInferior(limInf)
-    {}
-
-    GerenciadorColisoes::~GerenciadorColisoes()
-    {
-        LIs.clear();
-        LOs.clear();
-        //LPs.clear();
-        colisoresMapa.clear();
-
-        pJog1 = nullptr;
-        pJog2 = nullptr;
-    }
-
-    void GerenciadorColisoes::incluirInimigo(Entidades::Personagens::Inimigo* pIni)
-    {
-        if (pIni)
-        {
-            LIs.push_back(pIni);
-        }
-    }
-
-    void GerenciadorColisoes::incluirObstaculo(Entidades::Obstaculos::Obstaculo* pObs)
-    {
-        if (pObs)
-        {
-            LOs.push_back(pObs);
-        }
-    }
-
-    /*void GerenciadorColisoes::incluirProjetil(Entidades::Projetil* pProj)
-    {
-        if (pProj)
-        {
-            LPs.insert(pProj);
-        }
-    }*/
-
-    void GerenciadorColisoes::setColisoresMapa(const std::vector<sf::FloatRect>& colisores)
-    {
-        colisoresMapa = colisores;
-    }
-
-    bool GerenciadorColisoes::verificarColisao(
-        Entidades::Entidade* pe1,
-        Entidades::Entidade* pe2,
-        std::string* direcao1,
-        std::string* direcao2
-    )
-    {
-        if (!pe1 || !pe2 || !direcao1 || !direcao2)
-        {
-            return false;
-        }
-
-        sf::Vector2f pos1 = pe1->get_posicao();
-        sf::Vector2f pos2 = pe2->get_posicao();
-
-        sf::Vector2f tam1 = pe1->get_tamanho();
-        sf::Vector2f tam2 = pe2->get_tamanho();
-
-        sf::Vector2f distancia = pos1 - pos2;
-
-        float intersecaoX = std::fabs(distancia.x) - ((tam1.x + tam2.x) / 2.0f);
-        float intersecaoY = std::fabs(distancia.y) - ((tam1.y + tam2.y) / 2.0f);
-
-        if (intersecaoX < 0.0f && intersecaoY < 0.0f)
-        {
-            if (intersecaoX > intersecaoY)
-            {
-                if (distancia.x > 0.0f)
-                {
-                    pe1->set_posicao(
-                        sf::Vector2f(
-                            pos2.x + ((tam1.x + tam2.x) / 2.0f),
-                            pos1.y
-                        )
-                    );
-
-                    *direcao1 = "Esquerda";
-                    *direcao2 = "Direita";
-                }
-                else
-                {
-                    pe1->set_posicao(
-                        sf::Vector2f(
-                            pos2.x - ((tam1.x + tam2.x) / 2.0f),
-                            pos1.y
-                        )
-                    );
-
-                    *direcao1 = "Direita";
-                    *direcao2 = "Esquerda";
-                }
-            }
-            else
-            {
-                if (distancia.y > 0.0f)
-                {
-                    pe1->set_posicao(
-                        sf::Vector2f(
-                            pos1.x,
-                            pos2.y + ((tam1.y + tam2.y) / 2.0f)
-                        )
-                    );
-
-                    *direcao1 = "Emcima";
-                    *direcao2 = "Embaixo";
-                }
-                else
-                {
-                    pe1->set_posicao(
-                        sf::Vector2f(
-                            pos1.x,
-                            pos2.y - ((tam1.y + tam2.y) / 2.0f)
-                        )
-                    );
-
-                    *direcao1 = "Embaixo";
-                    *direcao2 = "Emcima";
-                }
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    bool GerenciadorColisoes::verificarColisaoMapa(
-        Entidades::Entidade* pEnt,
-        const sf::FloatRect& bloco,
-        std::string* direcao
-    )
-    {
-        if (!pEnt || !direcao)
-        {
-            return false;
-        }
-
-        sf::Vector2f pos = pEnt->get_posicao();
-        sf::Vector2f tam = pEnt->get_tamanho();
-
-        sf::FloatRect corpoEnt(
-            pos.x - tam.x / 2.0f,
-            pos.y - tam.y / 2.0f,
-            tam.x,
-            tam.y
-        );
-
-        if (!corpoEnt.intersects(bloco))
-        {
-            return false;
-        }
-
-        float centroEntX = corpoEnt.left + corpoEnt.width / 2.0f;
-        float centroEntY = corpoEnt.top + corpoEnt.height / 2.0f;
-
-        float centroBlocoX = bloco.left + bloco.width / 2.0f;
-        float centroBlocoY = bloco.top + bloco.height / 2.0f;
-
-        float distanciaX = centroEntX - centroBlocoX;
-        float distanciaY = centroEntY - centroBlocoY;
-
-        float somaMetadeX = corpoEnt.width / 2.0f + bloco.width / 2.0f;
-        float somaMetadeY = corpoEnt.height / 2.0f + bloco.height / 2.0f;
-
-        float intersecaoX = somaMetadeX - std::fabs(distanciaX);
-        float intersecaoY = somaMetadeY - std::fabs(distanciaY);
-
-        sf::Vector2f novaPos = pos;
-        sf::Vector2f vel = pEnt->get_vel();
-
-        if (intersecaoX < intersecaoY)
-        {
-            if (distanciaX > 0.0f)
-            {
-                novaPos.x += intersecaoX;
-                *direcao = "Esquerda";
-            }
-            else
-            {
-                novaPos.x -= intersecaoX;
-                *direcao = "Direita";
-            }
-
-            vel.x = 0.0f;
-        }
-        else
-        {
-            if (distanciaY > 0.0f)
-            {
-                novaPos.y += intersecaoY;
-                *direcao = "Emcima";
-            }
-            else
-            {
-                novaPos.y -= intersecaoY;
-                *direcao = "Embaixo";
-            }
-
-            vel.y = 0.0f;
-        }
-
-        pEnt->set_posicao(novaPos);
-        pEnt->set_vel(vel);
-
-        Entidades::Personagens::Personagem* pPers =
-            dynamic_cast<Entidades::Personagens::Personagem*>(pEnt);
-
-        if (pPers && *direcao == "Embaixo")
-        {
-            pPers->set_noChao(true);
-        }
-
-        return true;
-    }
-
-    void GerenciadorColisoes::tratarColisaoComLimites(Entidades::Entidade* pEnt)
-    {
-        if (!pEnt || !pEnt->get_vivo())
-        {
-            return;
-        }
-
-        sf::Vector2f pos = pEnt->get_posicao();
-        sf::Vector2f tam = pEnt->get_tamanho();
-        sf::Vector2f vel = pEnt->get_vel();
-
-        float meiaLargura = tam.x / 2.0f;
-        float meiaAltura = tam.y / 2.0f;
-
-        Entidades::Personagens::Personagem* pPers =
-            dynamic_cast<Entidades::Personagens::Personagem*>(pEnt);
-
-        if (pos.y + meiaAltura > limiteInferior)
-        {
-            pos.y = limiteInferior - meiaAltura;
-            vel.y = 0.0f;
-
-            if (pPers)
-            {
-                pPers->set_noChao(true);
-            }
-        }
-
-        if (pos.y - meiaAltura < limiteSuperior)
-        {
-            pos.y = limiteSuperior + meiaAltura;
-            vel.y = 0.0f;
-        }
-
-        if (pos.x - meiaLargura < limiteEsquerdo)
-        {
-            pos.x = limiteEsquerdo + meiaLargura;
-            vel.x = 0.0f;
-        }
-
-        if (pos.x + meiaLargura > limiteDireito)
-        {
-            pos.x = limiteDireito - meiaLargura;
-            vel.x = 0.0f;
-        }
-
-        pEnt->set_posicao(pos);
-        pEnt->set_vel(vel);
-    }
-
-    void GerenciadorColisoes::tratarColisaoComMapa(Entidades::Entidade* pEnt)
-    {
-        if (!pEnt || !pEnt->get_vivo())
-        {
-            return;
-        }
-
-        for (unsigned int i = 0; i < colisoresMapa.size(); i++)
-        {
-            std::string direcao;
-
-            verificarColisaoMapa(pEnt, colisoresMapa[i], &direcao);
-        }
-    }
-
-    void GerenciadorColisoes::tratarColisoesJogInimigos(
-        Entidades::Personagens::Jogador* pJog
-    )
-    {
-        if (!pJog || !pJog->get_vivo())
-        {
-            return;
-        }
-
-        for (unsigned int i = 0; i < LIs.size(); i++)
-        {
-            Entidades::Personagens::Inimigo* pIni = LIs[i];
-
-            if (!pIni || !pIni->get_vivo())
-            {
-                continue;
-            }
-
-            std::string dirJog;
-            std::string dirIni;
-
-            if (verificarColisao(pJog, pIni, &dirJog, &dirIni))
-            {
-                pJog->colidir(pIni, dirJog);
-                pIni->danificar(pJog);
-            }
-        }
-    }
-
-    void GerenciadorColisoes::tratarColisoesJogObstaculos(
-        Entidades::Personagens::Jogador* pJog
-    )
-    {
-        if (!pJog || !pJog->get_vivo())
-        {
-            return;
-        }
-
-        for (auto it = LOs.begin(); it != LOs.end(); ++it)
-        {
-            Entidades::Obstaculos::Obstaculo* pObs = *it;
-
-            if (!pObs || !pObs->get_vivo())
-            {
-                continue;
-            }
-
-            std::string dirJog;
-            std::string dirObs;
-
-            if (verificarColisao(pJog, pObs, &dirJog, &dirObs))
-            {
-                pObs->obstaculizar(pJog, dirJog);
-            }
-        }
-    }
-
-    void GerenciadorColisoes::tratarColisoesInimigsObstacs()
-    {
-        for (unsigned int i = 0; i < LIs.size(); i++)
-        {
-            Entidades::Personagens::Inimigo* pIni = LIs[i];
-
-            if (!pIni || !pIni->get_vivo())
-            {
-                continue;
-            }
-
-            for (auto it = LOs.begin(); it != LOs.end(); ++it)
-            {
-                Entidades::Obstaculos::Obstaculo* pObs = *it;
-
-                if (!pObs || !pObs->get_vivo())
-                {
-                    continue;
-                }
-
-                std::string dirIni;
-                std::string dirObs;
-
-                if (verificarColisao(pIni, pObs, &dirIni, &dirObs))
-                {
-                    pObs->obstaculizar(pIni, dirIni);
-                }
-            }
-        }
-    }
-
-    /*void GerenciadorColisoes::tratarColisoesProjeteisInimigs()
-    {
-        /*
-            Será implementado quando Projetil estiver pronto.
-        
-    }*/
-
-    /*void GerenciadorColisoes::tratarColisoesProjeteisObstacs()
-    {
-        /*
-            Será implementado quando Projetil estiver pronto.
-        
-    }*/
-
-    void GerenciadorColisoes::executar()
-    {
-        tratarColisaoComLimites(pJog1);
-        tratarColisaoComLimites(pJog2);
-
-        tratarColisaoComMapa(pJog1);
-        tratarColisaoComMapa(pJog2);
-
-        for (unsigned int i = 0; i < LIs.size(); i++)
-        {
-            tratarColisaoComLimites(LIs[i]);
-            tratarColisaoComMapa(LIs[i]);
-        }
-
-        tratarColisoesJogObstaculos(pJog1);
-        tratarColisoesJogObstaculos(pJog2);
-
-        tratarColisoesJogInimigos(pJog1);
-        tratarColisoesJogInimigos(pJog2);
-
-        tratarColisoesInimigsObstacs();
-
-        //tratarColisoesProjeteisInimigs();
-        //tratarColisoesProjeteisObstacs();
-    }
 }

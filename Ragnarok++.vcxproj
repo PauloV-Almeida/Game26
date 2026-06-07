@@ -19,32 +19,41 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\Eventos.h" />
+    <ClCompile Include="src\ArenaGelo.cpp" />
     <ClCompile Include="src\Botao.cpp" />
     <ClCompile Include="src\Entidades.cpp" />
     <ClCompile Include="src\Andarilho.cpp" />
     <ClCompile Include="src\EspinhoVenenoso.cpp" />
     <ClCompile Include="src\Estado.cpp" />
+    <ClCompile Include="src\EstadoPause.cpp" />
+    <ClCompile Include="src\Estrutura.cpp" />
+    <ClCompile Include="src\Eventos.cpp" />
     <ClCompile Include="src\Fase.cpp" />
+    <ClCompile Include="src\FimDeJogo.cpp" />
     <ClCompile Include="src\FlorestaGelo.cpp" />
     <ClCompile Include="src\GerenciadorColisoes.cpp" />
     <ClCompile Include="src\GerenciadorEstado.cpp" />
+    <ClCompile Include="src\Hub.cpp" />
     <ClCompile Include="src\Inimigo.cpp" />
     <ClCompile Include="src\Jogador.cpp" />
     <ClCompile Include="src\ListaEntidades.cpp" />
-    <ClCompile Include="src\MainMenu.cpp" />
+    <ClCompile Include="src\MenuEstado.cpp" />
+    <ClCompile Include="src\MenuPrincipal.cpp" />
+    <ClCompile Include="src\Projetil.cpp" />
     <ClCompile Include="src\Ragnarok.cpp" />
     <ClCompile Include="src\Ente.cpp" />
-    <ClCompile Include="src\GerenciadorEventos.cpp" />
     <ClCompile Include="src\GerenciadorGrafico.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Menu.cpp" />
-    <ClCompile Include="src\MenuObserver.cpp" />
+    <ClCompile Include="src\MenuRanking.cpp" />
+    <ClCompile Include="src\MenuSelecionar.cpp" />
     <ClCompile Include="src\Observer.cpp" />
     <ClCompile Include="src\Obstaculo.cpp" />
     <ClCompile Include="src\Personagem.cpp" />
     <ClCompile Include="src\Plataforma.cpp" />
+    <ClCompile Include="src\State.cpp" />
     <ClCompile Include="src\Subject.cpp" />
-    <ClCompile Include="src\Texto.cpp" />
+    <ClCompile Include="src\Thor.cpp" />
     <ClCompile Include="src\Valkiria.cpp" />
     <ClCompile Include="stdafx\stdafx.cpp" />
   </ItemGroup>
@@ -53,45 +62,45 @@
     <None Include=".gitignore" />
     <None Include="LICENSE" />
     <None Include="README.md" />
-    <None Include="salvar\fase1\cenario.dat" />
-    <None Include="salvar\fase1\inimigo_1jog.dat" />
-    <None Include="salvar\fase1\inimigo_2jog.dat" />
-    <None Include="salvar\fase1\jogador1.dat" />
-    <None Include="salvar\fase1\jogador2.dat" />
-    <None Include="salvar\fase1\reset_ini_1jog.dat" />
-    <None Include="salvar\fase1\reset_ini_2jog.dat" />
-    <None Include="salvar\fase1\reset_jog1.dat" />
-    <None Include="salvar\fase1\reset_jog2.dat" />
-    <None Include="salvar\fase1\seed.dat" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Acoes.h" />
+    <ClInclude Include="include\ArenaGelo.h" />
     <ClInclude Include="include\Botao.h" />
     <ClInclude Include="include\Ente.h" />
     <ClInclude Include="include\Entidades.h" />
     <ClInclude Include="include\Andarilho.h" />
     <ClInclude Include="include\EspinhoVenenoso.h" />
     <ClInclude Include="include\Estado.h" />
+    <ClInclude Include="include\EstadoPause.h" />
+    <ClInclude Include="include\Estrutura.h" />
     <ClInclude Include="include\Fase.h" />
+    <ClInclude Include="include\FimDeJogo.h" />
     <ClInclude Include="include\FlorestaGelo.h" />
     <ClInclude Include="include\GerenciadorColisoes.h" />
     <ClInclude Include="include\GerenciadorEstado.h" />
-    <ClInclude Include="include\GerenciadorEventos.h" />
     <ClInclude Include="include\GerenciadorGrafico.h" />
+    <ClInclude Include="include\Hub.h" />
+    <ClInclude Include="include\Id.h" />
     <ClInclude Include="include\Inimigo.h" />
     <ClInclude Include="include\Jogador.h" />
     <ClInclude Include="include\Lista.h" />
     <ClInclude Include="include\ListaEntidades.h" />
-    <ClInclude Include="include\MainMenu.h" />
+    <ClInclude Include="include\MenuPrincipal.h" />
+    <ClInclude Include="include\MenuEstado.h" />
+    <ClInclude Include="include\Projetil.h" />
     <ClInclude Include="include\Ragnarok.h" />
-    <ClInclude Include="include\Menu.h" />
-    <ClInclude Include="include\MenuObserver.h" />
+    <ClInclude Include="include\MenuRanking.h" />
+    <ClInclude Include="include\MenuSelecionar.h" />
     <ClInclude Include="include\Observer.h" />
     <ClInclude Include="include\Obstaculo.h" />
     <ClInclude Include="include\Personagem.h" />
     <ClInclude Include="include\Plataforma.h" />
+    <ClInclude Include="include\State.h" />
     <ClInclude Include="include\Subject.h" />
-    <ClInclude Include="include\Texto.h" />
     <ClInclude Include="include\Texturas.h" />
+    <ClInclude Include="include\Thor.h" />
+    <ClInclude Include="include\TipoEstrutura.h" />
     <ClInclude Include="include\Valkiria.h" />
     <ClInclude Include="stdafx\stdafx.h" />
   </ItemGroup>
@@ -99,17 +108,21 @@
     <Image Include="assets\Deserto.png" />
     <Image Include="assets\Esqueleto.png" />
     <Image Include="assets\Floresta.png" />
-    <Image Include="assets\imgMenu.png" />
-    <Image Include="assets\jogador1-direita.png" />
-    <Image Include="assets\jogador1-esquerda.png" />
-    <Image Include="assets\jogador1.png" />
     <Image Include="assets\obstaculo3.png" />
     <Image Include="assets\plataform.png" />
+    <Image Include="Fundo\Arena_Gelo.png" />
+    <Image Include="Fundo\Floresta_Gelo.png" />
+    <Image Include="Fundo\imgMenu.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\PressStart2P-Regular.ttf">
       <DeploymentContent>true</DeploymentContent>
     </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\mapaFloGelo.txt" />
+    <Text Include="salvar\ranking.txt" />
+    <Text Include="salvar\salvar.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

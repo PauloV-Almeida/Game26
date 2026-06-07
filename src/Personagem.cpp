@@ -1,46 +1,78 @@
 #include "../include/Personagem.h"
+#include "../include/Obstaculo.h"
 
-namespace Entidades
-{
-    namespace Personagens
-    {
-        Personagem::Personagem(int indice, sf::Vector2f pos, sf::Vector2f vel, sf::Vector2f tam) :
-            Entidade::Entidade(indice, vel),
-            corpo(tam),
-            vivo(true),
-            n_vidas(1),
-            noChao(false)
-        {
-            corpo.setOrigin(corpo.getSize() / 2.f);
-            corpo.setPosition(pos);
-        }
+namespace Entidades {
+	namespace Personagens {
+		Personagem::Personagem()
+			:Entidade()
+		{
+			maxVelo = 6;
+			moveVelo = 3;
+			pulo = 2;
+			vida = 10;
+			vel.x = 0;
+			vel.y = 0;
+		}
 
-        Personagem::~Personagem()
-        {}
+		Personagem::Personagem(sf::Vector2f pos)
+			:Entidade(pos)
+		{
+			
+			maxVelo = 6;
+			moveVelo = 3;
+			pulo = 2;
+			vida = 10;
+			vel.x = 0;
+			vel.y = 0;
+			
+			setFigura(&forma);
+		}
 
-        void Personagem::desenhar()
-        {
-            if (vivo)
-            {
-                pGG->desenhar(&corpo);
-            }
-        }
+		Personagem::~Personagem()
+		{
+			
+		}
 
-        void Personagem::salvarDataBuffer()
-        {
-            limparBufferSalvar();
+		const bool Personagem::vivo() const
+		{
+			return (vida > 0);
+		}
+		
+		void Personagem::setVida(int nvida)
+		{
+			vida = nvida;
+		}
+		void Personagem::setPulos(int pulos)
+		{
+			pulo = pulos;
+		}
+		
+		const int Personagem::getVidas() const
+		{
+			return vida;
+		}
 
-            bufferSalvar
-                << id << ' '
-                << get_posicao().x << ' '
-                << get_posicao().y << ' '
-                << get_tamanho().x << ' '
-                << get_tamanho().y << ' '
-                << get_vel().x << ' '
-                << get_vel().y << ' '
-                << n_vidas << ' '
-                << vivo << ' '
-                << dano << ' ';
-        }
-    }
+
+		void Personagem::tiraVida(int dano)
+		{
+			vida -= dano;
+		}
+		void Personagem::setMoveVelocidade(float moveVel)
+
+		{
+			this->moveVelo = moveVel;
+		}
+
+		void Personagem::salvarPersonagem()
+		{
+			salvarEntidade();
+			buffer << vida << " ";
+			buffer << pulo << " ";
+		}
+
+		void Personagem::executar() {
+			mover();
+		}
+
+	}
 }

@@ -1,0 +1,16 @@
+#pragma once
+
+enum class Actions {
+	NADA,
+	PAUSE,
+	VOLTAR_2_MENUS,
+	VOLTAR_1_MENU,
+	MENU_RANKING,
+	SELECIONAR_FASE,
+	FASE_1,
+	FASE_2,
+	GAME_OVER,
+	SALVAR,
+	CARREGAR_SAVE,
+	PASSOU_DE_FASE
+};

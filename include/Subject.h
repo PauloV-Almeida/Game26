@@ -1,21 +1,15 @@
 #pragma once
-#include <list>
-#include "GerenciadorGrafico.h"
+#include "Acoes.h"
+#include <vector>
+class Observer;
 
-namespace Observers {
-	class Observer;
-}
+class Subject
+{
+private:
+	std::vector<Observer*> observers;
 
-namespace Gerenciadores {
-	class Subject {
-	protected:
-		std::list<Observers::Observer*> lista_observers;
-		std::list<Observers::Observer*>::iterator it;
-	public:
-		Subject();
-		virtual ~Subject();
-		virtual void detach(Observers::Observer* pObserver);
-		virtual void attach(Observers::Observer* pObserver);
-		virtual void notify(sf::Keyboard::Key key_code);
-	};
-}
+public:
+	Subject();
+	~Subject();
+	virtual void update(Actions act) = 0;
+};

@@ -24,9 +24,6 @@
     <ClCompile Include="src\Ente.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="src\GerenciadorEventos.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
     <ClCompile Include="src\GerenciadorGrafico.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
@@ -75,19 +72,16 @@
     <ClCompile Include="src\Observer.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="src\Texto.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
     <ClCompile Include="src\Botao.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="src\MainMenu.cpp">
+    <ClCompile Include="src\MenuPrincipal.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="src\Menu.cpp">
+    <ClCompile Include="src\MenuRanking.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="src\MenuObserver.cpp">
+    <ClCompile Include="src\MenuSelecionar.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="src\Andarilho.cpp">
@@ -99,22 +93,45 @@
     <ClCompile Include="src\EspinhoVenenoso.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="src\Estrutura.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="include\Eventos.h">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Eventos.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\State.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hub.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FimDeJogo.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MenuEstado.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EstadoPause.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ArenaGelo.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Projetil.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Thor.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
     <None Include="LICENSE" />
     <None Include="README.md" />
-    <None Include="salvar\fase1\cenario.dat" />
-    <None Include="salvar\fase1\seed.dat" />
-    <None Include="salvar\fase1\inimigo_1jog.dat" />
-    <None Include="salvar\fase1\inimigo_2jog.dat" />
-    <None Include="salvar\fase1\jogador1.dat" />
-    <None Include="salvar\fase1\jogador2.dat" />
-    <None Include="salvar\fase1\reset_ini_1jog.dat" />
-    <None Include="salvar\fase1\reset_ini_2jog.dat" />
-    <None Include="salvar\fase1\reset_jog1.dat" />
-    <None Include="salvar\fase1\reset_jog2.dat" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx\stdafx.h">
@@ -127,9 +144,6 @@
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Ragnarok.h">
-      <Filter>Arquivos de Cabe�alho</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GerenciadorEventos.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Lista.h">
@@ -177,19 +191,16 @@
     <ClInclude Include="include\Estado.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
-    <ClInclude Include="include\Menu.h">
+    <ClInclude Include="include\MenuRanking.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
-    <ClInclude Include="include\MenuObserver.h">
+    <ClInclude Include="include\MenuSelecionar.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
-    <ClInclude Include="include\MainMenu.h">
+    <ClInclude Include="include\MenuPrincipal.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Botao.h">
-      <Filter>Arquivos de Cabe�alho</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Texto.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Andarilho.h">
@@ -204,11 +215,44 @@
     <ClInclude Include="include\Texturas.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
+    <ClInclude Include="include\Id.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TipoEstrutura.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Estrutura.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Acoes.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\State.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Hub.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FimDeJogo.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MenuEstado.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EstadoPause.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ArenaGelo.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Projetil.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Thor.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="assets\jogador1.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
     <Image Include="assets\plataform.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
@@ -218,23 +262,28 @@
     <Image Include="assets\Floresta.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
-    <Image Include="assets\imgMenu.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="assets\jogador1-direita.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="assets\jogador1-esquerda.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
     <Image Include="assets\obstaculo3.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
     <Image Include="assets\Esqueleto.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
+    <Image Include="Fundo\Arena_Gelo.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="Fundo\Floresta_Gelo.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
+    <Image Include="Fundo\imgMenu.png">
+      <Filter>Arquivos de Recurso</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="assets\PressStart2P-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="salvar\ranking.txt" />
+    <Text Include="salvar\salvar.txt" />
+    <Text Include="assets\mapaFloGelo.txt" />
   </ItemGroup>
 </Project>

@@ -1,27 +1,30 @@
 #pragma once
-
 #include <SFML/Graphics.hpp>
+#include <string>
+#include "Entidades.h"
+#include <iostream>
+#include <cstdlib>
+#include "Acoes.h"
+#include "Eventos.h"
 
-#include "GerenciadorGrafico.h"
 
-#define TAM_X 600.f
-#define TAM_Y 80.f
-
-namespace Menus {
-	class Botao
+namespace Entidades {
+	class Button : public Ente
 	{
 	private:
-		sf::RectangleShape corpo;
-		sf::Text text;
-		static Gerenciadores::GerenciadorGrafico* pGG;
-	public:
-		Botao(sf::Vector2f posicao = sf::Vector2f(0.f, 0.f));
-		~Botao();
-		void desenhar();
-		void escolherCor();
-		void setNome(std::string nome);
-		void setPosicao(sf::Vector2f posicao);
-	};
 
+		mediadorEventos* mediador;
+		sf::Text buttonText;
+		Actions buttonAction;
+
+
+
+
+	public:
+		Button(sf::Vector2f pos, std::string txt = "", Actions action = Actions::NADA);
+		~Button();
+		virtual void getClicked(sf::Vector2i* mousePos);
+		void executar();
+	};
 
 }

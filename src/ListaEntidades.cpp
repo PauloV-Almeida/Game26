@@ -1,8 +1,10 @@
-#include "../include/ListaEntidades.h"
-
+#include "ListaEntidades.h"
+#include <fstream>
 namespace Listas
 {
     ListaEntidades::ListaEntidades()
+        : lista(),
+        it()
     {}
 
     ListaEntidades::~ListaEntidades()
@@ -10,100 +12,106 @@ namespace Listas
         limpar();
     }
 
-   void  ListaEntidades::executar()
+    void ListaEntidades::limpar()
     {
-        percorrer();
+        lista.limpar();
     }
 
-    void ListaEntidades::percorrer()
+    void ListaEntidades::inserirNoFim(Entidades::Entidade* ent)
     {
-        for (auto it = LEs.getPrimeiro(); it != LEs.getFim(); ++it)
-        {
-            Entidades::Entidade* ent = *it;
+        if (ent)
+            lista.inserirNoFim(ent);
+    }
 
-            if (ent)
+    void ListaEntidades::inserirNoInicio(Entidades::Entidade* ent)
+    {
+        if (ent)
+            lista.inserirNoInicio(ent);
+    }
+
+    void ListaEntidades::removerDoInicio()
+    {
+        lista.removerDoInicio();
+    }
+
+    void ListaEntidades::removerDoFim()
+    {
+        lista.removerDoFim();
+    }
+
+    const int ListaEntidades::getTam() const
+    {
+        return lista.getTam();
+    }
+
+    Lista<Entidades::Entidade*>::Iterator ListaEntidades::apagar(Lista<Entidades::Entidade*>::Iterator iter)
+    {
+        return lista.apagar(iter);
+    }
+
+    Lista<Entidades::Entidade*>::Iterator ListaEntidades::inicio()
+    {
+        return lista.inicio();
+    }
+
+    Lista<Entidades::Entidade*>::Iterator ListaEntidades::fim()
+    {
+        return lista.fim();
+    }
+
+    void ListaEntidades::executar()
+    {
+        for (it = inicio(); it != fim(); ++it)
+        {
+            if ((*it)->ativado())
             {
-                ent->executar();
+                if ((*it)->ativado()) {
+                    (*it)->executar();
+                }
+
             }
+
+
+
         }
+
+    }
+
+
+
+    void ListaEntidades::salvar()
+    {
+        std::ofstream arquivo("Save.txt", std::ios::app);
+
+        if (arquivo.is_open()) {
+            for (it = inicio(); it != fim(); ++it)
+                arquivo << (*it)->salvar() << std::endl;
+            arquivo.close();
+        }
+
     }
 
     void ListaEntidades::desenhar()
     {
-        for (auto it = LEs.getPrimeiro(); it != LEs.getFim(); ++it)
-        {
-            Entidades::Entidade* ent = *it;
+        for (it = inicio(); it != fim(); ++it) {
+            if ((*it)->ativado())
+                (*it)->desenhar();
 
-            if (ent)
-            {
-                ent->desenhar();
+        }
+
+    }
+
+    void ListaEntidades::desalocar()
+    {
+        it = inicio();
+        while (it != fim())
+        {
+            if ((*it)->getId() != Id::Jogador) {
+                Entidades::Entidade* temp = *it;
+                it = apagar(it);
+                delete temp;
             }
+            ++it;
         }
-    }
-
-    void ListaEntidades::incluir(Entidades::Entidade* ent)
-    {
-        if (ent)
-        {
-            LEs.incluir(ent);
-        }
-    }
-
-    void ListaEntidades::add(Entidades::Entidade* ent)
-    {
-        incluir(ent);
-    }
-
-    void ListaEntidades::limpar()
-    {
-        LEs.limpar();
-    }
-
-    void ListaEntidades::set_posicao(sf::Vector2f pos)
-    {
-        for (auto it = LEs.getPrimeiro(); it != LEs.getFim(); ++it)
-        {
-            Entidades::Entidade* ent = *it;
-
-            if (ent)
-            {
-                ent->set_posicao(pos);
-            }
-        }
-    }
-
-    int ListaEntidades::getTamanho() const
-    {
-        return LEs.getTamanho();
-    }
-
-    int ListaEntidades::get_tamanho() const
-    {
-        return getTamanho();
-    }
-
-    Lista<Entidades::Entidade>::Iterator<Entidades::Entidade> ListaEntidades::getPrimeiro()
-    {
-        return LEs.getPrimeiro();
-    }
-
-    Lista<Entidades::Entidade>::Iterator<Entidades::Entidade> ListaEntidades::getFim()
-    {
-        return LEs.getFim();
-    }
-
-    Lista<Entidades::Entidade>::Iterator<Entidades::Entidade> ListaEntidades::get_Primeiro()
-    {
-        return getPrimeiro();
-    }
-
-    Lista<Entidades::Entidade>::Iterator<Entidades::Entidade> ListaEntidades::get_Fim()
-    {
-        return getFim();
-    }
-
-    Entidades::Entidade* ListaEntidades::operator[](int indice)
-    {
-        return LEs[indice];
     }
 }

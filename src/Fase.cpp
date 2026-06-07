@@ -1,334 +1,384 @@
 #include "../include/Fase.h"
 
-namespace Fases
-{
-    Fase::Fase(
-        int id,
-        Entidades::Personagens::Jogador* j1,
-        Entidades::Personagens::Jogador* j2,
-        const std::string& mapa
-    ) :
-        Estados::Estado(id),
-        pontucaoTotal(0),
-        gColisoes(
-            j1,
-            j2,
-            0.f,
-            static_cast<float>(MAPA_COLUNAS* TAMANHO_TILE),
-            static_cast<float>(MAPA_LINHAS* TAMANHO_TILE),
-            0.f
-        ),
-        pGE(Gerenciadores::GerenciadorEventos::get_instance()),
-        listaEntidades(),
-        pJog1(j1),
-        pJog2(j2),
-        caminhoMapa(mapa),
-        colisoresMapa(),
-        tilesMapa(),
-        portalProximaFase(),
-        temPortal(false),
-        faseConcluida(false)
-    {
-        if (pJog1)
-        {
-            listaEntidades.incluir(pJog1);
-        }
+namespace Fases {
 
-        if (pJog2)
-        {
-            listaEntidades.incluir(pJog2);
-        }
-    }
+	Fase::Fase(Entidades::Personagens::Jogador* jogador1, Entidades::Personagens::Jogador* jogador2, bool carregaArquivo) :
+		State(),
+		jogador1(jogador1),
+		jogador2(jogador2),
+		jogador2Ativo(0),
+		view(pGG->getPadraoView())
+	{
+		mediador = mediadorEventos::getMediadorEventos();
+		pontuacaoTotal = 0;
+		id = 0;
+		Entidades::Personagens::Inimigo::zerarInimigos();
+		gerenciadorColisao.incluirJogador1(jogador1);
+		listaEntidades.inserirNoFim(jogador1);
+		hub.setPlayer(jogador1);
+		pGG->setView(view);
+	}
 
-    Fase::~Fase()
-    {
-        colisoresMapa.clear();
-        tilesMapa.clear();
 
-        pJog1 = nullptr;
-        pJog2 = nullptr;
-        pGE = nullptr;
-    }
 
-    void Fase::criarCenario()
-    {
-        if (caminhoMapa.empty())
-        {
-            std::cout << "Caminho do mapa vazio." << std::endl;
-            return;
-        }
+	Fase::~Fase() {
+		listaEntidades.desalocar();
+	}
 
-        carregarMapaTXT(caminhoMapa);
+	void Fase::lidarEvent()
+	{
 
-        gColisoes.setColisoresMapa(colisoresMapa);
-    }
+		if (jogador2Ativo) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+				jogador2->movimentar(Directions::LEFT);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+				jogador2->movimentar(Directions::RIGHT);
+			}
+			else {
+				jogador2->stopAxisX();
+			}
 
-    void Fase::carregarMapaTXT(const std::string& caminho)
-    {
-        std::ifstream arquivo(caminho);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 
-        if (!arquivo.is_open())
-        {
-            std::cout << "Erro ao abrir mapa: " << caminho << std::endl;
-            return;
-        }
+				jogador2->movimentar(Directions::UP);
 
-        colisoresMapa.clear();
-        tilesMapa.clear();
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+				jogador2->movimentar(Directions::DOWN);
+			}
 
-        int valor = 0;
+		}
 
-        for (int linha = 0; linha < MAPA_LINHAS; linha++)
-        {
-            for (int coluna = 0; coluna < MAPA_COLUNAS; coluna++)
-            {
-                if (!(arquivo >> valor))
-                {
-                    std::cout << "Erro: mapa terminou antes do esperado." << std::endl;
-                    arquivo.close();
-                    return;
-                }
+		//Ações do jogador principal
+		if (jogador1) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+				jogador1->movimentar(Directions::LEFT);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+				jogador1->movimentar(Directions::RIGHT);
+			}
+			else {
+				jogador1->stopAxisX();
+			}
 
-                sf::Vector2f pos(
-                    coluna * TAMANHO_TILE + TAMANHO_TILE / 2.0f,
-                    linha * TAMANHO_TILE + TAMANHO_TILE / 2.0f
-                );
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+				jogador1->movimentar(Directions::UP);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+				jogador1->movimentar(Directions::DOWN);
+			}
 
-                tratarElementoMapa(valor, pos);
-            }
-        }
+		}
+		sf::Event ev;
+		while (pGG->get_janela()->pollEvent(ev)) {
+			switch (ev.type) {
+			case sf::Event::Closed:
+				pGG->fechar();
+				break;
+			case sf::Event::KeyPressed:
+				if (ev.key.code == sf::Keyboard::P) {
+					if (!jogador2Ativo) {
+						hub.setPlayer2(jogador2);
+						jogador2Ativo = 1;
+						listaEntidades.inserirNoFim(jogador2);
+						gerenciadorColisao.incluirJogador2(jogador2);
+					}
+				}
+				if (ev.key.code == sf::Keyboard::Escape) {
+					mediador->notify(Actions::PAUSE);
+				}
+				break;
+			}
+		}
+	}
 
-        arquivo.close();
-    }
+	void Fase::executarJanela()
+	{
+		pGG->limpar();
+		pGG->desenharFundo();
+		pGG->setView(view);
+		if (jogador2Ativo) {
+			sf::Vector2f centro;
+			centro.x = (jogador1->getCentro().x + jogador2->getCentro().x) / 2.f;
+			centro.y = (jogador1->getCentro().y + jogador2->getCentro().y) / 2.f;
+			view.setCenter(centro);
+		}
+		else {
+			view.setCenter(jogador1->getCentro());
+		}
 
-    void Fase::tratarElementoMapa(int valor, sf::Vector2f pos)
-    {
-        switch (valor)
-        {
-        case 0:
-            break;
+	}
 
-        case 1:
-            criarBlocoSolido(pos);
-            break;
+	int Fase::getPontuacaoTotal()
+	{
+		return pontuacaoTotal;
+	}
 
-        case 2:
-            criarPlataforma(pos);
-            break;
+	void Fase::carregarSalvamento()
+	{
+		Entidades::Personagens::Inimigo::zerarInimigos();
+		hub.setPlayer(jogador1);
+		pGG->setView(view);
 
-        case 3:
-            definirSpawnJogador1(pos);
-            break;
 
-        case 4:
-            definirSpawnJogador2(pos);
-            break;
+		std::ifstream arquivo("../salvar/salvar.txt");
+		std::string linha;
+		if (arquivo.is_open()) {
+			std::getline(arquivo, linha);
+			std::getline(arquivo, linha);
+			std::istringstream linhaOutput(linha);
+			linhaOutput >> jogador2Ativo;
+			std::map<int, Entidades::Personagens::Andarilho*> AndarilhosMap;
+			std::map<int, Entidades::Personagens::Thor*> ThorMap;
+			std::map<int, Entidades::Personagens::Personagem*> personagensMap;
+			//std::vector<Entidades::Projetil*> projeteis;
 
-        case 6:
-            posicoesInimigosFaceis.push_back(pos);
-            break;
+			while (std::getline(arquivo, linha)) {
 
-        case 8:
-            criarPortal(pos);
-            break;
+				std::istringstream linhaOutput(linha);
+				
+				std::string tipoEntidade;
+				int idEntidade, ativo;
+				float posicaoX, posicaoY, velocidadeX, velocidadeY;
+				
+				int vida, pulos;
+				
+				int nivelMaldade;
+				
+				int pontuacao;
+				bool jogadorDois;
+				
+				int forca;
+				
+				int hmax, hmin;
+				float velocidade;
+				bool obstaculou;
+			
+				float largura;
+				
+				float altura;
 
-        default:
-            break;
-        }
-    }
+				linhaOutput >> tipoEntidade;
 
-    void Fase::criarBlocoSolido(sf::Vector2f pos)
-    {
-        sf::FloatRect bloco(
-            pos.x - TAMANHO_TILE / 2.0f,
-            pos.y - TAMANHO_TILE / 2.0f,
-            static_cast<float>(TAMANHO_TILE),
-            static_cast<float>(TAMANHO_TILE)
-        );
+				if (tipoEntidade == "JOGADOR") {
+					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> vida >> pulos >> pontuacao >> jogadorDois;
 
-        colisoresMapa.push_back(bloco);
+					if (!jogadorDois) {
+						jogador1->setId(idEntidade);
+						jogador1->setAtivo(ativo);
+						jogador1->setPosicao(posicaoX, posicaoY);
+						jogador1->setVelocidade(velocidadeX, velocidadeY);
+						jogador1->setVida(vida);
+						jogador1->setPulos(pulos);
+						jogador1->setPontuacao(pontuacao);
+						personagensMap.emplace(idEntidade, jogador1);
+					}
+					else {
+						jogador2->setId(idEntidade);
+						jogador2->setAtivo(ativo);
+						jogador2->setPosicao(posicaoX, posicaoY);
+						jogador2->setVelocidade(velocidadeX, velocidadeY);
+						jogador2->setVida(vida);
+						jogador2->setPulos(pulos);
+						jogador2->setPontuacao(pontuacao);
+						personagensMap.emplace(idEntidade, jogador2);
+					}
+				}
+				else if (tipoEntidade == "Andarilho") {
+					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> vida >> pulos >> nivelMaldade >> Andarilhomap;
+					Entidades::Personagens::Andarilho* Andarilho = new Entidades::Personagens::Andarilho(sf::Vector2f(posicaoX, posicaoY), jogador1);
+					listaEntidades.inserirNoFim(Andarilho);
+					gerenciadorColisao.incluirInimigo(Andarilho);
+					Andarilho->setId(idEntidade);
+					Andarilho->setAtivo(ativo);
+					Andarilho->setVida(vida);
+					Andarilho->setPulos(pulos);
+					Andarilho->setNivelMaldade(nivelMaldade);
+					personagensMap.emplace(idEntidade, Andarilho);
+					AndarilhosMap.emplace(idEntidade, Andarilho);
+				}
+				else if (tipoEntidade == "Thor") {
+					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> vida >> pulos >> nivelMaldade >> thor;
+					Entidades::Personagens::thor* thor = new Entidades::Personagens::Thor(sf::Vector2f(posicaoX, posicaoY), jogador1);
+					listaEntidades.inserirNoFim(thor);
+					gerenciadorColisao.incluirInimigo(thor);
+					thor->setId(idEntidade);
+					thor->setAtivo(ativo);
+					thor->setVida(vida);
+					thor->setPulos(pulos);
+					thor->setNivelMaldade(nivelMaldade);
+					thor->setId(idEntidade);
+					personagensMap.emplace(idEntidade, thor);
+				}
+				else if (tipoEntidade == "Valkiria") {
+					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> vida >> pulos >> nivelMaldade >> forca;
+					Entidades::Personagens::Valkiria* valkiria = new Entidades::Personagens::Valkiria(sf::Vector2f(posicaoX, posicaoY), jogador1, forca);
+					listaEntidades.inserirNoFim(valkiria);
+					gerenciadorColisao.incluirInimigo(valkiria);
+					valkiria->setId(idEntidade);
+					valkiria->setAtivo(ativo);
+					valkiria->setVida(vida);
+					valkiria->setPulos(pulos);
+					valkiria->setNivelMaldade(nivelMaldade);
+					personagensMap.emplace(idEntidade, valkiria);
+				}
+				else if (tipoEntidade == "PLATAFORMA") {
+					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> velocidade >> hmax >> hmin >> obstaculou;
+					Entidades::Obstaculos::Plataforma* plat = new Entidades::Obstaculos::Plataforma(sf::Vector2f(posicaoX, posicaoY), velocidade, hmax, hmin);
+					listaEntidades.inserirNoFim(plat);
+					gerenciadorColisao.incluirObstaculo(plat);
+					plat->setVelocidade(velocidadeX, velocidadeY);
+				}
+				else if (tipoEntidade == "Runa") {
+					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> largura >> obstaculou;
+					Entidades::Obstaculos::Runa* runa = new Entidades::Obstaculos::Runa(sf::Vector2f(posicaoX, posicaoY), largura);
+					listaEntidades.inserirNoFim(runa);
+					gerenciadorColisao.incluirObstaculo(runa);
+					runa->setVelocidade(velocidadeX, velocidadeY);
+					runa->setObstaculou(obstaculou);
+				}
+				else if (tipoEntidade == "ESPINHOVENENOSO") {
+					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> altura;
+					Entidades::Obstaculos::EspinhoVenenoso* espinhoV = new Entidades::Obstaculos::EspinhoVenenoso(sf::Vector2f(posicaoX, posicaoY), altura);
+					listaEntidades.inserirNoFim(espinhoV);
+					gerenciadorColisao.incluirObstaculo(espinhoV);
+				}
+				/*else if (tipoEntidade == "PROJETIL") {
+					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> Projetil;
+					Entidades::Projetil* projetil = new Entidades::Projetil(sf::Vector2f(posicaoX, posicaoY));
+					projetil->setVelocidade(velocidadeX, velocidadeY);
+					projetil->setAtivo(ativo);
+					listaEntidades.inserirNoFim(projetil);
+					gerenciadorColisao.incluirProjetil(projetil);
+					projeteis.push_back(projetil);
+				}*/
+			}
 
-        sf::RectangleShape tile(sf::Vector2f(TAMANHO_TILE, TAMANHO_TILE));
-        tile.setOrigin(tile.getSize() / 2.0f);
-        tile.setPosition(pos);
+			/*for (auto& projet : projeteis) {
+				for (auto& personagem : personagensMap) {
+					if (projet->getIdDono() == personagem.first) {
+						projet->setDono(personagem.second);
+					}
+				}
+			}*/
 
-        tilesMapa.push_back(tile);
-    }
+			
+			/*for (auto& thor : ThorMap) {
+				
+			}*/
+		}
+		if (jogador2Ativo) {
+			listaEntidades.inserirNoFim(jogador2);
+			gerenciadorColisao.incluirJogador2(jogador2);
+			hub.setPlayer2(jogador2);
+		}
+	}
 
-    void Fase::criarPlataforma(sf::Vector2f pos)
-    {
-        Entidades::Obstaculos::Plataforma* plataforma =
-            new Entidades::Obstaculos::Plataforma(
-                2,
-                pos,
-                sf::Vector2f(TAMANHO_TILE, TAMANHO_TILE)
-            );
+	void Fase::carregamentoPadrao()
+	{
 
-        listaEntidades.incluir(plataforma);
-        gColisoes.incluirObstaculo(plataforma);
-    }
 
-    void Fase::criarAndarilho(sf::Vector2f pos)
-    {
-        Entidades::Personagens::Andarilho* andarilho =
-            new Entidades::Personagens::Andarilho(
-                6,
-                pos,
-                sf::Vector2f(0.f, 0.f),
-                sf::Vector2f(TAMANHO_TILE, TAMANHO_TILE),
-                pJog1,
-                pJog2
-            );
+		criarInimigos();
+		criarObstaculo();
+	}
 
-        listaEntidades.incluir(andarilho);
-        gColisoes.incluirInimigo(andarilho);
-    }
+	void Fase::criarAndarilhos()
+	{
+		for (int i = 0; i < 3; i++) {
+			Entidades::Personagens::Andarilho* andarilho = new Entidades::Personagens::Andarilho(sf::Vector2f(2500 + (250 * i), 300), jogador1);
+			listaEntidades.inserirNoFim(andarilho);
+			gerenciadorColisao.incluirInimigo(andarilho);
+		}
 
-    void Fase::criarPortal(sf::Vector2f pos)
-    {
-        sf::FloatRect novoPortal(
-            pos.x - TAMANHO_TILE / 2.0f,
-            pos.y - TAMANHO_TILE / 2.0f,
-            static_cast<float>(TAMANHO_TILE),
-            static_cast<float>(TAMANHO_TILE)
-        );
+	}
 
-        if (!temPortal)
-        {
-            portalProximaFase = novoPortal;
-            temPortal = true;
-        }
-        else
-        {
-            float left = std::min(portalProximaFase.left, novoPortal.left);
-            float top = std::min(portalProximaFase.top, novoPortal.top);
+	void Fase::criarPlataformas()
+	{
+		std::ifstream arquivo("../assents/mapaFloGelo.txt");
+		std::string linha;
+		if (arquivo.is_open()) {
+			int y = 0;
+			while (std::getline(arquivo, linha)) {
 
-            float right = std::max(
-                portalProximaFase.left + portalProximaFase.width,
-                novoPortal.left + novoPortal.width
-            );
+				int i = 0;
+				for (auto& num : linha) {
+					if (num == '2') {
+						Entidades::Obstaculos::Plataforma* plat = new Entidades::Obstaculos::Plataforma(sf::Vector2f((100 * i), 100 * y), (3 + (rand() % 5)), (y * 100) + 250, (y * 100) - 250);
+						listaEntidades.inserirNoFim(plat);
+						gerenciadorColisao.incluirObstaculo(plat);
+					}
+					if (num == '3') {
+						if (rand() % 2) {
+							Entidades::Obstaculos::Plataforma* plat = new Entidades::Obstaculos::Plataforma(sf::Vector2f((100 * i), 100 * y), (3 + (rand() % 5)), (y * 100) + 250, (y * 100) - 250);
+							listaEntidades.inserirNoFim(plat);
+							gerenciadorColisao.incluirObstaculo(plat);
+						}
+					}
+					i++;
+				}
+				y++;
+			}
+			arquivo.close();
+		}
+	}
 
-            float bottom = std::max(
-                portalProximaFase.top + portalProximaFase.height,
-                novoPortal.top + novoPortal.height
-            );
+	void Fase::controladorEstado(int idFase)
+	{
+		if (idFase == 1) {
+			if (!jogador1->vivo() || !jogador2->vivo())
+			{
+				mediador->notify(Actions::GAME_OVER);
+			}
+			if (verificarQuantidadeInimigos() == 0) {
+				mediador->notify(Actions::PASSOU_DE_FASE);
+			}
+		}
+		if (idFase == 2) {
+			if (!jogador1->vivo() || !jogador2->vivo())
+			{
+				mediador->notify(Actions::GAME_OVER);
+			}
+			if (verificarQuantidadeInimigos() == 0) {
+				mediador->notify(Actions::GAME_OVER);
+			}
+		}
+	}
 
-            portalProximaFase = sf::FloatRect(left, top, right - left, bottom - top);
-        }
+	void Fase::salvar() {
+		std::ofstream arquivo("save.txt");
+		if (arquivo.is_open()) {
+			arquivo << id << std::endl;
+			arquivo << jogador2Ativo << std::endl;
+			arquivo.close();
+		}
+		listaEntidades.salvar();
+	}
+	void Fase::criarCenario()
+	{
+		std::ifstream arquivo("../assents/mapaFloGelo.txt");
+		std::string linha;
+		if (arquivo.is_open()) {
+			int y = 0;
+			while (std::getline(arquivo, linha)) {
 
-        sf::RectangleShape tile(sf::Vector2f(TAMANHO_TILE, TAMANHO_TILE));
-        tile.setOrigin(tile.getSize() / 2.0f);
-        tile.setPosition(pos);
+				int i = 0;
+				for (auto& num : linha) {
+					if (num == '1') {
+						Entidades::Estrutura* estrutura = new Entidades::Estrutura(sf::Vector2f((100 * i), 100 * y), TipoEstrutura::CHAO);
+						listaEntidades.inserirNoFim(estrutura);
+						gerenciadorColisao.incluirEstrutura(estrutura);
+					}
+					i++;
+				}
+				y++;
+			}
+			arquivo.close();
+		}
+	}
 
-        tilesMapa.push_back(tile);
-    }
-
-    void Fase::definirSpawnJogador1(sf::Vector2f pos)
-    {
-        if (pJog1)
-        {
-            pJog1->set_posicao(pos);
-        }
-    }
-
-    void Fase::definirSpawnJogador2(sf::Vector2f pos)
-    {
-        if (pJog2)
-        {
-            pJog2->set_posicao(pos);
-        }
-    }
-
-    void Fase::verificarPortal()
-    {
-        if (!temPortal)
-        {
-            return;
-        }
-
-        if (pJog1 && pJog1->get_vivo())
-        {
-            sf::Vector2f pos = pJog1->get_posicao();
-            sf::Vector2f tam = pJog1->get_tamanho();
-
-            sf::FloatRect corpoJog(
-                pos.x - tam.x / 2.0f,
-                pos.y - tam.y / 2.0f,
-                tam.x,
-                tam.y
-            );
-
-            if (corpoJog.intersects(portalProximaFase))
-            {
-                pJog1->set_venceu(true);
-                faseConcluida = true;
-            }
-        }
-
-        if (pJog2 && pJog2->get_vivo())
-        {
-            sf::Vector2f pos = pJog2->get_posicao();
-            sf::Vector2f tam = pJog2->get_tamanho();
-
-            sf::FloatRect corpoJog(
-                pos.x - tam.x / 2.0f,
-                pos.y - tam.y / 2.0f,
-                tam.x,
-                tam.y
-            );
-
-            if (corpoJog.intersects(portalProximaFase))
-            {
-                pJog2->set_venceu(true);
-                faseConcluida = true;
-            }
-        }
-    }
-
-    void Fase::desenharMapa()
-    {
-        for (unsigned int i = 0; i < tilesMapa.size(); i++)
-        {
-            pGG->desenhar(&tilesMapa[i]);
-        }
-    }
-
-    void Fase::desenhar()
-    {
-        desenharMapa();
-        listaEntidades.desenhar();
-    }
-
-    void Fase::salvar()
-    {
-        std::ofstream arquivo("./salvar/fase1/fase.txt");
-
-        if (!arquivo.is_open())
-        {
-            std::cout << "Erro ao salvar fase." << std::endl;
-            return;
-        }
-
-        for (int i = 0; i < listaEntidades.getTamanho(); i++)
-        {
-            Entidades::Entidade* ent = listaEntidades[i];
-
-            if (ent)
-            {
-                ent->salvar(arquivo);
-            }
-        }
-
-        arquivo.close();
-    }
-
-    void Fase::carregarSalvamente()
-    {
-        std::cout << "carregarSalvamente ainda nao implementado." << std::endl;
-    }
-
-    void Fase::reiniciar()
-    {
-        faseConcluida = false;
-    }
+	int Fase::verificarQuantidadeInimigos()
+	{
+		return Entidades::Personagens::Inimigo::getQuantidadeInimigos();
+	}
 }

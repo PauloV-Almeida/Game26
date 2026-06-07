@@ -1,78 +1,52 @@
 #pragma once
-
-#include <SFML/Graphics.hpp>
-#include "../stdafx/stdafx.h"
-#include <vector>
-#include <list>
-#include <set>
-#include <string>
-
 #include "Jogador.h"
-#include "Inimigo.h"
+#include "Estrutura.h"
 #include "Obstaculo.h"
 //#include "Projetil.h"
+#include <set>
+#include <list>
 
-namespace Gerenciadores
-{
-    class GerenciadorColisoes
-    {
-    private:
-        std::vector<Entidades::Personagens::Inimigo*> LIs;
-        std::list<Entidades::Obstaculos::Obstaculo*> LOs;
-        //std::set<Entidades::Projetil*> LPs;
+namespace Gerenciadores {
+	class GerenciadorColisao
+	{
+	private:
+		const int tamVetorX = 100;
+		const int tamVetorY = 100;
+		Entidades::Estrutura* estruturaArray[100][100];
 
-        std::vector<sf::FloatRect> colisoresMapa;
+		std::vector<Entidades::Personagens::Inimigo*> inimigos;
+		std::vector<Entidades::Obstaculos::Obstaculo*> obstaculos;
+		//std::vector<Entidades::Projetil*> projeteis;
+		std::vector<Entidades::Estrutura*> estruturas;
+		Entidades::Personagens::Jogador* jogador1;
+		Entidades::Personagens::Jogador* jogador2;
+	public:
 
-        Entidades::Personagens::Jogador* pJog1;
-        Entidades::Personagens::Jogador* pJog2;
+		void executar();
+		GerenciadorColisao();
+		~GerenciadorColisao();
 
-        float limiteEsquerdo;
-        float limiteDireito;
-        float limiteSuperior;
-        float limiteInferior;
 
-    private:
-        bool verificarColisao(
-            Entidades::Entidade* pe1,
-            Entidades::Entidade* pe2,
-            std::string* direcao1,
-            std::string* direcao2
-        );
+		const bool verificarColisao(Entidades::Entidade* pe1, Entidades::Entidade* pe2);
 
-        bool verificarColisaoMapa(
-            Entidades::Entidade* pEnt,
-            const sf::FloatRect& bloco,
-            std::string* direcao
-        );
+		//TRATAMENTO DE COLISOES
+		void tratarColisoesJogsInimigos();
+		void tratarColisoesJogsObstaculos();
+		void tratarColisoesJogsEstruturas();
+		void tratarColisoesObstaculosEstruturas();
+		void tratarColisaoProjeteis();
+		void tratarColisaoInimigos();
+		void empurrarPersonagem(Entidades::Personagens::Personagem* personagem, Entidades::Entidade* entidade);
+		void colision();
 
-        void tratarColisaoComLimites(Entidades::Entidade* pEnt);
-        void tratarColisaoComMapa(Entidades::Entidade* pEnt);
+		//INCLUIR ENTIDADES
+		void incluirInimigo(Entidades::Personagens::Inimigo* inimigo);
+		void incluirObstaculo(Entidades::Obstaculos::Obstaculo* obstaculo);
+		//void incluirProjetil(Entidades::Projetil* projetil);
+		void incluirEstrutura(Entidades::Estrutura* estrutura);
+		void incluirJogador1(Entidades::Personagens::Jogador* jogador);
+		void incluirJogador2(Entidades::Personagens::Jogador* jogador);
 
-        void tratarColisoesJogObstaculos(Entidades::Personagens::Jogador* pJog);
-        void tratarColisoesJogInimigos(Entidades::Personagens::Jogador* pJog);
-        void tratarColisoesInimigsObstacs();
+	};
 
-        //void tratarColisoesProjeteisInimigs();
-        //void tratarColisoesProjeteisObstacs();
-
-    public:
-        GerenciadorColisoes(
-            Entidades::Personagens::Jogador* pJ1 = nullptr,
-            Entidades::Personagens::Jogador* pJ2 = nullptr,
-            float limEsq = 0.f,
-            float limDir = 1920.f,
-            float limInf = 1080.f,
-            float limSup = 0.f
-        );
-
-        ~GerenciadorColisoes();
-
-        void incluirInimigo(Entidades::Personagens::Inimigo* pIni);
-        void incluirObstaculo(Entidades::Obstaculos::Obstaculo* pObs);
-        //void incluirProjetil(Entidades::Projetil* pProj);
-
-        void setColisoresMapa(const std::vector<sf::FloatRect>& colisores);
-
-        void executar();
-    };
 }

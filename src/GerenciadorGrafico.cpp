@@ -63,7 +63,7 @@ namespace Gerenciadores
 			if (!tempText.loadFromFile("../texturas/boss.PNG")) {
 				throw std::exception("Falha ao carregar textura boss.PNG");
 			}
-			mapTexturas.insert({ Texturas::boss, tempText });
+			mapTexturas.insert({ Texturas::thor, tempText });
 
 		}
 		catch (const std::exception& e) {

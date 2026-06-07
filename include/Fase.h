@@ -1,92 +1,58 @@
 #pragma once
-#include <algorithm>
-#include <random>
 
+#include <cstdlib>
+#include "State.h"
 #include "Jogador.h"
-#include "Andarilho.h"
+#include "Estrutura.h"
 #include "Plataforma.h"
-
-#include "ListaEntidades.h"
+#include "EspinhoVenenoso.h"
+#include "Andarilho.h"
+//#include "Projetil.h"
 #include "GerenciadorColisoes.h"
-#include "GerenciadorEventos.h"
-#include "GerenciadorEstado.h"
-#include "Estado.h"
-
-#include <SFML/Graphics.hpp>
+#include "Hub.h"
+#include <sstream>
 #include <fstream>
-#include <string>
-#include <iostream>
-#include <vector>
+#include "ListaEntidades.h"
 
-#define TAMANHO_TILE 32
-#define MAPA_COLUNAS 60
-#define MAPA_LINHAS 34
 
-namespace Fases
-{
-    class Fase : public Ente, public Estados::Estado
-    {
-    protected:
-        int pontucaoTotal;
 
-        Gerenciadores::GerenciadorColisoes gColisoes;
-        Gerenciadores::GerenciadorEventos* pGE;
 
-        Listas::ListaEntidades listaEntidades;
+namespace Fases {
+	class Fase : public State
+	{
+	protected:
+		int pontuacaoTotal;
+		int id;
 
-        Entidades::Personagens::Jogador* pJog1;
-        Entidades::Personagens::Jogador* pJog2;
+		sf::View view;
+		Hub hub;
+		
+		Gerenciadores::GerenciadorColisao gC;
+		
+		Listas::ListaEntidades listaEntidades;
 
-        std::string caminhoMapa;
+		bool jogador2Ativo;
+		Entidades::Personagens::Jogador* jogador2;
+		Entidades::Personagens::Jogador* jogador1;
+	public:
+		~Fase();
+		Fase(Entidades::Personagens::Jogador* jg1, Entidades::Personagens::Jogador* jg2, bool carregaArquivo);
+		virtual void lidarEvent();
+		virtual void executar() = 0;
+		virtual void executarJanela();
+		void salvar();
 
-        std::vector<sf::FloatRect> colisoresMapa;
-        std::vector<sf::RectangleShape> tilesMapa;
+		
+		int getPontuacaoTotal();
+		void carregarSalvamento();
+		virtual void carregamentoPadrao();
 
-        std::vector<sf::Vector2f> posicoesInimigosFaceis;
-
-        sf::FloatRect portalProximaFase;
-        bool temPortal;
-        bool faseConcluida;
-
-    protected:
-        void criarAndarilho(sf::Vector2f pos);
-        void criarPlataforma(sf::Vector2f pos);
-        void criarBlocoSolido(sf::Vector2f pos);
-        void criarPortal(sf::Vector2f pos);
-
-        void definirSpawnJogador1(sf::Vector2f pos);
-        void definirSpawnJogador2(sf::Vector2f pos);
-
-        virtual void criarInimigos() = 0;
-        virtual void criarObstaculos() = 0;
-
-        virtual void tratarElementoMapa(int valor, sf::Vector2f pos);
-
-        void carregarMapaTXT(const std::string& caminho);
-        void criarCenario();
-
-        void verificarPortal();
-        void desenharMapa();
-
-    public:
-        Fase(
-            int id,
-            Entidades::Personagens::Jogador* j1,
-            Entidades::Personagens::Jogador* j2 = nullptr,
-            const std::string& mapa = ""
-        );
-
-        virtual ~Fase();
-
-        virtual void executar() = 0;
-
-        virtual void desenhar();
-
-        void salvar();
-        void carregarSalvamente();
-        virtual void reiniciar();
-
-        int getPontuacaoTotal() const { return pontucaoTotal; }
-        bool getFaseConcluida() const { return faseConcluida; }
-    };
+		void criarAndarilhos();
+		void criarPlataformas();
+		virtual void criarInimigos() = 0;
+		virtual void criarObstaculo() = 0;
+		void controladorEstado(int id);
+		void criarCenario();
+		int verificarQuantidadeInimigos();
+	};
 }

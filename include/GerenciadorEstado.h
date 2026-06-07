@@ -1,37 +1,41 @@
 #pragma once
-
-#include "Estado.h"
-#include <stdexcept>
+#include <SFML/Graphics.hpp>
+#include <fstream>
+#include "Subject.h"
+#include "Acoes.h"
+#include "Ente.h"
 #include <vector>
-/*Estado:
-0: Menu principal;
-1: Fase 1 com 1 jogador;
-2: Fase 2 com 1 jogador;
-3: GameOver;
-4: Ranking;
-5: Fase 2 com 2 jogador;
-6: Fase 1 com 2 jogador;
-7: Fim;
-*/
+#include "EstadoPause.h"
+#include "ArenaGelo.h"
+#include "FlorestaGelo.h"
+#include "FimDeJogo.h"
+#include "MenuRanking.h"
+#include "MenuPrincipal.h"
+#include "MenuSelecionar.h"
 
-namespace Gerenciadores
-{
-	class GerenciadorEstado
+
+
+namespace Gerenciadores {
+	class GerenciadorEstado : public Ente, public Subject
 	{
 	private:
-		int AtualEstado;
-		std::vector<Estados::Estado*> vector_estados;
-		static GerenciadorEstado* instance;
-		GerenciadorEstado();
+		Entidades::Personagens::Jogador* jogador1;
+		Entidades::Personagens::Jogador* jogador2;
+		sf::RenderWindow* janela;
+		std::vector<State*> stack;
+		Actions pendingChange;
 	public:
-		~GerenciadorEstado();
-
-		static GerenciadorEstado* get_instance();
-		void set_AtualEstado(int i);
-		int get_AtualEstadoID();
-		void add_estado(Estados::Estado* pEstado);
-		void reseta_AtualEstado();
+		void setJogador1(Entidades::Personagens::Jogador* jogador);
+		void setJogador2(Entidades::Personagens::Jogador* jogador);
+		GerenciadorEstado(Entidades::Personagens::Jogador* jogador_1, Entidades::Personagens::Jogador* jogador_2);
+		void aplicarMudancas();
+		void update(Actions act);
 		void executar();
+		void pop();
+		void push(State* newState);
+		void clear();
+
 
 	};
+
 }

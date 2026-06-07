@@ -10,7 +10,7 @@ enum class Texturas
 	jogadorEsq,
 	andarilho,
 	valkiria,
-	boss,
+	thor,
 	parede,
 	espinho
 };
