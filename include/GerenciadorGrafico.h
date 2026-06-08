@@ -47,11 +47,11 @@ namespace Gerenciadores
 		bool estaAberto();
 		sf::RenderWindow* get_janela();
 		sf::Texture* getTextura(Texturas);
-		//SETTERS
+		
 		void setFrameLimit(int fps);
 		void setView(sf::View);
 
-		//FUNCOES
+		
 		void limpar();
 		void fechar();
 		void mostrar();
@@ -62,6 +62,7 @@ namespace Gerenciadores
 		void carregarFundo();
 		void carregarTexturaJogador();
 		void desenharFundo();
+		void desenhar(sf::Drawable* figura);
 		void desenharEnte(Ente* ente);
     };
 }

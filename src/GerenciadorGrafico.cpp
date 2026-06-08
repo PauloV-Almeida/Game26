@@ -60,8 +60,8 @@ namespace Gerenciadores
 			}
 			mapTexturas.insert({ Texturas::andarilho, tempText });
 
-			if (!tempText.loadFromFile("../texturas/boss.PNG")) {
-				throw std::exception("Falha ao carregar textura boss.PNG");
+			if (!tempText.loadFromFile("../texturas/thor.PNG")) {
+				throw std::exception("Falha ao carregar textura thor.PNG");
 			}
 			mapTexturas.insert({ Texturas::thor, tempText });
 
@@ -179,6 +179,14 @@ namespace Gerenciadores
 	{
 		janela->draw(fundoSprite1);
 		janela->draw(fundoSprite2);
+	}
+
+	void GerenciadorGrafico::desenhar(sf::Drawable* figura)
+	{
+		if (janela && figura)
+		{
+			janela->draw(*figura);
+		}
 	}
 
 	void GerenciadorGrafico::desenharEnte(Ente* ente)
