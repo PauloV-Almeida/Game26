@@ -1,81 +1,39 @@
 #pragma once
-
-#include <SFML/Graphics.hpp>
-#include <math.h>
-#include <string>
-
 #include "Personagem.h"
-#include "Obstaculo.h"
-#include "Inimigo.h"
+#include "Id.h"
 
-#define DMG 3
 
-namespace Entidades
-{
-	namespace Personagens
-	{
-		class Inimigo;
-        class Jogador : public Personagem
-        {
-        protected:
-            sf::RectangleShape ataque_corpo;
-
-            bool atacando;
-            int id_jogador;
-            bool venceu;
-            bool direita;
-
-            std::string ataque_direcao;
-
-        private:
-            bool teclaEsquerdaPressionada() const;
-            bool teclaDireitaPressionada() const;
-            bool teclaPuloPressionada() const;
-            bool teclaAtaquePressionada() const;
-
-            std::string obterDirecaoAtaque() const;
-            void atualizarTexturaMovimento();
-            void limitarVelocidadeHorizontal();
-            void atualizarCorpoAtaque(const std::string& direcao);
-
-        public:
-            Jogador(
-                int indice = 1,
-                sf::Vector2f pos = sf::Vector2f(10.f, 0.f),
-                sf::Vector2f vel = sf::Vector2f(0.f, 0.f),
-                sf::Vector2f tam = sf::Vector2f(5.f, 5.f)
-            );
-
-            Jogador(
-                int indice,
-                bool viv,
-                int nV,
-                sf::Vector2f pos,
-                sf::Vector2f velo,
-                sf::Vector2f tam
-            );
-
-            ~Jogador();
-
-            void executar();
-            void mover(char direcao = '0');
-
-            void colidir(Inimigo* pIni, std::string direcao = "");
-
-            void ataque();
-
-            void set_venceu(bool v) { venceu = v; }
-            bool get_venceu() { return venceu; }
-
-            int get_id_jogador() const { return id_jogador; }
-
-            sf::Vector2f get_ataque_posicao() { return ataque_corpo.getPosition(); }
-            sf::Vector2f get_ataque_tamanho() { return ataque_corpo.getSize(); }
-
-            void desenhar();
-
-            void salvarDataBuffer();
-            void salvar(std::ostream& out);
-        };
+namespace Entidades {
+	class Projetil;
+	namespace Personagens {
+		class Jogador : public Personagem
+		{
+		private:
+			sf::Clock dashRelogio;
+			float dashCooldown = 3;
+			int pontos;
+			float maxSpeed;
+			sf::Vector2f center;
+			bool jogadorDois;
+		public:
+			Jogador();
+			Jogador(sf::Vector2f pos);
+			~Jogador();
+			sf::Vector2f getPosicao();
+			//Adicionam velocidade ao vetor de velocidade do jogador
+			void setPontuacao(int pontos);
+			void movimentar(Directions direcao);
+			void posicionarNoInicio();
+			
+			
+			void aumentarPontos();
+			void setJogadorDois(bool);
+			int getPontos();
+			void executar();
+			std::string salvar();
+			void salvarJogador();
+			void resetarJogador();
+		};
 	}
+
 }

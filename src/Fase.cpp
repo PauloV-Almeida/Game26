@@ -13,7 +13,7 @@ namespace Fases {
 		pontuacaoTotal = 0;
 		id = 0;
 		Entidades::Personagens::Inimigo::zerarInimigos();
-		gerenciadorColisao.incluirJogador1(jogador1);
+		gC.incluirJogador1(jogador1);
 		listaEntidades.inserirNoFim(jogador1);
 		hub.setPlayer(jogador1);
 		pGG->setView(view);
@@ -82,7 +82,7 @@ namespace Fases {
 						hub.setPlayer2(jogador2);
 						jogador2Ativo = 1;
 						listaEntidades.inserirNoFim(jogador2);
-						gerenciadorColisao.incluirJogador2(jogador2);
+						gC.incluirJogador2(jogador2);
 					}
 				}
 				if (ev.key.code == sf::Keyboard::Escape) {
@@ -189,7 +189,7 @@ namespace Fases {
 					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> vida >> pulos >> nivelMaldade >> Andarilhomap;
 					Entidades::Personagens::Andarilho* Andarilho = new Entidades::Personagens::Andarilho(sf::Vector2f(posicaoX, posicaoY), jogador1);
 					listaEntidades.inserirNoFim(Andarilho);
-					gerenciadorColisao.incluirInimigo(Andarilho);
+					gC.incluirInimigo(Andarilho);
 					Andarilho->setId(idEntidade);
 					Andarilho->setAtivo(ativo);
 					Andarilho->setVida(vida);
@@ -202,7 +202,7 @@ namespace Fases {
 					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> vida >> pulos >> nivelMaldade >> thor;
 					Entidades::Personagens::thor* thor = new Entidades::Personagens::Thor(sf::Vector2f(posicaoX, posicaoY), jogador1);
 					listaEntidades.inserirNoFim(thor);
-					gerenciadorColisao.incluirInimigo(thor);
+					gC.incluirInimigo(thor);
 					thor->setId(idEntidade);
 					thor->setAtivo(ativo);
 					thor->setVida(vida);
@@ -215,7 +215,7 @@ namespace Fases {
 					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> vida >> pulos >> nivelMaldade >> forca;
 					Entidades::Personagens::Valkiria* valkiria = new Entidades::Personagens::Valkiria(sf::Vector2f(posicaoX, posicaoY), jogador1, forca);
 					listaEntidades.inserirNoFim(valkiria);
-					gerenciadorColisao.incluirInimigo(valkiria);
+					gC.incluirInimigo(valkiria);
 					valkiria->setId(idEntidade);
 					valkiria->setAtivo(ativo);
 					valkiria->setVida(vida);
@@ -227,14 +227,14 @@ namespace Fases {
 					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> velocidade >> hmax >> hmin >> obstaculou;
 					Entidades::Obstaculos::Plataforma* plat = new Entidades::Obstaculos::Plataforma(sf::Vector2f(posicaoX, posicaoY), velocidade, hmax, hmin);
 					listaEntidades.inserirNoFim(plat);
-					gerenciadorColisao.incluirObstaculo(plat);
+					gC.incluirObstaculo(plat);
 					plat->setVelocidade(velocidadeX, velocidadeY);
 				}
 				else if (tipoEntidade == "Runa") {
 					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> largura >> obstaculou;
 					Entidades::Obstaculos::Runa* runa = new Entidades::Obstaculos::Runa(sf::Vector2f(posicaoX, posicaoY), largura);
 					listaEntidades.inserirNoFim(runa);
-					gerenciadorColisao.incluirObstaculo(runa);
+					gC.incluirObstaculo(runa);
 					runa->setVelocidade(velocidadeX, velocidadeY);
 					runa->setObstaculou(obstaculou);
 				}
@@ -242,7 +242,7 @@ namespace Fases {
 					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> altura;
 					Entidades::Obstaculos::EspinhoVenenoso* espinhoV = new Entidades::Obstaculos::EspinhoVenenoso(sf::Vector2f(posicaoX, posicaoY), altura);
 					listaEntidades.inserirNoFim(espinhoV);
-					gerenciadorColisao.incluirObstaculo(espinhoV);
+					gC.incluirObstaculo(espinhoV);
 				}
 				/*else if (tipoEntidade == "PROJETIL") {
 					linhaOutput >> idEntidade >> ativo >> posicaoX >> posicaoY >> velocidadeX >> velocidadeY >> Projetil;
@@ -250,7 +250,7 @@ namespace Fases {
 					projetil->setVelocidade(velocidadeX, velocidadeY);
 					projetil->setAtivo(ativo);
 					listaEntidades.inserirNoFim(projetil);
-					gerenciadorColisao.incluirProjetil(projetil);
+					gC.incluirProjetil(projetil);
 					projeteis.push_back(projetil);
 				}*/
 			}
@@ -270,7 +270,7 @@ namespace Fases {
 		}
 		if (jogador2Ativo) {
 			listaEntidades.inserirNoFim(jogador2);
-			gerenciadorColisao.incluirJogador2(jogador2);
+			gC.incluirJogador2(jogador2);
 			hub.setPlayer2(jogador2);
 		}
 	}
@@ -288,7 +288,7 @@ namespace Fases {
 		for (int i = 0; i < 3; i++) {
 			Entidades::Personagens::Andarilho* andarilho = new Entidades::Personagens::Andarilho(sf::Vector2f(2500 + (250 * i), 300), jogador1);
 			listaEntidades.inserirNoFim(andarilho);
-			gerenciadorColisao.incluirInimigo(andarilho);
+			gC.incluirInimigo(andarilho);
 		}
 
 	}
@@ -306,13 +306,13 @@ namespace Fases {
 					if (num == '2') {
 						Entidades::Obstaculos::Plataforma* plat = new Entidades::Obstaculos::Plataforma(sf::Vector2f((100 * i), 100 * y), (3 + (rand() % 5)), (y * 100) + 250, (y * 100) - 250);
 						listaEntidades.inserirNoFim(plat);
-						gerenciadorColisao.incluirObstaculo(plat);
+						gC.incluirObstaculo(plat);
 					}
 					if (num == '3') {
 						if (rand() % 2) {
 							Entidades::Obstaculos::Plataforma* plat = new Entidades::Obstaculos::Plataforma(sf::Vector2f((100 * i), 100 * y), (3 + (rand() % 5)), (y * 100) + 250, (y * 100) - 250);
 							listaEntidades.inserirNoFim(plat);
-							gerenciadorColisao.incluirObstaculo(plat);
+							gC.incluirObstaculo(plat);
 						}
 					}
 					i++;
@@ -367,7 +367,7 @@ namespace Fases {
 					if (num == '1') {
 						Entidades::Estrutura* estrutura = new Entidades::Estrutura(sf::Vector2f((100 * i), 100 * y), TipoEstrutura::CHAO);
 						listaEntidades.inserirNoFim(estrutura);
-						gerenciadorColisao.incluirEstrutura(estrutura);
+						gC.incluirEstrutura(estrutura);
 					}
 					i++;
 				}
