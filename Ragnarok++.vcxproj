@@ -32,7 +32,7 @@
     <ClCompile Include="src\Fase.cpp" />
     <ClCompile Include="src\FimDeJogo.cpp" />
     <ClCompile Include="src\FlorestaGelo.cpp" />
-    <ClCompile Include="src\GerenciadorColisoes.cpp" />
+    <ClCompile Include="src\GerenciadorColisao.cpp" />
     <ClCompile Include="src\GerenciadorEstado.cpp" />
     <ClCompile Include="src\Hub.cpp" />
     <ClCompile Include="src\Inimigo.cpp" />
@@ -77,7 +77,7 @@
     <ClInclude Include="include\Fase.h" />
     <ClInclude Include="include\FimDeJogo.h" />
     <ClInclude Include="include\FlorestaGelo.h" />
-    <ClInclude Include="include\GerenciadorColisoes.h" />
+    <ClInclude Include="include\GerenciadorColisao.h" />
     <ClInclude Include="include\GerenciadorEstado.h" />
     <ClInclude Include="include\GerenciadorGrafico.h" />
     <ClInclude Include="include\Hub.h" />

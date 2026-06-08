@@ -30,7 +30,7 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="src\GerenciadorColisoes.cpp">
+    <ClCompile Include="src\GerenciadorColisao.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="src\Entidades.cpp">
@@ -152,7 +152,7 @@
     <ClInclude Include="include\ListaEntidades.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
-    <ClInclude Include="include\GerenciadorColisoes.h">
+    <ClInclude Include="include\GerenciadorColisao.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Entidades.h">
