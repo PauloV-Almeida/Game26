@@ -1,9 +1,10 @@
-#include "ListaEntidades.h"
+#include "../include/ListaEntidades.h"
 #include <fstream>
+
 namespace Listas
 {
-    ListaEntidades::ListaEntidades()
-        : lista(),
+    ListaEntidades::ListaEntidades() :
+        lista(),
         it()
     {}
 
@@ -20,13 +21,17 @@ namespace Listas
     void ListaEntidades::inserirNoFim(Entidades::Entidade* ent)
     {
         if (ent)
+        {
             lista.inserirNoFim(ent);
+        }
     }
 
     void ListaEntidades::inserirNoInicio(Entidades::Entidade* ent)
     {
         if (ent)
+        {
             lista.inserirNoInicio(ent);
+        }
     }
 
     void ListaEntidades::removerDoInicio()
@@ -44,7 +49,9 @@ namespace Listas
         return lista.getTam();
     }
 
-    Lista<Entidades::Entidade*>::Iterator ListaEntidades::apagar(Lista<Entidades::Entidade*>::Iterator iter)
+    Lista<Entidades::Entidade*>::Iterator ListaEntidades::apagar(
+        Lista<Entidades::Entidade*>::Iterator iter
+    )
     {
         return lista.apagar(iter);
     }
@@ -63,55 +70,65 @@ namespace Listas
     {
         for (it = inicio(); it != fim(); ++it)
         {
-            if ((*it)->ativado())
+            Entidades::Entidade* ent = *it;
+
+            if (ent && ent->ativado())
             {
-                if ((*it)->ativado()) {
-                    (*it)->executar();
-                }
-
+                ent->executar();
             }
-
-
-
         }
-
     }
-
-
 
     void ListaEntidades::salvar()
     {
         std::ofstream arquivo("Save.txt", std::ios::app);
 
-        if (arquivo.is_open()) {
+        if (arquivo.is_open())
+        {
             for (it = inicio(); it != fim(); ++it)
-                arquivo << (*it)->salvar() << std::endl;
+            {
+                Entidades::Entidade* ent = *it;
+
+                if (ent)
+                {
+                    arquivo << ent->salvar() << std::endl;
+                }
+            }
+
             arquivo.close();
         }
-
     }
 
     void ListaEntidades::desenhar()
     {
-        for (it = inicio(); it != fim(); ++it) {
-            if ((*it)->ativado())
-                (*it)->desenhar();
+        for (it = inicio(); it != fim(); ++it)
+        {
+            Entidades::Entidade* ent = *it;
 
+            if (ent && ent->ativado())
+            {
+                ent->desenhar();
+            }
         }
-
     }
 
     void ListaEntidades::desalocar()
     {
         it = inicio();
+
         while (it != fim())
         {
-            if ((*it)->getId() != Id::Jogador) {
-                Entidades::Entidade* temp = *it;
+            Entidades::Entidade* ent = *it;
+
+            if (ent && ent->getId() != Id::Jogador)
+            {
                 it = apagar(it);
-                delete temp;
+                delete ent;
             }
-            ++it;
+            else
+            {
+                ++it;
+            }
         }
     }
 }

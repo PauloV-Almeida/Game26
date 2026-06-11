@@ -153,26 +153,59 @@ namespace Gerenciadores
 	void GerenciadorGrafico::carregarTexturaJogador()
 	{
 		sf::Texture tempText;
-		try {
-			if (!tempText.loadFromFile("../texturas/jogador1.PNG")) {
-				throw std::exception("Falha ao carregar textura jogador1.PNG");
+		sf::Image playerInvertido;
+
+		try
+		{
+			// Jogador 1 olhando para a direita
+			if (!tempText.loadFromFile("../texturas/jogador1.PNG"))
+			{
+				throw std::runtime_error("Falha ao carregar textura jogador1.PNG");
 			}
-			mapTexturas.insert({ Texturas::jogador, tempText });
-			sf::Image playerInvertido;
-			if (!playerInvertido.loadFromFile("../texturas/jogador1.PNG")) {
-				throw std::exception("Falha ao carregar textura jogador1.PNG");
+			mapTexturas.insert({ Texturas::jogador1, tempText });
+
+			// Jogador 1 olhando para a esquerda
+			if (!playerInvertido.loadFromFile("../texturas/jogador1.PNG"))
+			{
+				throw std::runtime_error("Falha ao carregar textura jogador1.PNG para inverter");
 			}
+
 			playerInvertido.flipHorizontally();
-			if (!tempText.loadFromImage(playerInvertido)) {
-				throw std::exception("Falha ao inverter imagem do jogador");
+
+			if (!tempText.loadFromImage(playerInvertido))
+			{
+				throw std::runtime_error("Falha ao inverter imagem do jogador1");
 			}
-			mapTexturas.insert({ Texturas::jogadorEsq, tempText });
+			mapTexturas.insert({ Texturas::jogador1Esq, tempText });
+
+
+			// Jogador 2 olhando para a direita
+			if (!tempText.loadFromFile("../texturas/jogador2.PNG"))
+			{
+				throw std::runtime_error("Falha ao carregar textura jogador2.PNG");
+			}
+			mapTexturas.insert({ Texturas::jogador2, tempText });
+
+			// Jogador 2 olhando para a esquerda
+			if (!playerInvertido.loadFromFile("../texturas/jogador2.PNG"))
+			{
+				throw std::runtime_error("Falha ao carregar textura jogador2.PNG para inverter");
+			}
+
+			playerInvertido.flipHorizontally();
+
+			if (!tempText.loadFromImage(playerInvertido))
+			{
+				throw std::runtime_error("Falha ao inverter imagem do jogador2");
+			}
+			mapTexturas.insert({ Texturas::jogador2Esq, tempText });
 		}
-		catch (const std::exception& e) {
-			std::cerr << "Exceção capturada durante o carregamento das texturas do jogador:\n " << e.what() << "\n";
+		catch (const std::exception& e)
+		{
+			std::cerr << "Exceção capturada durante o carregamento das texturas dos jogadores:\n"
+				<< e.what() << "\n";
 			exit(1);
 		}
-
 	}
 
 	void GerenciadorGrafico::desenharFundo()
@@ -221,9 +254,19 @@ namespace Gerenciadores
 		return padraoView;
 	}
 
+	sf::Vector2i* GerenciadorGrafico::getMousePos()
+	{
+		return &mousePos;
+	}
+
 	sf::Font* GerenciadorGrafico::getFont()
 	{
 		return font;
+	}
+
+	void GerenciadorGrafico::atualizarMousePos()
+	{
+		mousePos = sf::Mouse::getPosition(*janela);
 	}
 
 	void GerenciadorGrafico::setFrameLimit(int fps)

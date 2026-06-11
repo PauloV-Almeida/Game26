@@ -27,13 +27,13 @@ namespace Entidades
         virtual ~Entidade();
  
 
-        const sf::Vector2f getCentro();
-        const sf::Vector2f getPosicao();
-        const int getIdUnico() const;
-        const virtual sf::FloatRect getLimites();
+        sf::Vector2f getCentro() const;
+        sf::Vector2f getPosicao() const;
+        int getIdUnico() const;
+        virtual sf::FloatRect getLimites() const;
         bool ativado() const;
         
-        void setId(int id);
+        void setIdUni(int id);
         virtual void setAtivo(bool);
         void setPosicao(float x, float y);
         void setVelocidade(float x, float y);

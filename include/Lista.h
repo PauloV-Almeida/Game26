@@ -141,10 +141,11 @@ namespace Listas
                 Elemento<T>* temp = cabeca->getProx();
                 delete cabeca;
                 cabeca = temp;
-                --tam;
             }
+
             cabeca = NULL;
             cauda = NULL;
+            tam = 0;
         }
 
         void inserirNoFim(const T data)

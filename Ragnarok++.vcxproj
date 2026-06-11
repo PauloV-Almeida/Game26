@@ -67,6 +67,7 @@
     <ClInclude Include="include\Acoes.h" />
     <ClInclude Include="include\ArenaGelo.h" />
     <ClInclude Include="include\Botao.h" />
+    <ClInclude Include="include\Direcao.h" />
     <ClInclude Include="include\Ente.h" />
     <ClInclude Include="include\Entidades.h" />
     <ClInclude Include="include\Andarilho.h" />

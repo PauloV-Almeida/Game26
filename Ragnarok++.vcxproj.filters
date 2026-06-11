@@ -251,6 +251,9 @@
     <ClInclude Include="include\Thor.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
+    <ClInclude Include="include\Direcao.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\plataform.png">

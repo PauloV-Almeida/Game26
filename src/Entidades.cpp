@@ -5,10 +5,12 @@ int Entidades::Entidade::contarEntidades = 0;
 namespace Entidades {
 
 	Entidade::Entidade() :
-		posicao(sf::Vector2f(0.f, 0.f)), buffer()
+		posicao(sf::Vector2f(0.f, 0.f)),
+		vel(sf::Vector2f(0.f, 0.f)),
+		ativo(true),
+		buffer()
 	{
 		idUni = contarEntidades++;
-		ativo = 1;
 		forma.scale(3, 3);
 		forma.setPosition(posicao);
 		//forma.setTexture(*pGG->getTextura(Texturas::projetil));
@@ -16,11 +18,13 @@ namespace Entidades {
 	}
 
 	Entidade::Entidade(sf::Vector2f pos) :
-		posicao(pos), buffer()
+		posicao(pos),
+		vel(sf::Vector2f(0.f, 0.f)),
+		ativo(true),
+		buffer()
 	{
 
 		idUni = contarEntidades++;
-		ativo = 1;
 		forma.scale(3, 3);
 		forma.setPosition(posicao);
 		//forma.setTexture(*pGG->getTextura(Texturas::projetil));
@@ -31,7 +35,7 @@ namespace Entidades {
 	{}
 
 
-	const sf::Vector2f Entidade::getCentro()
+	sf::Vector2f Entidade::getCentro() const
 	{
 		sf::Vector2f centro;
 
@@ -41,16 +45,16 @@ namespace Entidades {
 
 		return centro;
 	}
-	const sf::Vector2f Entidade::getPosicao()
+	sf::Vector2f Entidade::getPosicao()	const
 	{
 
 		return forma.getPosition();
 	}
-	const int Entidade::getIdUnico() const
+	int Entidade::getIdUnico() const
 	{
 		return idUni;
 	}
-	const sf::FloatRect Entidade::getLimites()
+	sf::FloatRect Entidade::getLimites() const
 	{
 	
 		return forma.getGlobalBounds();
@@ -131,7 +135,7 @@ namespace Entidades {
 		return ativo;
 	}
 
-	void Entidade::setId(int id)
+	void Entidade::setIdUni(int id)
 	{
 		idUni = id;
 	}
