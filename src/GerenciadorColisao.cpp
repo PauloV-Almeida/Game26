@@ -7,6 +7,7 @@ namespace Gerenciadores
     GerenciadorColisao::GerenciadorColisao() :
         inimigos(),
         obstaculos(),
+        projeteis(),
         estruturas(),
         jogador1(nullptr),
         jogador2(nullptr)
@@ -27,6 +28,7 @@ namespace Gerenciadores
 
         inimigos.clear();
         obstaculos.clear();
+		projeteis.clear();
         estruturas.clear();
 
         for (int i = 0; i < tamVetorX; i++)
@@ -37,6 +39,7 @@ namespace Gerenciadores
             }
         }
     }
+
 
     void GerenciadorColisao::executar()
     {
@@ -173,7 +176,40 @@ namespace Gerenciadores
 
     void GerenciadorColisao::tratarColisaoProjeteis()
     {
-        // Será implementado futuramente quando Projetil/Boss forem ajustados.
+        for (auto& projetil : projeteis)
+        {
+            if (!projetil || !projetil->ativado())
+            {
+                continue;
+            }
+
+            if (jogador1 && jogador1->ativado())
+            {
+                if (verificarColisao(projetil, jogador1))
+                {
+                    projetil->colidir(jogador1);
+                    continue;
+                }
+            }
+
+            if (jogador2 && jogador2->ativado())
+            {
+                if (verificarColisao(projetil, jogador2))
+                {
+                    projetil->colidir(jogador2);
+                    continue;
+                }
+            }
+
+            for (auto& estrutura : estruturas)
+            {
+                if (estrutura && verificarColisao(projetil, estrutura))
+                {
+                    projetil->colidir(estrutura);
+                    break;
+                }
+            }
+        }
     }
 
     void GerenciadorColisao::tratarColisaoInimigos()
@@ -224,7 +260,7 @@ namespace Gerenciadores
         }
     }
 
-    /*
+    
     void GerenciadorColisao::incluirProjetil(
         Entidades::Projetil* projetil
     )
@@ -234,7 +270,7 @@ namespace Gerenciadores
             projeteis.insert(projetil);
         }
     }
-    */
+    
 
     void GerenciadorColisao::incluirEstrutura(
         Entidades::Estrutura* estrutura
@@ -335,14 +371,29 @@ namespace Gerenciadores
         }
     }
 
+    int GerenciadorColisao::getQuantidadeInimigosAtivos() const
+    {
+        int quantidade = 0;
+
+        for (auto inimigo : inimigos)
+        {
+            if (inimigo && inimigo->ativado() && inimigo->vivo())
+            {
+                quantidade++;
+            }
+        }
+
+        return quantidade;
+    }
+
     void GerenciadorColisao::colisao()
     {
-        //tratarColisaoProjeteis();
+        
 
         tratarColisoesJogsEstruturas();
         tratarColisoesJogsObstaculos();
         tratarColisoesJogsInimigos();
-
+        tratarColisaoProjeteis();
         tratarColisaoInimigos();
         tratarColisoesObstaculosEstruturas();
     }

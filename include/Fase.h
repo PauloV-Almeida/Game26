@@ -1,58 +1,90 @@
 #pragma once
 
 #include <cstdlib>
+#include <sstream>
+#include <fstream>
+#include <string>
+
+
+
 #include "State.h"
+
 #include "Jogador.h"
 #include "Estrutura.h"
 #include "Plataforma.h"
 #include "EspinhoVenenoso.h"
+#include "Runa.h"
 #include "Andarilho.h"
-//#include "Projetil.h"
-#include "GerenciadorColisoes.h"
+#include "Valkiria.h"
+#include "Thor.h"
+#include "Projetil.h"
+
+#include "GerenciadorColisao.h"
 #include "Hub.h"
-#include <sstream>
-#include <fstream>
 #include "ListaEntidades.h"
+#include "TipoEstrutura.h"
 
+#define MIN 3
+#define MAX 7
 
+namespace Fases
+{
+    class Fase : public State
+    {
+    protected:
+        static constexpr float TAM_TILE = 64.f;
 
+		std::string caminhoMapa;
 
-namespace Fases {
-	class Fase : public State
-	{
-	protected:
-		int pontuacaoTotal;
-		int id;
+        int pontuacaoTotal;
+        int id;
 
-		sf::View view;
-		Hub hub;
-		
-		Gerenciadores::GerenciadorColisao gC;
-		
-		Listas::ListaEntidades listaEntidades;
+        sf::View view;
+        Hub hub;
 
-		bool jogador2Ativo;
-		Entidades::Personagens::Jogador* jogador2;
-		Entidades::Personagens::Jogador* jogador1;
-	public:
-		~Fase();
-		Fase(Entidades::Personagens::Jogador* jg1, Entidades::Personagens::Jogador* jg2, bool carregaArquivo);
-		virtual void lidarEvent();
-		virtual void executar() = 0;
-		virtual void executarJanela();
-		void salvar();
+        Gerenciadores::GerenciadorColisao gC;
+        Listas::ListaEntidades listaEntidades;
 
-		
-		int getPontuacaoTotal();
-		void carregarSalvamento();
-		virtual void carregamentoPadrao();
+        bool jogador2Ativo;
 
-		void criarAndarilhos();
-		void criarPlataformas();
-		virtual void criarInimigos() = 0;
-		virtual void criarObstaculo() = 0;
-		void controladorEstado(int id);
-		void criarCenario();
-		int verificarQuantidadeInimigos();
-	};
+        Entidades::Personagens::Jogador* jogador1;
+        Entidades::Personagens::Jogador* jogador2;
+
+        sf::FloatRect areaPassagem;
+		bool possuiPassagem;
+
+    protected:
+        virtual void lidarEvent();
+
+        void executarJanela();
+
+        void criarAndarilhos();
+        void criarPlataformas();
+        void criarCenario();
+
+        virtual void criarInimigos() = 0;
+        virtual void criarObstaculo() = 0;
+
+        int sortearQuantidade(int minimo, int maximo);
+        bool jogadorChegouNaPassagem() const;
+        void controladorEstado(int idFase);
+        int verificarQuantidadeInimigos();
+
+    public:
+        Fase(
+            Entidades::Personagens::Jogador* jg1,
+            Entidades::Personagens::Jogador* jg2,
+            bool carregaArquivo
+        );
+
+        virtual ~Fase();
+
+        virtual void executar() = 0;
+
+        void salvar();
+        void carregarSalvamento();
+        virtual void carregamentoPadrao();
+
+        int getPontuacaoTotal() const;
+    };
 }

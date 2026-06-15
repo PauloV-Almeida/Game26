@@ -60,16 +60,10 @@
     <ClCompile Include="src\Plataforma.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="src\Estado.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
     <ClCompile Include="src\Subject.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="src\GerenciadorEstado.cpp">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Observer.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
     <ClCompile Include="src\Botao.cpp">
@@ -96,9 +90,9 @@
     <ClCompile Include="src\Estrutura.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
-    <ClCompile Include="include\Eventos.h">
-      <Filter>Arquivos de Origem</Filter>
-    </ClCompile>
+    <ClInclude Include="include\Eventos.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
     <ClCompile Include="src\Eventos.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
@@ -182,16 +176,10 @@
     <ClInclude Include="include\Plataforma.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
-    <ClInclude Include="include\Observer.h">
-      <Filter>Arquivos de Cabe�alho</Filter>
-    </ClInclude>
     <ClInclude Include="include\Subject.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\GerenciadorEstado.h">
-      <Filter>Arquivos de Cabe�alho</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Estado.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\MenuRanking.h">
@@ -263,18 +251,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\plataform.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="assets\Deserto.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="assets\Floresta.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="assets\obstaculo3.png">
-      <Filter>Arquivos de Recurso</Filter>
-    </Image>
-    <Image Include="assets\Esqueleto.png">
       <Filter>Arquivos de Recurso</Filter>
     </Image>
     <Image Include="Fundo\Arena_Gelo.png">

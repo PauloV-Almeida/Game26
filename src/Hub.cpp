@@ -39,10 +39,10 @@ void Hub::executar()
 	std::stringstream ss;
 
 	if (jogador2) {
-		ss << "Jogador 1:" << "\nVida:" << jogador->getVidas() << "\nJogador 2:" << "\n Vida:" << jogador2->getVidas() << "\nPontos :" << jogador->getPontos() + jogador2->getPontos();
+		ss << "Jogador 1:" << "\nVida:" << jogador->getNumVidas() << "\nJogador 2:" << "\n Vida:" << jogador2->getNumVidas() << "\nPontos :" << jogador->getPontos() + jogador2->getPontos();
 	}
 	else {
-		ss << "\nVida:" << jogador->getVidas() << "\nPontos :" << jogador->getPontos();
+		ss << "\nVida:" << jogador->getNumVidas() << "\nPontos :" << jogador->getPontos();
 	}
 	hub.setString(ss.str());
 

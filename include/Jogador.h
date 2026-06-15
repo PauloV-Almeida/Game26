@@ -14,6 +14,7 @@ namespace Entidades
         {
         private:
             int idJogador;
+            int pontos;
 
             int danoAtaque;
             int maxPulos;
@@ -44,6 +45,9 @@ namespace Entidades
 
             int getIdJogador() const;
             int getDanoAtaque() const;
+            int getPontos() const;
+            void setPontos(int pontos);
+            void adicionarPontos(int pontos);
             bool estaAtacando() const;
             bool getVenceu() const;
 

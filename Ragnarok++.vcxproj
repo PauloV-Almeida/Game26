@@ -19,13 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\Eventos.h" />
+    <ClInclude Include="include\Eventos.h" />
     <ClCompile Include="src\ArenaGelo.cpp" />
     <ClCompile Include="src\Botao.cpp" />
     <ClCompile Include="src\Entidades.cpp" />
     <ClCompile Include="src\Andarilho.cpp" />
     <ClCompile Include="src\EspinhoVenenoso.cpp" />
-    <ClCompile Include="src\Estado.cpp" />
     <ClCompile Include="src\EstadoPause.cpp" />
     <ClCompile Include="src\Estrutura.cpp" />
     <ClCompile Include="src\Eventos.cpp" />
@@ -47,7 +46,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MenuRanking.cpp" />
     <ClCompile Include="src\MenuSelecionar.cpp" />
-    <ClCompile Include="src\Observer.cpp" />
     <ClCompile Include="src\Obstaculo.cpp" />
     <ClCompile Include="src\Personagem.cpp" />
     <ClCompile Include="src\Plataforma.cpp" />
@@ -73,7 +71,6 @@
     <ClInclude Include="include\Entidades.h" />
     <ClInclude Include="include\Andarilho.h" />
     <ClInclude Include="include\EspinhoVenenoso.h" />
-    <ClInclude Include="include\Estado.h" />
     <ClInclude Include="include\EstadoPause.h" />
     <ClInclude Include="include\Estrutura.h" />
     <ClInclude Include="include\Fase.h" />
@@ -94,7 +91,6 @@
     <ClInclude Include="include\Ragnarok.h" />
     <ClInclude Include="include\MenuRanking.h" />
     <ClInclude Include="include\MenuSelecionar.h" />
-    <ClInclude Include="include\Observer.h" />
     <ClInclude Include="include\Obstaculo.h" />
     <ClInclude Include="include\Personagem.h" />
     <ClInclude Include="include\Plataforma.h" />

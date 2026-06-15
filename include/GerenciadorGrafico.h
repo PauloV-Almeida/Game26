@@ -60,7 +60,7 @@ namespace Gerenciadores
 		void carregarTexturas();
 		void carregarTexturaInimigos();
 		void carregarTexturaCenario();
-		//void carregarProjeteis();
+		void carregarProjeteis();
 		void carregarFundo();
 		void carregarTexturaJogador();
 		void desenharFundo();

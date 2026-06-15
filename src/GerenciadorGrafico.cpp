@@ -41,7 +41,7 @@ namespace Gerenciadores
 	{
 		carregarTexturaInimigos();
 		carregarTexturaCenario();
-		//carregarProjeteis();
+		carregarProjeteis();
 		carregarTexturaJogador();
 		carregarFundo();	
 	}
@@ -50,17 +50,17 @@ namespace Gerenciadores
 	{
 		sf::Texture tempText;
 		try {
-			if (!tempText.loadFromFile("../texturas/valkiria.PNG")) {
+			if (!tempText.loadFromFile("texturas/valkiria.PNG")) {
 				throw std::exception("Falha ao carregar textura Valkiria.PNG");
 			}
 			mapTexturas.insert({ Texturas::valkiria, tempText });
 
-			if (!tempText.loadFromFile("../texturas/andarilho.PNG")) {
+			if (!tempText.loadFromFile("texturas/andarilho.PNG")) {
 				throw std::exception("Falha ao carregar textura andarilho.PNG");
 			}
 			mapTexturas.insert({ Texturas::andarilho, tempText });
 
-			if (!tempText.loadFromFile("../texturas/thor.PNG")) {
+			if (!tempText.loadFromFile("texturas/thor.PNG")) {
 				throw std::exception("Falha ao carregar textura thor.PNG");
 			}
 			mapTexturas.insert({ Texturas::thor, tempText });
@@ -76,29 +76,29 @@ namespace Gerenciadores
 	{
 		sf::Texture tempText;
 		try {
-			if (!tempText.loadFromFile("../texturas/espinho_venenoso.PNG")) {
+			if (!tempText.loadFromFile("texturas/espinho_venenoso.PNG")) {
 				throw std::exception("Falha ao carregar textura espinho_venenoso.PNG");
 			}
 			mapTexturas.insert({ Texturas::espinho, tempText });
 
-			if (!tempText.loadFromFile("../texturas/plataforma_gelo.PNG"))
+			if (!tempText.loadFromFile("texturas/plataforma_gelo.PNG"))
 			{
 				throw std::runtime_error("Falha ao carregar textura plataforma_gelo.PNG");
 			}
-			mapTexturas.insert({ Texturas::Plataforma, tempText });
+			mapTexturas.insert({ Texturas::plataforma, tempText });
 
-			if (!tempText.loadFromFile("../texturas/runa.PNG"))
+			if (!tempText.loadFromFile("texturas/runa.PNG"))
 			{
 				throw std::runtime_error("Falha ao carregar textura runa.PNG");
 			}
 			mapTexturas.insert({ Texturas::runa, tempText });
 
-			if (!tempText.loadFromFile("../texturas/arvore.PNG")) {
+			if (!tempText.loadFromFile("texturas/arvore.PNG")) {
 				throw std::exception("Falha ao carregar textura arvore.PNG");
 			}
 			mapTexturas.insert({ Texturas::parede, tempText });
 
-			if (!tempText.loadFromFile("../texturas/tileset_32x32.PNG")) {
+			if (!tempText.loadFromFile("texturas/tileset_32x32.PNG")) {
 				throw std::exception("Falha ao carregar textura tileset_32x32.PNG");
 			}
 			mapTexturas.insert({ Texturas::chao, tempText });
@@ -110,27 +110,22 @@ namespace Gerenciadores
 		}
 	}
 
-	/*void GerenciadorGrafico::carregarProjeteis()
+	void GerenciadorGrafico::carregarProjeteis()
 	{
 		sf::Texture tempText;
 		try {
-			if (!tempText.loadFromFile("..//textures//fireball.PNG")) {
+			if (!tempText.loadFromFile("texturas/fireball.PNG")) {
 				throw std::exception("Falha ao carregar textura fireball.PNG");
 			}
-			mapTexturas.insert({ Texturas::fireball, tempText });
-
-			if (!tempText.loadFromFile("..//textures//orb.PNG")) {
-
-				throw std::exception("Falha ao carregar textura orb");
-			}
 			mapTexturas.insert({ Texturas::projetil, tempText });
+
 		}
 		catch (const std::exception& e) {
 			std::cerr << "Exceção capturada durante o carregamento das texturas dos projeteis:\n " << e.what() << "\n";
 			exit(1);
 		}
 
-	}*/
+	}
 
 	void GerenciadorGrafico::carregarFundo()
 	{
@@ -139,19 +134,19 @@ namespace Gerenciadores
 			if (!font->loadFromFile(FONTE_PATH)) {
 				throw std::exception("Erro ao carregar a fonte");
 			}
-			if (!fundo1.loadFromFile(("../Fundo/Floresta_Gelo.PNG"))) {
+			if (!fundo1.loadFromFile(("Fundo/Floresta_Gelo.PNG"))) {
 				throw std::exception("Falha ao carregar textura Floresta_Gelo");
 			}
 			fundoSprite1.setTexture(fundo1);
 			fundoSprite1.setScale(4, 4);
 
-			if (!fundo2.loadFromFile(("../Fundo/Arena_Gelo.PNG"))) {
+			if (!fundo2.loadFromFile(("Fundo/Arena_Gelo.PNG"))) {
 				throw std::exception("Falha ao carregar textura Arena_Gelo");
 			}
 			fundoSprite2.setTexture(fundo2);
 			fundoSprite2.setScale(4, 4);
 
-			if (!tempText.loadFromFile("../Fundo/imgMenu.PNG")) {
+			if (!tempText.loadFromFile("Fundo/imgMenu.PNG")) {
 				std::cout << "Falha ao carregar imgMenu.png";
 			}
 			mapTexturas.insert({ Texturas::fundoMenu, tempText });
@@ -170,14 +165,14 @@ namespace Gerenciadores
 		try
 		{
 			// Jogador 1 olhando para a direita
-			if (!tempText.loadFromFile("../texturas/jogador1.PNG"))
+			if (!tempText.loadFromFile("texturas/jogador1.PNG"))
 			{
 				throw std::runtime_error("Falha ao carregar textura jogador1.PNG");
 			}
 			mapTexturas.insert({ Texturas::jogador1, tempText });
 
 			// Jogador 1 olhando para a esquerda
-			if (!playerInvertido.loadFromFile("../texturas/jogador1.PNG"))
+			if (!playerInvertido.loadFromFile("texturas/jogador1.PNG"))
 			{
 				throw std::runtime_error("Falha ao carregar textura jogador1.PNG para inverter");
 			}
@@ -192,14 +187,14 @@ namespace Gerenciadores
 
 
 			// Jogador 2 olhando para a direita
-			if (!tempText.loadFromFile("../texturas/jogador2.PNG"))
+			if (!tempText.loadFromFile("texturas/jogador2.PNG"))
 			{
 				throw std::runtime_error("Falha ao carregar textura jogador2.PNG");
 			}
 			mapTexturas.insert({ Texturas::jogador2, tempText });
 
 			// Jogador 2 olhando para a esquerda
-			if (!playerInvertido.loadFromFile("../texturas/jogador2.PNG"))
+			if (!playerInvertido.loadFromFile("texturas/jogador2.PNG"))
 			{
 				throw std::runtime_error("Falha ao carregar textura jogador2.PNG para inverter");
 			}

@@ -1,16 +1,24 @@
 #pragma once
+
 #include "Subject.h"
 #include "Acoes.h"
+
 #include <vector>
+
 class mediadorEventos
 {
 private:
-	static mediadorEventos* pMediadorEventos;
-	mediadorEventos();
-	std::vector<Subject*> vectorSubjects;
+    static mediadorEventos* instancia;
+    std::vector<Subject*> sujeitos;
+
+private:
+    mediadorEventos();
+
 public:
-	~mediadorEventos();
-	void incluirSubject(Subject* subject);
-	static mediadorEventos* getMediadorEventos();
-	void notify(Actions act);
+    ~mediadorEventos();
+
+    static mediadorEventos* getMediadorEventos();
+
+    void incluirSubject(Subject* sujeito);
+    void notify(Actions action);
 };

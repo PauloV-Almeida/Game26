@@ -1,30 +1,41 @@
 #include "../include/Eventos.h"
-#include <iostream>
-mediadorEventos* mediadorEventos::pMediadorEventos = nullptr;
 
-mediadorEventos::mediadorEventos() {
+mediadorEventos* mediadorEventos::instancia = nullptr;
 
-}
-mediadorEventos::~mediadorEventos() {
+mediadorEventos::mediadorEventos() :
+    sujeitos()
+{}
 
-}
-
-
-void mediadorEventos::incluirSubject(Subject* subject)
+mediadorEventos::~mediadorEventos()
 {
-    vectorSubjects.push_back(subject);
+    sujeitos.clear();
 }
 
 mediadorEventos* mediadorEventos::getMediadorEventos()
 {
-    if (pMediadorEventos == nullptr) {
-        pMediadorEventos = new mediadorEventos();
+    if (instancia == nullptr)
+    {
+        instancia = new mediadorEventos();
     }
-    return pMediadorEventos;
+
+    return instancia;
 }
 
-void mediadorEventos::notify(Actions act) {
-    for (const auto& subject : vectorSubjects) {
-        subject->update(act);
+void mediadorEventos::incluirSubject(Subject* sujeito)
+{
+    if (sujeito)
+    {
+        sujeitos.push_back(sujeito);
+    }
+}
+
+void mediadorEventos::notify(Actions action)
+{
+    for (auto& sujeito : sujeitos)
+    {
+        if (sujeito)
+        {
+            sujeito->update(action);
+        }
     }
 }

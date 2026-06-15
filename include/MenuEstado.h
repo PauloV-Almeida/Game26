@@ -13,6 +13,8 @@ public:
 
 	virtual void carregarBotoes() = 0;
 	void execBotoes();
+	void mouseClick();
+
 	virtual void lidarEvent();
 	virtual void executar();
 

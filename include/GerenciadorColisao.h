@@ -4,8 +4,8 @@
 #include "Estrutura.h"
 #include "Obstaculo.h"
 #include "Inimigo.h"
+#include "Projetil.h"
 #include "Direcao.h"
-//#include "Projetil.h"
 
 #include <vector>
 #include <list>
@@ -23,8 +23,7 @@ namespace Gerenciadores
 
         std::vector<Entidades::Personagens::Inimigo*> inimigos;
         std::list<Entidades::Obstaculos::Obstaculo*> obstaculos;
-        //std::set<Entidades::Projetil*> projeteis;
-
+        std::set<Entidades::Projetil*> projeteis;
         std::vector<Entidades::Estrutura*> estruturas;
 
         Entidades::Personagens::Jogador* jogador1;
@@ -56,12 +55,12 @@ namespace Gerenciadores
 
         void incluirInimigo(Entidades::Personagens::Inimigo* inimigo);
         void incluirObstaculo(Entidades::Obstaculos::Obstaculo* obstaculo);
-        //void incluirProjetil(Entidades::Projetil* projetil);
+        void incluirProjetil(Entidades::Projetil* projetil);
         void incluirEstrutura(Entidades::Estrutura* estrutura);
 
         void incluirJogador1(Entidades::Personagens::Jogador* jogador);
         void incluirJogador2(Entidades::Personagens::Jogador* jogador);
-
+        int getQuantidadeInimigosAtivos() const;
         void executar();
     };
 }

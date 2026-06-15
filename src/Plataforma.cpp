@@ -8,28 +8,30 @@ namespace Entidades
         Plataforma::Plataforma() :
             Obstaculo(),
             aceleracaoGelo(0.15f),
-            velocidadeMaximaGelo(8.0f)
+            velocidadeMaximaGelo(8.0f),
+			empuxo(gravidade)
         {
             id = Id::Plataforma;
 
             danoso = false;
             colidivel = true;
 
-            forma.setTexture(*pGG->getTextura(Texturas::Plataforma));
+            forma.setTexture(*pGG->getTextura(Texturas::plataforma));
             setFigura(&forma);
         }
 
         Plataforma::Plataforma(sf::Vector2f pos) :
             Obstaculo(pos),
             aceleracaoGelo(0.15f),
-            velocidadeMaximaGelo(8.0f)
+            velocidadeMaximaGelo(8.0f),
+			empuxo(gravidade)
         {
             id = Id::Plataforma;
 
             danoso = false;
             colidivel = true;
 
-            forma.setTexture(*pGG->getTextura(Texturas::Plataforma));
+            forma.setTexture(*pGG->getTextura(Texturas::plataforma));
             forma.setPosition(pos);
 
             setFigura(&forma);
@@ -38,14 +40,15 @@ namespace Entidades
         Plataforma::Plataforma(sf::Vector2f pos, sf::Vector2f tamanho) :
             Obstaculo(pos),
             aceleracaoGelo(0.15f),
-            velocidadeMaximaGelo(8.0f)
+            velocidadeMaximaGelo(8.0f),
+			empuxo(gravidade)
         {
             id = Id::Plataforma;
 
             danoso = false;
             colidivel = true;
 
-            forma.setTexture(*pGG->getTextura(Texturas::Plataforma));
+            forma.setTexture(*pGG->getTextura(Texturas::plataforma));
             forma.setPosition(pos);
 
             sf::FloatRect limites = forma.getLocalBounds();
@@ -66,13 +69,26 @@ namespace Entidades
 
         void Plataforma::executar()
         {
-            /*
-                Plataforma é uma Entidade, mas neste caso é fixa.
-                Então ela não aplica gravidade nem move.
+            if (!ativo)
+            {
+                return;
+            }
 
-                Se depois você quiser plataforma móvel ou plataforma que cai,
-                aí podemos chamar aplicarGravidade() e mover() aqui.
+            aplicarGravidade();
+
+            /*
+                Empuxo cancela a gravidade.
+                Assim a plataforma sofre gravidade por requisito,
+                mas permanece suspensa/fixa no mapa.
             */
+            vel.y -= empuxo;
+
+            if (vel.y > -0.01f && vel.y < 0.01f)
+            {
+                vel.y = 0.f;
+            }
+
+            mover();
         }
 
         void Plataforma::obstaculizar(Personagens::Jogador* jogador)
@@ -121,6 +137,7 @@ namespace Entidades
 
             buffer << aceleracaoGelo << " ";
             buffer << velocidadeMaximaGelo << " ";
+			buffer << empuxo << " ";
 
             return buffer.str();
         }

@@ -8,6 +8,7 @@ namespace Entidades
         Jogador::Jogador() :
             Personagem(),
             idJogador(1),
+			pontos(0),
             danoAtaque(1),
             maxPulos(2),
             pulosRestantes(2),
@@ -37,6 +38,7 @@ namespace Entidades
         Jogador::Jogador(int idJogador, sf::Vector2f pos) :
             Personagem(pos),
             idJogador(idJogador),
+            pontos(0),
             danoAtaque(1),
             maxPulos(2),
             pulosRestantes(2),
@@ -247,6 +249,21 @@ namespace Entidades
                     limites.top + limites.height / 4.f
                 );
             }
+        }
+
+        int Jogador::getPontos() const
+        {
+            return pontos;
+        }
+
+        void Jogador::setPontos(int pontos)
+        {
+            this->pontos = pontos;
+        }
+
+        void Jogador::adicionarPontos(int pontos)
+        {
+            this->pontos += pontos;
         }
 
         void Jogador::colidir(Inimigo* inimigo)

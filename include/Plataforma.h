@@ -11,6 +11,7 @@ namespace Entidades
         private:
             float aceleracaoGelo;
             float velocidadeMaximaGelo;
+            float empuxo;
 
         public:
             Plataforma();

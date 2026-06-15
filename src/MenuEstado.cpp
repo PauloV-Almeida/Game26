@@ -7,11 +7,14 @@ menuEstado::~menuEstado()
 	}
 }
 
-menuEstado::menuEstado()
-	:State()
+menuEstado::menuEstado() :
+	State(),
+	botaoVector(),
+	fundoMenu()
 {
 	fundoMenu.setTexture(*pGG->getTextura(Texturas::fundoMenu));
-	fundoMenu.setScale(0.84, 0.7);
+	fundoMenu.setScale(1.f, 1.f);
+
 	setFigura(&fundoMenu);
 }
 void menuEstado::execBotoes()
@@ -26,7 +29,7 @@ void menuEstado::executar() {
 
 	pGG->limpar();
 	desenhar();
-	handleEvent();
+	lidarEvent();
 	execBotoes();
 
 }
@@ -61,8 +64,10 @@ void menuEstado::lidarEvent()
 
 void menuEstado::mouseClick()
 {
-	
-	for (const auto& x : botaoVector) {
-		x->getClicked(mousePos);
+	pGG->atualizarMousePos();
+
+	for (const auto& botao : botaoVector)
+	{
+		botao->getClicked(pGG->getMousePos());
 	}
 }

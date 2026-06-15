@@ -1,192 +1,131 @@
 #include "../include/FimDeJogo.h"
 
-FimJogo::FimJogo(Fases::Fase* fase)
-	:pFase(fase), nomeJogador()
+FimJogo::FimJogo(Fases::Fase* fase) :
+    menuEstado(),
+    pFase(fase),
+    textoNomeJogador(),
+    pontuacao(0),
+    nomeJogador()
 {
-	pontuacao = fase->getPontuacaoTotal();
+    if (pFase)
+    {
+        pontuacao = pFase->getPontuacaoTotal();
+    }
 
-	carregarBotoes();
-	textoNomeJogador.setPosition(400, 400);
-	textoNomeJogador.setCharacterSize(35);
-	textoNomeJogador.setFont(*(pGG->getFont()));
-	textoNomeJogador.setString("NOME: ");
-	setFigura(&textoNomeJogador);
+    carregarBotoes();
+
+    textoNomeJogador.setPosition(300.f, 300.f);
+    textoNomeJogador.setCharacterSize(35);
+    textoNomeJogador.setFont(*(pGG->getFont()));
+    textoNomeJogador.setFillColor(sf::Color::White);
+    textoNomeJogador.setString("NOME: ");
+
+    setFigura(&textoNomeJogador);
 }
 
 FimJogo::~FimJogo()
-{}
+{
+    pFase = nullptr;
+}
+
 void FimJogo::salvarRanking()
 {
-	std::ofstream arquivo("../salvar/ranking.txt", std::ios::app);
-	if (arquivo.is_open()) {
-		arquivo << nomeJogador << " " << pontuacao << std::endl;
-		arquivo.close();
-	}
-}
-void FimJogo::executar() {
-	pGG->limpar();
-	setFigura(&imgMenu);
-	desenhar();
-	lidarEvent();
-	execButtons();
-	setFigura(&textoNomeJogador);
-	std::stringstream texto;
-	texto << "NOME: " << nomeJogador;
-	textoNomeJogador.setString(texto.str());
-	desenhar();
+    if (nomeJogador.empty())
+    {
+        nomeJogador = "JOGADOR";
+    }
 
+    std::ofstream arquivo("../salvar/ranking.txt", std::ios::app);
 
+    if (arquivo.is_open())
+    {
+        arquivo << nomeJogador << " " << pontuacao << std::endl;
+        arquivo.close();
+    }
 }
 
-void GameOver::handleEvent()
+void FimJogo::carregarBotoes()
 {
-	/***
-	* @brief Gerencia o evento de teclado e mouse
-	* @return void
-	*/
-
-	sf::Event ev;
-	while (pGerGraphic->getWindow()->pollEvent(ev)) {
-		switch (ev.type) {
-		case sf::Event::Closed:
-		{
-			mediador->notify(Actions::VOLTAR_1_MENU);
-			break;
-		}
-		case  sf::Event::KeyPressed:
-		{
-			if (ev.key.code == sf::Keyboard::A) {
-				nomeJogador.push_back('A');
-			}
-			if (ev.key.code == sf::Keyboard::B) {
-				nomeJogador.push_back('B');
-
-			}
-			if (ev.key.code == sf::Keyboard::C) {
-				nomeJogador.push_back('C');
-
-			}
-			if (ev.key.code == sf::Keyboard::D) {
-				nomeJogador.push_back('D');
-
-			}
-			if (ev.key.code == sf::Keyboard::E) {
-				nomeJogador.push_back('E');
-
-			}
-			if (ev.key.code == sf::Keyboard::F) {
-				nomeJogador.push_back('F');
-
-			}
-			if (ev.key.code == sf::Keyboard::G) {
-				nomeJogador.push_back('G');
-			}
-			if (ev.key.code == sf::Keyboard::H) {
-				nomeJogador.push_back('H');
-
-			}
-			if (ev.key.code == sf::Keyboard::I) {
-				nomeJogador.push_back('I');
-
-			}
-			if (ev.key.code == sf::Keyboard::J) {
-				nomeJogador.push_back('J');
-
-			}
-			if (ev.key.code == sf::Keyboard::K) {
-				nomeJogador.push_back('K');
-
-			}
-			if (ev.key.code == sf::Keyboard::L) {
-				nomeJogador.push_back('L');
-
-			}
-			if (ev.key.code == sf::Keyboard::M) {
-				nomeJogador.push_back('M');
-
-			}
-			if (ev.key.code == sf::Keyboard::N) {
-				nomeJogador.push_back('N');
-
-			}
-			if (ev.key.code == sf::Keyboard::O) {
-				nomeJogador.push_back('O');
-
-			}
-			if (ev.key.code == sf::Keyboard::P) {
-				nomeJogador.push_back('P');
-
-			}
-			if (ev.key.code == sf::Keyboard::Q) {
-				nomeJogador.push_back('Q');
-
-			}
-			if (ev.key.code == sf::Keyboard::R) {
-				nomeJogador.push_back('R');
-
-			}
-			if (ev.key.code == sf::Keyboard::S) {
-				nomeJogador.push_back('S');
-
-			}
-			if (ev.key.code == sf::Keyboard::T) {
-				nomeJogador.push_back('T');
-
-			}
-			if (ev.key.code == sf::Keyboard::U) {
-				nomeJogador.push_back('U');
-
-			}
-			if (ev.key.code == sf::Keyboard::V) {
-				nomeJogador.push_back('V');
-
-			}
-			if (ev.key.code == sf::Keyboard::W) {
-				nomeJogador.push_back('W');
-
-			}
-			if (ev.key.code == sf::Keyboard::X) {
-				nomeJogador.push_back('X');
-
-			}
-			if (ev.key.code == sf::Keyboard::Y) {
-				nomeJogador.push_back('Y');
-
-			}
-			if (ev.key.code == sf::Keyboard::Z) {
-				nomeJogador.push_back('Z');
-
-			}
-
-
-
-			if (ev.key.code == sf::Keyboard::BackSpace) {
-				if (!nomeJogador.empty()) {
-					nomeJogador.pop_back();
-				}
-			}
-			if (ev.key.code == sf::Keyboard::Enter) {
-				salvarRanking();
-				mediador->notify(Actions::VOLTAR_2_MENUS);
-			}
-
-			if (ev.key.code == sf::Keyboard::Escape) {
-				mediador->notify(Actions::VOLTAR_2_MENUS);
-			}
-			break;
-		}
-		case sf::Event::MouseButtonPressed:
-		{
-			if (ev.mouseButton.button == sf::Mouse::Left) {
-				mouseClick();
-			}
-		}
-		default:
-			break;
-		}
-	}
+    botaoVector.push_back(
+        new Entidades::Button(
+            sf::Vector2f(300.f, 450.f),
+            "Salvar e voltar",
+            Actions::VOLTAR_2_MENUS
+        )
+    );
 }
 
-void GameOver::carregarBotoes() {
-	buttonVector.push_back(new Entidades::Button(sf::Vector2f(200.f, 300.f), "Voltar", Actions::VOLTAR_2_MENUS));
+void FimJogo::lidarEvent()
+{
+    sf::Event ev;
+
+    while (pGG->get_janela()->pollEvent(ev))
+    {
+        switch (ev.type)
+        {
+        case sf::Event::Closed:
+            pGG->fechar();
+            break;
+
+        case sf::Event::KeyPressed:
+            if (ev.key.code >= sf::Keyboard::A && ev.key.code <= sf::Keyboard::Z)
+            {
+                if (nomeJogador.size() < 12)
+                {
+                    char letra = static_cast<char>('A' + (ev.key.code - sf::Keyboard::A));
+                    nomeJogador.push_back(letra);
+                }
+            }
+            else if (ev.key.code == sf::Keyboard::BackSpace)
+            {
+                if (!nomeJogador.empty())
+                {
+                    nomeJogador.pop_back();
+                }
+            }
+            else if (ev.key.code == sf::Keyboard::Enter)
+            {
+                salvarRanking();
+                mediador->notify(Actions::VOLTAR_2_MENUS);
+            }
+            else if (ev.key.code == sf::Keyboard::Escape)
+            {
+                mediador->notify(Actions::VOLTAR_2_MENUS);
+            }
+            break;
+
+        case sf::Event::MouseButtonPressed:
+            if (ev.mouseButton.button == sf::Mouse::Left)
+            {
+                salvarRanking();
+                mouseClick();
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
+void FimJogo::executar()
+{
+    pGG->limpar();
+
+    setFigura(&fundoMenu);
+    desenhar();
+
+    lidarEvent();
+    execBotoes();
+
+    std::stringstream texto;
+    texto << "FIM DE JOGO\n";
+    texto << "PONTOS: " << pontuacao << "\n";
+    texto << "NOME: " << nomeJogador << "\n";
+    texto << "ENTER para salvar";
+
+    textoNomeJogador.setString(texto.str());
+
+    setFigura(&textoNomeJogador);
+    desenhar();
 }

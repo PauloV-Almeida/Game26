@@ -17,9 +17,6 @@ namespace Entidades {
 		sf::Text buttonText;
 		Actions buttonAction;
 
-
-
-
 	public:
 		Button(sf::Vector2f pos, std::string txt = "", Actions action = Actions::NADA);
 		~Button();

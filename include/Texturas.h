@@ -1,3 +1,5 @@
+#pragma once
+
 enum class Texturas
 {
     fundo1,
@@ -6,7 +8,8 @@ enum class Texturas
 
     chao,
     parede,
-    Plataforma,
+    plataforma,
+
     espinho,
     runa,
 

@@ -1,71 +1,90 @@
 #include "../include/MenuRanking.h"
 
-MenuRanking::MenuRanking()
-    :menuEstado()
+#include <map>
+#include <vector>
+#include <sstream>
+
+MenuRanking::MenuRanking() :
+    menuEstado(),
+    textoRanking()
 {
     carregarBotoes();
-    textoRanking.setPosition(300, 300);
+
+    textoRanking.setPosition(250.f, 180.f);
+    textoRanking.setCharacterSize(32);
     textoRanking.setFont(*(pGG->getFont()));
-    textoRanking.setString("O RANKING SERÁ EXIBIDO AQUI");
+    textoRanking.setFillColor(sf::Color::White);
+
     carregarRanking();
 }
 
 MenuRanking::~MenuRanking()
-{
-
-}
+{}
 
 void MenuRanking::carregarBotoes()
 {
-    botaoVector.push_back(new Entidades::Button(sf::Vector2f(50.f, 100.f), "Voltar", Actions::VOLTAR_1_MENU));
+    botaoVector.push_back(
+        new Entidades::Button(
+            sf::Vector2f(50.f, 100.f),
+            "Voltar",
+            Actions::VOLTAR_1_MENU
+        )
+    );
 }
-void MenuRanking::executar() {
-   
+
+void MenuRanking::executar()
+{
     pGG->limpar();
-    pGG->updateMousePosition();
+
     setFigura(&fundoMenu);
     desenhar();
-    handleEvent();
+
+    lidarEvent();
     execBotoes();
+
     setFigura(&textoRanking);
     desenhar();
 }
 
-
 void MenuRanking::carregarRanking()
 {
-    std::string linha;
-    std::ifstream arquivo("ranking.txt");
-    std::multimap<int, std::string> mapLeitura;
+    std::ifstream arquivo("../salvar/ranking.txt");
+    std::multimap<int, std::string> ranking;
 
-    if (arquivo.is_open()) {
+    if (arquivo.is_open())
+    {
         std::string nome;
         int pontos;
-        while (std::getline(arquivo, linha)) {
-            std::istringstream arquivoOutput(linha);
-            if (arquivoOutput >> nome >> pontos) {
-                mapLeitura.insert({ pontos, nome });
-            }
+
+        while (arquivo >> nome >> pontos)
+        {
+            ranking.insert({ pontos, nome });
         }
+
         arquivo.close();
     }
 
-    std::vector<std::pair<int, std::string>> rankingsOrdenados;
+    std::stringstream texto;
 
-    for (auto it = mapLeitura.rbegin(); it != mapLeitura.rend(); ++it) {
-        rankingsOrdenados.push_back({ it->first, it->second });
-    }
-    std::stringstream texto("");
+    texto << "RANKING\n\n";
+
     int count = 0;
 
-    for (const auto& rank : rankingsOrdenados) {
-        if (count < 5) {
-            texto << "Pontos: " << rank.first << " Nome: " << rank.second << "\n";
-            count++;
-        }
-        else {
-            break;
-        }
+    for (auto it = ranking.rbegin(); it != ranking.rend() && count < 5; ++it)
+    {
+        texto << count + 1 << ". "
+            << it->second
+            << " - "
+            << it->first
+            << " pontos\n";
+
+        count++;
     }
+
+    if (count == 0)
+    {
+        texto << "Nenhum ranking salvo ainda.";
+    }
+
     textoRanking.setString(texto.str());
 }

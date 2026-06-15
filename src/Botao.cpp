@@ -1,54 +1,47 @@
 #include "../include/Botao.h"
-#include <iostream>
 
-namespace Menus {
-	Gerenciadores::GerenciadorGrafico* Botao::pGG(Gerenciadores::GerenciadorGrafico::get_instance());
+namespace Entidades
+{
+    Button::Button(sf::Vector2f pos, std::string txt, Actions action) :
+        Ente(),
+        mediador(mediadorEventos::getMediadorEventos()),
+        buttonText(),
+        buttonAction(action)
+    {
+        buttonText.setFont(*pGG->getFont());
+        buttonText.setString(txt);
+        buttonText.setCharacterSize(28);
+        buttonText.setFillColor(sf::Color::White);
+        buttonText.setPosition(pos);
 
-	Botao::Botao(sf::Vector2f posicao) :
-		corpo(sf::Vector2f(TAM_X, TAM_Y)),
-		text()
-	{
-		corpo.setOrigin(TAM_X / 2, TAM_Y / 2);
-		text.setOrigin(TAM_X / 2 - 20, TAM_Y / 2 - 20);
+        setFigura(&buttonText);
+    }
 
-		corpo.setFillColor(sf::Color(240, 230, 140));
-		corpo.setOutlineThickness(6);
-		corpo.setOutlineColor(sf::Color::Black);
+    Button::~Button()
+    {}
 
-		text.setFont(*pGG->getFonte());
-		text.setFillColor(sf::Color(65, 130, 190));
-		text.setCharacterSize(50);
+    void Button::getClicked(sf::Vector2i* mousePos)
+    {
+        if (!mousePos)
+        {
+            return;
+        }
 
-		corpo.setPosition(posicao);
-		text.setPosition(posicao);
-		text.setOutlineThickness(3.f);
-		text.setOutlineColor(sf::Color::Black);
-	}
-	Botao::~Botao() {}
+        sf::FloatRect bounds = buttonText.getGlobalBounds();
 
-	void Botao::desenhar()
-	{
-		pGG->desenhar(&corpo);
-		pGG->desenhar(&text);
-	}
+        sf::Vector2f mouseWorld(
+            static_cast<float>(mousePos->x),
+            static_cast<float>(mousePos->y)
+        );
 
-	void Botao::escolherCor()
-	{
-		if (corpo.getFillColor() == sf::Color(240, 230, 140)) {
-			corpo.setFillColor(sf::Color(205, 92, 92));
-		}
-		else {
-			corpo.setFillColor(sf::Color(240, 230, 140));
-		}
-	}
-	void Botao::setNome(std::string nome)
-	{
-		text.setString(nome);
-	}
-	void Botao::setPosicao(sf::Vector2f posicao)
-	{
-		corpo.setPosition(posicao);
-		text.setPosition(posicao);
-	}
+        if (bounds.contains(mouseWorld))
+        {
+            mediador->notify(buttonAction);
+        }
+    }
 
+    void Button::executar()
+    {
+        desenhar();
+    }
 }
