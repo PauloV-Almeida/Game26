@@ -1,18 +1,6 @@
 #pragma once
 
 #include "Personagem.h"
-#include "Jogador.h"
-#include "../stdafx/stdafx.h"
-
-#define VEL_MAX_INI 3.0f
-
-#define RAIO_PERSEGUIR_X 220.0f
-#define RAIO_PERSEGUIR_Y 100.0f
-
-#define RAIO_ATAQUE_X 45.0f
-#define RAIO_ATAQUE_Y 45.0f
-
-#define NIVEL_MALDADE_MAX 5
 
 namespace Entidades
 {
@@ -24,51 +12,71 @@ namespace Entidades
         {
         protected:
             int nivel_maldade;
-            int dano_base;
 
-            Jogador* pJog1;
-            Jogador* pJog2;
+            int danoBase;
+            int danoMaximo;
+
+            float raioVisao;
+            float raioAtaque;
+
+            Jogador* jogador1;
+            Jogador* jogador2;
+            Jogador* alvoAtual;
+
+            sf::Clock relogioAtaque;
+            sf::Clock relogioMovimentoAleatorio;
+
+            float intervaloAtaque;
+            float tempoTrocaDirecao;
 
             int direcaoAleatoria;
-            int tempoTrocaDirecao;
 
         protected:
+            float calcularDistancia(Jogador* jogador) const;
+
             Jogador* escolherAlvo();
 
-            bool jogadorNoRaioPerseguicao(Jogador* pJog);
-            bool jogadorNoRaioAtaque(Jogador* pJog);
+            bool jogadorNoRaioVisao(Jogador* jogador) const;
+            bool jogadorNoRaioAtaque(Jogador* jogador) const;
 
-            void aplicarGravidade();
-            void limitarVelocidade();
-
+            void perseguir(Jogador* jogador);
             void andarAleatorio();
-            void perseguir(Jogador* pJog);
 
-            void aumentarMaldade();
             int calcularDanoAtual() const;
+            void aumentarMaldade();
+
+            bool podeAtacar();
+
+            void salvarInimigo();
 
         public:
-            Inimigo(
-                int indice = -1,
-                sf::Vector2f pos = sf::Vector2f(10.f, 0.f),
-                sf::Vector2f vel = sf::Vector2f(0.f, 0.f),
-                sf::Vector2f tam = sf::Vector2f(50.f, 50.f),
-                Jogador* pJ1 = nullptr,
-                Jogador* pJ2 = nullptr
-            );
+            Inimigo();
+            Inimigo(sf::Vector2f pos);
+            Inimigo(sf::Vector2f pos, Jogador* j1, Jogador* j2 = nullptr);
 
             virtual ~Inimigo();
 
-            virtual void executar() = 0;
-            virtual void danificar(Jogador* pJog) = 0;
+            int getNivelMaldade() const;
+            int getDanoBase() const;
+            int getDanoMaximo() const;
 
-            virtual void mover();
+            float getRaioVisao() const;
+            float getRaioAtaque() const;
 
-            int get_nivel_maldade() const { return nivel_maldade; }
-            void set_nivel_maldade(int n) { nivel_maldade = n; }
+            Jogador* getAlvoAtual() const;
 
-            virtual void salvarDataBuffer();
-            virtual void salvar(std::ostream& out) = 0;
+            void setJogadores(Jogador* j1, Jogador* j2 = nullptr);
+
+            void setNivelMaldade(int nivel);
+            void setDanoBase(int dano);
+            void setDanoMaximo(int dano);
+            void setRaioVisao(float raio);
+            void setRaioAtaque(float raio);
+
+            virtual void executar();
+
+            virtual void danificar(Jogador* jogador) = 0;
+            virtual std::string salvar() = 0;
         };
     }
 }

@@ -126,6 +126,9 @@
     <ClCompile Include="src\Thor.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="src\Runa.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />
@@ -252,6 +255,9 @@
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
     <ClInclude Include="include\Direcao.h">
+      <Filter>Arquivos de Cabe�alho</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Runa.h">
       <Filter>Arquivos de Cabe�alho</Filter>
     </ClInclude>
   </ItemGroup>

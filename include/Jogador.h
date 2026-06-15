@@ -1,39 +1,60 @@
 #pragma once
+
 #include "Personagem.h"
+#include "Texturas.h"
 #include "Id.h"
 
+namespace Entidades
+{
+    namespace Personagens
+    {
+        class Inimigo;
 
-namespace Entidades {
-	class Projetil;
-	namespace Personagens {
-		class Jogador : public Personagem
-		{
-		private:
-			sf::Clock dashRelogio;
-			float dashCooldown = 3;
-			int pontos;
-			float maxSpeed;
-			sf::Vector2f center;
-			bool jogadorDois;
-		public:
-			Jogador();
-			Jogador(sf::Vector2f pos);
-			~Jogador();
-			sf::Vector2f getPosicao();
-			//Adicionam velocidade ao vetor de velocidade do jogador
-			void setPontuacao(int pontos);
-			void movimentar(Directions direcao);
-			void posicionarNoInicio();
-			
-			
-			void aumentarPontos();
-			void setJogadorDois(bool);
-			int getPontos();
-			void executar();
-			std::string salvar();
-			void salvarJogador();
-			void resetarJogador();
-		};
-	}
+        class Jogador : public Personagem
+        {
+        private:
+            int idJogador;
 
+            int danoAtaque;
+            int maxPulos;
+            int pulosRestantes;
+
+            bool atacando;
+            bool olhandoDireita;
+            bool venceu;
+
+            sf::RectangleShape areaAtaque;
+            sf::Clock relogioAtaque;
+            float tempoAtaque;
+
+        private:
+            void tratarEntrada();
+            void moverEsquerda();
+            void moverDireita();
+            void pular();
+            void atacar();
+
+            void atualizarTextura();
+            void atualizarAreaAtaque();
+
+        public:
+            Jogador();
+            Jogador(int idJogador, sf::Vector2f pos);
+            ~Jogador();
+
+            int getIdJogador() const;
+            int getDanoAtaque() const;
+            bool estaAtacando() const;
+            bool getVenceu() const;
+
+            void setVenceu(bool venceu);
+            void setDanoAtaque(int dano);
+
+            void colidir(Inimigo* inimigo);
+
+            void executar();
+            void desenhar();
+            std::string salvar();
+        };
+    }
 }

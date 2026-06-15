@@ -1,102 +1,187 @@
 #include "../include/Valkiria.h"
+#include "../include/Jogador.h"
 
 namespace Entidades
 {
     namespace Personagens
     {
-        Valkiria::Valkiria(
-            int indice,
-            sf::Vector2f pos,
-            sf::Vector2f velo,
-            sf::Vector2f tam,
-            Jogador* pJ1,
-            Jogador* pJ2
-        ) :
-            Inimigo(indice, pos, velo, tam, pJ1, pJ2),
-            tamanho(static_cast<int>(tam.x))
+        Valkiria::Valkiria() :
+            Inimigo(),
+            forcaEmpurraoBase(3.5f),
+            forcaEmpurraoMaxima(7.0f),
+            escalaX(1.0f),
+            escalaY(1.0f)
         {
-            dano_base = 1;
-            dano = dano_base;
-            n_vidas = 5;
+            id = Id::Valkiria;
 
-            texturas = pGG->carregar_texturas("./assets/valkiria.png");
-            corpo.setTexture(texturas);
+            num_vidas = 4;
+
+            danoBase = 1;
+            danoMaximo = 4;
+
+            nivel_maldade = 2;
+
+            raioVisao = 320.f;
+            raioAtaque = 55.f;
+
+            velocidadeMovimento = 1.1f;
+            velocidadeMaxima = 3.0f;
+
+            intervaloAtaque = 1.2f;
+
+            forma.setTexture(*pGG->getTextura(Texturas::valkiria));
+            forma.setScale(escalaX, escalaY);
+
+            setFigura(&forma);
+        }
+
+        Valkiria::Valkiria(sf::Vector2f pos) :
+            Inimigo(pos),
+            forcaEmpurraoBase(3.5f),
+            forcaEmpurraoMaxima(7.0f),
+            escalaX(1.0f),
+            escalaY(1.0f)
+        {
+            id = Id::Valkiria;
+
+            num_vidas = 4;
+
+            danoBase = 1;
+            danoMaximo = 4;
+
+            nivel_maldade = 2;
+
+            raioVisao = 320.f;
+            raioAtaque = 55.f;
+
+            velocidadeMovimento = 1.1f;
+            velocidadeMaxima = 3.0f;
+
+            intervaloAtaque = 1.2f;
+
+            forma.setTexture(*pGG->getTextura(Texturas::valkiria));
+            forma.setPosition(pos);
+            forma.setScale(escalaX, escalaY);
+
+            setFigura(&forma);
+        }
+
+        Valkiria::Valkiria(sf::Vector2f pos, Jogador* j1, Jogador* j2) :
+            Inimigo(pos, j1, j2),
+            forcaEmpurraoBase(3.5f),
+            forcaEmpurraoMaxima(7.0f),
+            escalaX(1.0f),
+            escalaY(1.0f)
+        {
+            id = Id::Valkiria;
+
+            num_vidas = 4;
+
+            danoBase = 1;
+            danoMaximo = 4;
+
+            nivel_maldade = 2;
+
+            raioVisao = 320.f;
+            raioAtaque = 55.f;
+
+            velocidadeMovimento = 1.1f;
+            velocidadeMaxima = 3.0f;
+
+            intervaloAtaque = 1.2f;
+
+            forma.setTexture(*pGG->getTextura(Texturas::valkiria));
+            forma.setPosition(pos);
+            forma.setScale(escalaX, escalaY);
+
+            setFigura(&forma);
         }
 
         Valkiria::~Valkiria()
         {}
 
-        void Valkiria::executar()
+        void Valkiria::empurrarJogador(Jogador* jogador)
         {
-            if (n_vidas <= 0)
-            {
-                vivo = false;
-                return;
-            }
-
-            mover();
-        }
-
-        void Valkiria::danificar(Jogador* pJog)
-        {
-            if (!pJog || !pJog->get_vivo())
+            if (!jogador)
             {
                 return;
             }
 
-            if (!jogadorNoRaioAtaque(pJog))
+            float forcaEmpurrao = forcaEmpurraoBase + static_cast<float>(nivel_maldade) * 0.5f;
+
+            if (forcaEmpurrao > forcaEmpurraoMaxima)
             {
-                return;
+                forcaEmpurrao = forcaEmpurraoMaxima;
             }
 
-            aumentarMaldade();
+            sf::Vector2f minhaPos = getCentro();
+            sf::Vector2f posJogador = jogador->getCentro();
 
-            sf::Vector2f velJog = pJog->get_vel();
+            sf::Vector2f velJogador = jogador->getVelocidade();
 
-            float empurrao = EMPURRAO_BASE + static_cast<float>(nivel_maldade) * 0.7f;
-
-            if (empurrao > EMPURRAO_MAX)
+            if (posJogador.x < minhaPos.x)
             {
-                empurrao = EMPURRAO_MAX;
-            }
-
-            sf::Vector2f posIni = get_posicao();
-            sf::Vector2f posJog = pJog->get_posicao();
-
-            if (posJog.x < posIni.x)
-            {
-                velJog.x = -empurrao;
+                velJogador.x = -forcaEmpurrao;
             }
             else
             {
-                velJog.x = empurrao;
+                velJogador.x = forcaEmpurrao;
             }
 
             /*
-                Pequeno impulso vertical para dar sensação de impacto,
-                mas sem jogar longe demais.
+                Pequeno impulso para cima.
+                Isso dá sensação de pancada, mas sem exagerar.
             */
-            if (velJog.y > -2.0f)
+            velJogador.y = -2.0f;
+
+            jogador->setVelocidade(velJogador);
+        }
+
+        void Valkiria::danificar(Jogador* jogador)
+        {
+            if (!jogador || !jogador->ativado() || !jogador->vivo())
             {
-                velJog.y = -2.0f;
+                return;
             }
 
-            pJog->set_vel(velJog);
+            if (!jogadorNoRaioAtaque(jogador))
+            {
+                return;
+            }
+
+            if (!podeAtacar())
+            {
+                return;
+            }
+
+            int danoAtual = calcularDanoAtual();
+
+            jogador->tirarVida(danoAtual);
+            empurrarJogador(jogador);
+
+            relogioAtaque.restart();
         }
 
-        void Valkiria::salvarDataBuffer()
+        void Valkiria::executar()
         {
-            Inimigo::salvarDataBuffer();
+            if (!ativo)
+            {
+                return;
+            }
 
-            bufferSalvar
-                << "Valkiria" << ' '
-                << tamanho << '\n';
+            Inimigo::executar();
         }
 
-        void Valkiria::salvar(std::ostream& out)
+        std::string Valkiria::salvar()
         {
-            salvarDataBuffer();
-            out << getBufferSalvar();
+            salvarInimigo();
+
+            buffer << forcaEmpurraoBase << " ";
+            buffer << forcaEmpurraoMaxima << " ";
+            buffer << escalaX << " ";
+            buffer << escalaY << " ";
+
+            return buffer.str();
         }
     }
 }

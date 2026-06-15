@@ -2,9 +2,6 @@
 
 #include "Inimigo.h"
 
-#define EMPURRAO_BASE 2.0f
-#define EMPURRAO_MAX 6.0f
-
 namespace Entidades
 {
     namespace Personagens
@@ -12,25 +9,25 @@ namespace Entidades
         class Valkiria : public Inimigo
         {
         private:
-            int tamanho;
+            float forcaEmpurraoBase;
+            float forcaEmpurraoMaxima;
+
+            float escalaX;
+            float escalaY;
+
+        private:
+            void empurrarJogador(Jogador* jogador);
 
         public:
-            Valkiria(
-                int indice = -1,
-                sf::Vector2f pos = sf::Vector2f(100.f, 100.f),
-                sf::Vector2f vel = sf::Vector2f(0.f, 0.f),
-                sf::Vector2f tam = sf::Vector2f(60.f, 60.f),
-                Jogador* pJ1 = nullptr,
-                Jogador* pJ2 = nullptr
-            );
-
+            Valkiria();
+            Valkiria(sf::Vector2f pos);
+            Valkiria(sf::Vector2f pos, Jogador* j1, Jogador* j2 = nullptr);
             ~Valkiria();
 
-            void executar();
-            void danificar(Jogador* pJog);
+            void danificar(Jogador* jogador);
 
-            void salvarDataBuffer();
-            void salvar(std::ostream& out);
+            void executar();
+            std::string salvar();
         };
     }
 }

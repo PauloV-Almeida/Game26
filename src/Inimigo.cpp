@@ -1,4 +1,5 @@
 #include "../include/Inimigo.h"
+#include "../include/Jogador.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -7,205 +8,306 @@ namespace Entidades
 {
     namespace Personagens
     {
-        Inimigo::Inimigo(
-            int indice,
-            sf::Vector2f pos,
-            sf::Vector2f velo,
-            sf::Vector2f tam,
-            Jogador* pJ1,
-            Jogador* pJ2
-        ) :
-            Personagem(indice, pos, velo, tam),
-            nivel_maldade(0),
-            dano_base(1),
-            pJog1(pJ1),
-            pJog2(pJ2),
-            direcaoAleatoria(1),
-            tempoTrocaDirecao(0)
+        Inimigo::Inimigo() :
+            Personagem(),
+            nivel_maldade(1),
+            danoBase(1),
+            danoMaximo(4),
+            raioVisao(280.f),
+            raioAtaque(45.f),
+            jogador1(nullptr),
+            jogador2(nullptr),
+            alvoAtual(nullptr),
+            relogioAtaque(),
+            relogioMovimentoAleatorio(),
+            intervaloAtaque(1.0f),
+            tempoTrocaDirecao(1.5f),
+            direcaoAleatoria(1)
         {
-            dano = dano_base;
+            velocidadeMovimento = 1.2f;
+            velocidadeMaxima = 3.0f;
+            num_vidas = 3;
+        }
+
+        Inimigo::Inimigo(sf::Vector2f pos) :
+            Personagem(pos),
+            nivel_maldade(1),
+            danoBase(1),
+            danoMaximo(4),
+            raioVisao(280.f),
+            raioAtaque(45.f),
+            jogador1(nullptr),
+            jogador2(nullptr),
+            alvoAtual(nullptr),
+            relogioAtaque(),
+            relogioMovimentoAleatorio(),
+            intervaloAtaque(1.0f),
+            tempoTrocaDirecao(1.5f),
+            direcaoAleatoria(1)
+        {
+            velocidadeMovimento = 1.2f;
+            velocidadeMaxima = 3.0f;
+            num_vidas = 3;
+        }
+
+        Inimigo::Inimigo(sf::Vector2f pos, Jogador* j1, Jogador* j2) :
+            Personagem(pos),
+            nivel_maldade(1),
+            danoBase(1),
+            danoMaximo(4),
+            raioVisao(280.f),
+            raioAtaque(45.f),
+            jogador1(j1),
+            jogador2(j2),
+            alvoAtual(nullptr),
+            relogioAtaque(),
+            relogioMovimentoAleatorio(),
+            intervaloAtaque(1.0f),
+            tempoTrocaDirecao(1.5f),
+            direcaoAleatoria(1)
+        {
+            velocidadeMovimento = 1.2f;
+            velocidadeMaxima = 3.0f;
+            num_vidas = 3;
         }
 
         Inimigo::~Inimigo()
         {
-            pJog1 = nullptr;
-            pJog2 = nullptr;
+            jogador1 = nullptr;
+            jogador2 = nullptr;
+            alvoAtual = nullptr;
         }
 
-        void Inimigo::aplicarGravidade()
+        int Inimigo::getNivelMaldade() const
         {
-            if (!noChao)
-            {
-                vel.y += GRAVIDADE;
-            }
+            return nivel_maldade;
         }
 
-        void Inimigo::limitarVelocidade()
+        int Inimigo::getDanoBase() const
         {
-            if (vel.x > VEL_MAX_INI)
-            {
-                vel.x = VEL_MAX_INI;
-            }
-            else if (vel.x < -VEL_MAX_INI)
-            {
-                vel.x = -VEL_MAX_INI;
-            }
+            return danoBase;
         }
 
-        void Inimigo::aumentarMaldade()
+        int Inimigo::getDanoMaximo() const
         {
-            if (nivel_maldade < NIVEL_MALDADE_MAX)
-            {
-                nivel_maldade++;
-            }
-
-            dano = calcularDanoAtual();
+            return danoMaximo;
         }
 
-        int Inimigo::calcularDanoAtual() const
+        float Inimigo::getRaioVisao() const
         {
-            return dano_base + nivel_maldade;
+            return raioVisao;
+        }
+
+        float Inimigo::getRaioAtaque() const
+        {
+            return raioAtaque;
+        }
+
+        Jogador* Inimigo::getAlvoAtual() const
+        {
+            return alvoAtual;
+        }
+
+        void Inimigo::setJogadores(Jogador* j1, Jogador* j2)
+        {
+            jogador1 = j1;
+            jogador2 = j2;
+        }
+
+        void Inimigo::setNivelMaldade(int nivel)
+        {
+            if (nivel < 1)
+            {
+                nivel = 1;
+            }
+
+            nivel_maldade = nivel;
+        }
+
+        void Inimigo::setDanoBase(int dano)
+        {
+            if (dano < 0)
+            {
+                dano = 0;
+            }
+
+            danoBase = dano;
+        }
+
+        void Inimigo::setDanoMaximo(int dano)
+        {
+            if (dano < danoBase)
+            {
+                dano = danoBase;
+            }
+
+            danoMaximo = dano;
+        }
+
+        void Inimigo::setRaioVisao(float raio)
+        {
+            if (raio < 0.f)
+            {
+                raio = 0.f;
+            }
+
+            raioVisao = raio;
+        }
+
+        void Inimigo::setRaioAtaque(float raio)
+        {
+            if (raio < 0.f)
+            {
+                raio = 0.f;
+            }
+
+            raioAtaque = raio;
+        }
+
+        float Inimigo::calcularDistancia(Jogador* jogador) const
+        {
+            if (!jogador)
+            {
+                return 999999.f;
+            }
+
+            sf::Vector2f minhaPos = getCentro();
+            sf::Vector2f posJog = jogador->getCentro();
+
+            float dx = posJog.x - minhaPos.x;
+            float dy = posJog.y - minhaPos.y;
+
+            return std::sqrt(dx * dx + dy * dy);
         }
 
         Jogador* Inimigo::escolherAlvo()
         {
-            const bool j1Valido = pJog1 && pJog1->get_vivo();
-            const bool j2Valido = pJog2 && pJog2->get_vivo();
+            Jogador* melhorAlvo = nullptr;
+            float menorDistancia = 999999.f;
 
-            if (!j1Valido && !j2Valido)
+            if (jogador1 && jogador1->ativado() && jogador1->vivo())
             {
-                return nullptr;
+                float dist = calcularDistancia(jogador1);
+
+                if (dist < menorDistancia)
+                {
+                    menorDistancia = dist;
+                    melhorAlvo = jogador1;
+                }
             }
 
-            if (j1Valido && !j2Valido)
+            if (jogador2 && jogador2->ativado() && jogador2->vivo())
             {
-                return pJog1;
+                float dist = calcularDistancia(jogador2);
+
+                if (dist < menorDistancia)
+                {
+                    menorDistancia = dist;
+                    melhorAlvo = jogador2;
+                }
             }
 
-            if (!j1Valido && j2Valido)
-            {
-                return pJog2;
-            }
-
-            sf::Vector2f posIni = get_posicao();
-
-            sf::Vector2f pos1 = pJog1->get_posicao();
-            sf::Vector2f pos2 = pJog2->get_posicao();
-
-            float dist1 =
-                std::fabs(posIni.x - pos1.x) +
-                std::fabs(posIni.y - pos1.y);
-
-            float dist2 =
-                std::fabs(posIni.x - pos2.x) +
-                std::fabs(posIni.y - pos2.y);
-
-            if (dist1 <= dist2)
-            {
-                return pJog1;
-            }
-
-            return pJog2;
+            alvoAtual = melhorAlvo;
+            return melhorAlvo;
         }
 
-        bool Inimigo::jogadorNoRaioPerseguicao(Jogador* pJog)
+        bool Inimigo::jogadorNoRaioVisao(Jogador* jogador) const
         {
-            if (!pJog)
-            {
-                return false;
-            }
-
-            sf::Vector2f posIni = get_posicao();
-            sf::Vector2f posJog = pJog->get_posicao();
-
-            return std::fabs(posIni.x - posJog.x) <= RAIO_PERSEGUIR_X &&
-                std::fabs(posIni.y - posJog.y) <= RAIO_PERSEGUIR_Y;
+            return calcularDistancia(jogador) <= raioVisao;
         }
 
-        bool Inimigo::jogadorNoRaioAtaque(Jogador* pJog)
+        bool Inimigo::jogadorNoRaioAtaque(Jogador* jogador) const
         {
-            if (!pJog)
+            return calcularDistancia(jogador) <= raioAtaque;
+        }
+
+        void Inimigo::perseguir(Jogador* jogador)
+        {
+            if (!jogador || travado)
             {
-                return false;
+                return;
             }
 
-            sf::Vector2f posIni = get_posicao();
-            sf::Vector2f posJog = pJog->get_posicao();
+            sf::Vector2f minhaPos = getCentro();
+            sf::Vector2f posJog = jogador->getCentro();
 
-            return std::fabs(posIni.x - posJog.x) <= RAIO_ATAQUE_X &&
-                std::fabs(posIni.y - posJog.y) <= RAIO_ATAQUE_Y;
+            if (posJog.x < minhaPos.x)
+            {
+                vel.x -= velocidadeMovimento;
+            }
+            else if (posJog.x > minhaPos.x)
+            {
+                vel.x += velocidadeMovimento;
+            }
         }
 
         void Inimigo::andarAleatorio()
         {
-            tempoTrocaDirecao++;
-
-            if (tempoTrocaDirecao > 90)
+            if (travado)
             {
-                tempoTrocaDirecao = 0;
+                return;
+            }
 
-                int r = std::rand() % 100;
+            if (relogioMovimentoAleatorio.getElapsedTime().asSeconds() >= tempoTrocaDirecao)
+            {
+                int valor = std::rand() % 3;
 
-                if (r < 45)
+                if (valor == 0)
                 {
                     direcaoAleatoria = -1;
                 }
-                else if (r < 90)
-                {
-                    direcaoAleatoria = 1;
-                }
-                else
+                else if (valor == 1)
                 {
                     direcaoAleatoria = 0;
                 }
+                else
+                {
+                    direcaoAleatoria = 1;
+                }
+
+                relogioMovimentoAleatorio.restart();
             }
 
-            if (direcaoAleatoria < 0)
+            vel.x += direcaoAleatoria * velocidadeMovimento * 0.5f;
+        }
+
+        int Inimigo::calcularDanoAtual() const
+        {
+            int danoAtual = danoBase + nivel_maldade;
+
+            if (danoAtual > danoMaximo)
             {
-                vel.x -= 0.08f;
+                danoAtual = danoMaximo;
             }
-            else if (direcaoAleatoria > 0)
+
+            return danoAtual;
+        }
+
+        void Inimigo::aumentarMaldade()
+        {
+            nivel_maldade++;
+
+            if (nivel_maldade > 10)
             {
-                vel.x += 0.08f;
-            }
-            else
-            {
-                vel.x *= 0.8f;
+                nivel_maldade = 10;
             }
         }
 
-        void Inimigo::perseguir(Jogador* pJog)
+        bool Inimigo::podeAtacar()
         {
-            if (!pJog)
-            {
-                return;
-            }
-
-            sf::Vector2f posIni = get_posicao();
-            sf::Vector2f posJog = pJog->get_posicao();
-
-            if (posJog.x < posIni.x)
-            {
-                vel.x -= 0.12f;
-            }
-            else if (posJog.x > posIni.x)
-            {
-                vel.x += 0.12f;
-            }
+            return relogioAtaque.getElapsedTime().asSeconds() >= intervaloAtaque;
         }
 
-        void Inimigo::mover()
+        void Inimigo::executar()
         {
-            if (!vivo)
+            if (!ativo)
             {
                 return;
             }
-
-            aplicarGravidade();
 
             Jogador* alvo = escolherAlvo();
 
-            if (alvo && jogadorNoRaioPerseguicao(alvo))
+            if (alvo && jogadorNoRaioVisao(alvo))
             {
                 perseguir(alvo);
             }
@@ -214,20 +316,19 @@ namespace Entidades
                 andarAleatorio();
             }
 
-            limitarVelocidade();
-
-            corpo.move(vel.x, vel.y);
-
-            noChao = false;
+            atualizarFisica();
         }
 
-        void Inimigo::salvarDataBuffer()
+        void Inimigo::salvarInimigo()
         {
-            Personagem::salvarDataBuffer();
+            salvarPersonagem();
 
-            bufferSalvar
-                << nivel_maldade << ' '
-                << dano_base << ' ';
+            buffer << nivel_maldade << " ";
+            buffer << danoBase << " ";
+            buffer << danoMaximo << " ";
+            buffer << raioVisao << " ";
+            buffer << raioAtaque << " ";
+            buffer << intervaloAtaque << " ";
         }
     }
 }

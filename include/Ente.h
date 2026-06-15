@@ -4,7 +4,7 @@
 #include "GerenciadorGrafico.h"
 #include "Id.h"
 
-#define GRAVIDADE 9.8f
+
 
 class Ente
 {

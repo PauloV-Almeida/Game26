@@ -1,69 +1,149 @@
 #include "../include/Andarilho.h"
+#include "../include/Jogador.h"
 
 namespace Entidades
 {
     namespace Personagens
     {
-        Andarilho::Andarilho(
-            int indice,
-            sf::Vector2f pos,
-            sf::Vector2f velo,
-            sf::Vector2f tam,
-            Jogador* pJ1,
-            Jogador* pJ2
-        ) :
-            Inimigo(indice, pos, velo, tam, pJ1, pJ2),
-            raio(45.f)
+        Andarilho::Andarilho() :
+            Inimigo(),
+            escalaX(1.0f),
+            escalaY(1.0f)
         {
-            dano_base = 1;
-            dano = dano_base;
-            n_vidas = 3;
+            id = Id::Andarilho;
 
-            texturas = pGG->carregar_texturas("./assets/andarilho.png");
-            corpo.setTexture(texturas);
+            num_vidas = 2;
+
+            danoBase = 1;
+            danoMaximo = 3;
+
+            nivel_maldade = 1;
+
+            raioVisao = 260.f;
+            raioAtaque = 45.f;
+
+            velocidadeMovimento = 0.8f;
+            velocidadeMaxima = 2.0f;
+
+            intervaloAtaque = 1.0f;
+
+            forma.setTexture(*pGG->getTextura(Texturas::andarilho));
+            forma.setScale(escalaX, escalaY);
+
+            setFigura(&forma);
+        }
+
+        Andarilho::Andarilho(sf::Vector2f pos) :
+            Inimigo(pos),
+            escalaX(1.0f),
+            escalaY(1.0f)
+        {
+            id = Id::Andarilho;
+
+            num_vidas = 2;
+
+            danoBase = 1;
+            danoMaximo = 3;
+
+            nivel_maldade = 1;
+
+            raioVisao = 260.f;
+            raioAtaque = 45.f;
+
+            velocidadeMovimento = 0.8f;
+            velocidadeMaxima = 2.0f;
+
+            intervaloAtaque = 1.0f;
+
+            forma.setTexture(*pGG->getTextura(Texturas::andarilho));
+            forma.setPosition(pos);
+            forma.setScale(escalaX, escalaY);
+
+            setFigura(&forma);
+        }
+
+        Andarilho::Andarilho(sf::Vector2f pos, Jogador* j1, Jogador* j2) :
+            Inimigo(pos, j1, j2),
+            escalaX(1.0f),
+            escalaY(1.0f)
+        {
+            id = Id::Andarilho;
+
+            num_vidas = 2;
+
+            danoBase = 1;
+            danoMaximo = 3;
+
+            nivel_maldade = 1;
+
+            raioVisao = 260.f;
+            raioAtaque = 45.f;
+
+            velocidadeMovimento = 0.8f;
+            velocidadeMaxima = 2.0f;
+
+            intervaloAtaque = 1.0f;
+
+            forma.setTexture(*pGG->getTextura(Texturas::andarilho));
+            forma.setPosition(pos);
+            forma.setScale(escalaX, escalaY);
+
+            setFigura(&forma);
         }
 
         Andarilho::~Andarilho()
         {}
 
+        void Andarilho::danificar(Jogador* jogador)
+        {
+            if (!jogador || !jogador->ativado() || !jogador->vivo())
+            {
+                return;
+            }
+
+            if (!jogadorNoRaioAtaque(jogador))
+            {
+                return;
+            }
+
+            if (!podeAtacar())
+            {
+                return;
+            }
+
+            int danoAtual = calcularDanoAtual();
+
+            jogador->tirarVida(danoAtual);
+
+            relogioAtaque.restart();
+        }
+
         void Andarilho::executar()
         {
-            if (n_vidas <= 0)
-            {
-                vivo = false;
-                return;
-            }
-
-            mover();
-        }
-
-        void Andarilho::danificar(Jogador* pJog)
-        {
-            if (!pJog || !pJog->get_vivo())
+            if (!ativo)
             {
                 return;
             }
 
-            if (jogadorNoRaioAtaque(pJog))
-            {
-                aumentarMaldade();
-                pJog->receber_dano(calcularDanoAtual());
-            }
+            /*
+                Usa o comportamento padrão do Inimigo:
+                - escolhe alvo
+                - persegue se estiver no raio de visão
+                - anda aleatório se não tiver alvo
+                - aplica gravidade
+                - move
+            */
+            Inimigo::executar();
         }
 
-        void Andarilho::salvarDataBuffer()
+        std::string Andarilho::salvar()
         {
-            Inimigo::salvarDataBuffer();
+            salvarInimigo();
 
-            bufferSalvar
-                << "Andarilho" << ' '
-                << raio << '\n';
-        }
+            buffer << escalaX << " ";
+            buffer << escalaY << " ";
 
-        void Andarilho::salvar(std::ostream& out)
-        {
-            salvarDataBuffer();
-            out << getBufferSalvar();
+            return buffer.str();
         }
     }
 }

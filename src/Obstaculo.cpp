@@ -1,31 +1,51 @@
 #include "../include/Obstaculo.h"
-namespace Entidades {
-	namespace Obstaculos {
-		Obstaculo::Obstaculo(sf::Vector2f pos)
-			:Entidade(pos)
-		{
-			colidivel = 1;
-			danoso = 0;
-		}
+#include "../include/Jogador.h"
 
-		Obstaculo::Obstaculo()
-		{
-			colidivel = 1;
-			danoso = 0;
-		}
+namespace Entidades
+{
+    namespace Obstaculos
+    {
+        Obstaculo::Obstaculo() :
+            Entidade(),
+            danoso(false),
+            colidivel(true)
+        {}
 
-		Obstaculo::~Obstaculo()
-		{}
+        Obstaculo::Obstaculo(sf::Vector2f pos) :
+            Entidade(pos),
+            danoso(false),
+            colidivel(true)
+        {}
 
-		const bool Obstaculo::ehColidivel()
-		{
-			return colidivel;
-		}
+        Obstaculo::~Obstaculo()
+        {}
 
-		void Obstaculo::salvarObstaculo()
-		{
-			salvarEntidade();
-		}
+        bool Obstaculo::ehDanoso() const
+        {
+            return danoso;
+        }
 
-	}
+        bool Obstaculo::ehColidivel() const
+        {
+            return colidivel;
+        }
+
+        void Obstaculo::setDanoso(bool estado)
+        {
+            danoso = estado;
+        }
+
+        void Obstaculo::setColidivel(bool estado)
+        {
+            colidivel = estado;
+        }
+
+        void Obstaculo::salvarObstaculo()
+        {
+            salvarEntidade();
+
+            buffer << danoso << " ";
+            buffer << colidivel << " ";
+        }
+    }
 }

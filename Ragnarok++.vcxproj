@@ -51,6 +51,7 @@
     <ClCompile Include="src\Obstaculo.cpp" />
     <ClCompile Include="src\Personagem.cpp" />
     <ClCompile Include="src\Plataforma.cpp" />
+    <ClCompile Include="src\Runa.cpp" />
     <ClCompile Include="src\State.cpp" />
     <ClCompile Include="src\Subject.cpp" />
     <ClCompile Include="src\Thor.cpp" />
@@ -97,6 +98,7 @@
     <ClInclude Include="include\Obstaculo.h" />
     <ClInclude Include="include\Personagem.h" />
     <ClInclude Include="include\Plataforma.h" />
+    <ClInclude Include="include\Runa.h" />
     <ClInclude Include="include\State.h" />
     <ClInclude Include="include\Subject.h" />
     <ClInclude Include="include\Texturas.h" />

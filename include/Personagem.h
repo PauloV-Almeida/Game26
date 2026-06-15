@@ -1,53 +1,62 @@
 #pragma once
+
 #include "Entidades.h"
-#include "ListaEntidades.h"
+#include "Direcao.h"
 
+namespace Entidades
+{
+    namespace Personagens
+    {
+        class Personagem : public Entidade
+        {
+        protected:
+            int num_vidas;
 
-namespace Gerenciadores {
-	class GerenciadorColisao;
-}
+            bool noChao;
+            bool travado;
 
-namespace Entidades {
+            float velocidadeMovimento;
+            float velocidadeMaxima;
+            float forcaPulo;
 
-	namespace Obstaculos {
-		class Obstaculo;
-	}
+        protected:
+            void limitarVelocidade();
+            void salvarPersonagem();
 
-	namespace Personagens {
-		class Personagem : public Entidade
-		{
-		protected:
-			
-			
-			float maxVelo;
-			float moveVelo;
-			sf::Clock RelogioPuloCooldown;
-			float puloCooldown = 0.2;
-			int vida;
-			int pulo = 2;
-			
-		public:
-			
-			Personagem();
-			Personagem(sf::Vector2f pos);
-			~Personagem();
-			void colidiu(Entidade* entidade);
-			
-			const int getVidas() const;
-			const bool vivo() const;
+        public:
+            Personagem();
+            Personagem(sf::Vector2f pos);
+            virtual ~Personagem();
 
-			void setVida(int vida);
-			void setPulos(int pulos);
+            int getNumVidas() const;
+            bool vivo() const;
 
-			virtual void aumentarPontos() = 0;
-			void tiraVida(int dano);
-			void setMoveVelocidade(float moveVelo);
+            bool getNoChao() const;
+            bool estaTravado() const;
 
+            float getVelocidadeMovimento() const;
+            float getVelocidadeMaxima() const;
+            float getForcaPulo() const;
 
-			void salvarPersonagem();
-			virtual std::string salvar() = 0;
-			virtual void executar() = 0;
+            void setNumVidas(int vidas);
+            void setNoChao(bool estado);
+            void setTravado(bool estado);
 
-		};
-	}
+            void setVelocidadeMovimento(float velocidade);
+            void setVelocidadeMaxima(float velocidade);
+            void setForcaPulo(float forca);
+
+            void tirarVida(int dano);
+            void recuperarVida(int qtd);
+
+            virtual void aplicarGravidade();
+            virtual void atualizarFisica();
+
+            virtual void colidiu(Direcao direcao);
+            virtual void colidiu(Entidade* entidade, Direcao direcao);
+
+            virtual void executar() = 0;
+            virtual std::string salvar() = 0;
+        };
+    }
 }

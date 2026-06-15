@@ -9,25 +9,19 @@ namespace Entidades
         class Andarilho : public Inimigo
         {
         private:
-            float raio;
+            float escalaX;
+            float escalaY;
 
         public:
-            Andarilho(
-                int indice = -1,
-                sf::Vector2f pos = sf::Vector2f(100.f, 100.f),
-                sf::Vector2f vel = sf::Vector2f(0.f, 0.f),
-                sf::Vector2f tam = sf::Vector2f(50.f, 50.f),
-                Jogador* pJ1 = nullptr,
-                Jogador* pJ2 = nullptr
-            );
-
+            Andarilho();
+            Andarilho(sf::Vector2f pos);
+            Andarilho(sf::Vector2f pos, Jogador* j1, Jogador* j2 = nullptr);
             ~Andarilho();
 
-            void executar();
-            void danificar(Jogador* pJog);
+            void danificar(Jogador* jogador);
 
-            void salvarDataBuffer();
-            void salvar(std::ostream& out);
+            void executar();
+            std::string salvar();
         };
     }
 }

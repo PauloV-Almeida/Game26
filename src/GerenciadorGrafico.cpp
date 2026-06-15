@@ -81,6 +81,18 @@ namespace Gerenciadores
 			}
 			mapTexturas.insert({ Texturas::espinho, tempText });
 
+			if (!tempText.loadFromFile("../texturas/plataforma_gelo.PNG"))
+			{
+				throw std::runtime_error("Falha ao carregar textura plataforma_gelo.PNG");
+			}
+			mapTexturas.insert({ Texturas::Plataforma, tempText });
+
+			if (!tempText.loadFromFile("../texturas/runa.PNG"))
+			{
+				throw std::runtime_error("Falha ao carregar textura runa.PNG");
+			}
+			mapTexturas.insert({ Texturas::runa, tempText });
+
 			if (!tempText.loadFromFile("../texturas/arvore.PNG")) {
 				throw std::exception("Falha ao carregar textura arvore.PNG");
 			}

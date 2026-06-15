@@ -1,17 +1,64 @@
 #include "../include/Plataforma.h"
+#include "../include/Jogador.h"
 
 namespace Entidades
 {
     namespace Obstaculos
     {
-        Plataforma::Plataforma(int indice, sf::Vector2f pos, sf::Vector2f tam) :
-            Obstaculo(indice, pos, tam),
-            altura(static_cast<int>(tam.y))
+        Plataforma::Plataforma() :
+            Obstaculo(),
+            aceleracaoGelo(0.15f),
+            velocidadeMaximaGelo(8.0f)
         {
-            danoso = false;
+            id = Id::Plataforma;
 
-            texturas = pGG->carregar_texturas("./assets/plataforma.png");
-            corpo.setTexture(texturas);
+            danoso = false;
+            colidivel = true;
+
+            forma.setTexture(*pGG->getTextura(Texturas::Plataforma));
+            setFigura(&forma);
+        }
+
+        Plataforma::Plataforma(sf::Vector2f pos) :
+            Obstaculo(pos),
+            aceleracaoGelo(0.15f),
+            velocidadeMaximaGelo(8.0f)
+        {
+            id = Id::Plataforma;
+
+            danoso = false;
+            colidivel = true;
+
+            forma.setTexture(*pGG->getTextura(Texturas::Plataforma));
+            forma.setPosition(pos);
+
+            setFigura(&forma);
+        }
+
+        Plataforma::Plataforma(sf::Vector2f pos, sf::Vector2f tamanho) :
+            Obstaculo(pos),
+            aceleracaoGelo(0.15f),
+            velocidadeMaximaGelo(8.0f)
+        {
+            id = Id::Plataforma;
+
+            danoso = false;
+            colidivel = true;
+
+            forma.setTexture(*pGG->getTextura(Texturas::Plataforma));
+            forma.setPosition(pos);
+
+            sf::FloatRect limites = forma.getLocalBounds();
+
+            if (limites.width > 0.f && limites.height > 0.f)
+            {
+                forma.setScale(
+                    tamanho.x / limites.width,
+                    tamanho.y / limites.height
+                );
+            }
+
+            setFigura(&forma);
         }
 
         Plataforma::~Plataforma()
@@ -19,71 +66,63 @@ namespace Entidades
 
         void Plataforma::executar()
         {
-            // Plataforma fixa. Não precisa mover.
+            /*
+                Plataforma é uma Entidade, mas neste caso é fixa.
+                Então ela não aplica gravidade nem move.
+
+                Se depois você quiser plataforma móvel ou plataforma que cai,
+                aí podemos chamar aplicarGravidade() e mover() aqui.
+            */
         }
 
-        void Plataforma::obstaculizar(Entidades::Entidade* outro, std::string direcao)
+        void Plataforma::obstaculizar(Personagens::Jogador* jogador)
         {
-            if (!outro || !outro->get_vivo())
+            if (!jogador || !jogador->ativado())
             {
                 return;
             }
 
-            sf::Vector2f vel = outro->get_vel();
+            /*
+                Efeito de gelo:
+                se o jogador já está se movendo para algum lado,
+                aumenta um pouco a velocidade horizontal dele.
 
-            Entidades::Personagens::Personagem* personagem =
-                dynamic_cast<Entidades::Personagens::Personagem*>(outro);
+                Não zeramos velocidade Y aqui porque você pediu para não fazer isso.
+                Quem resolve a colisão vertical é o GerenciadorColisao + Personagem::colidiu().
+            */
 
-            if (direcao == "Embaixo")
+            sf::Vector2f velJog = jogador->getVelocidade();
+
+            if (velJog.x > 0.f)
             {
-                vel.y = 0.0f;
+                velJog.x += aceleracaoGelo;
 
-                if (personagem)
+                if (velJog.x > velocidadeMaximaGelo)
                 {
-                    personagem->set_noChao(true);
-                }
-
-                /*
-                    Efeito de gelo:
-                    se a entidade já está se movendo na horizontal,
-                    ela escorrega mais um pouco.
-                */
-                vel.x *= ESCORREGAMENTO_GELO;
-
-                if (vel.x > VELOCIDADE_MAX_GELO)
-                {
-                    vel.x = VELOCIDADE_MAX_GELO;
-                }
-                else if (vel.x < -VELOCIDADE_MAX_GELO)
-                {
-                    vel.x = -VELOCIDADE_MAX_GELO;
+                    velJog.x = velocidadeMaximaGelo;
                 }
             }
-            else if (direcao == "Emcima" || direcao == "Cima")
+            else if (velJog.x < 0.f)
             {
-                vel.y = 0.0f;
-            }
-            else if (direcao == "Esquerda" || direcao == "Direita")
-            {
-                vel.x = 0.0f;
+                velJog.x -= aceleracaoGelo;
+
+                if (velJog.x < -velocidadeMaximaGelo)
+                {
+                    velJog.x = -velocidadeMaximaGelo;
+                }
             }
 
-            outro->set_vel(vel);
+            jogador->setVelocidade(velJog);
         }
 
-        void Plataforma::salvarDataBuffer()
+        std::string Plataforma::salvar()
         {
-            Obstaculo::salvarDataBuffer();
+            salvarObstaculo();
 
-            bufferSalvar
-                << "Plataforma" << ' '
-                << altura << '\n';
-        }
+            buffer << aceleracaoGelo << " ";
+            buffer << velocidadeMaximaGelo << " ";
 
-        void Plataforma::salvar(std::ostream& out)
-        {
-            salvarDataBuffer();
-            out << getBufferSalvar();
+            return buffer.str();
         }
     }
 }

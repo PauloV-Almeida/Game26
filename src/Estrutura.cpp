@@ -1,60 +1,119 @@
 #include "../include/Estrutura.h"
 
-namespace Entidades {
-	Entidades::Estrutura::Estrutura(sf::Vector2f pos, TipoEstrutura tipoEstrutura)
-		:Entidade(pos)
-	{
-		id = Id::Estrutura;
-		tipo = tipoEstrutura;
-		formatarEstrutura(tipo);
-	}
+namespace Entidades
+{
+    Estrutura::Estrutura() :
+        Entidade(),
+        tipoEstrutura(TipoEstrutura::NULO)
+    {
+        id = Id::Estrutura;
+        configurarTextura();
+    }
 
-	Estrutura::Estrutura()
-	{
+    Estrutura::Estrutura(sf::Vector2f pos, TipoEstrutura tipo) :
+        Entidade(pos),
+        tipoEstrutura(tipo)
+    {
+        id = Id::Estrutura;
+        configurarTextura();
+    }
 
-	}
+    Estrutura::Estrutura(sf::Vector2f pos, TipoEstrutura tipo, sf::Vector2f tamanho) :
+        Entidade(pos),
+        tipoEstrutura(tipo)
+    {
+        id = Id::Estrutura;
+        configurarTextura();
+        configurarTamanho(tamanho);
+    }
 
-	Estrutura::~Estrutura()
-	{
+    Estrutura::~Estrutura()
+    {}
 
-	}
+    TipoEstrutura Estrutura::getTipoEstrutura() const
+    {
+        return tipoEstrutura;
+    }
 
-	void Estrutura::formatarEstrutura(TipoEstrutura tipoE)
-	{
-		if (tipoE == TipoEstrutura::CHAO)
-		{
-			forma.setTexture(*pGG->getTextura(Texturas::chao));
-			forma.setTextureRect(sf::IntRect(192, 96, 96, 32));
-			forma.setScale(1.1, 1.1);
-		}
-		else
-		{
-			forma.setTexture(*pGG->getTextura(Texturas::parede));
-			forma.setTextureRect(sf::IntRect(0, 400, 100, 300));
-			forma.setScale(1.1, 1.1);
-		}
-	}
+    void Estrutura::setTipoEstrutura(TipoEstrutura tipo)
+    {
+        tipoEstrutura = tipo;
+        configurarTextura();
+    }
 
-	void Estrutura::executar()
-	{
+    void Estrutura::configurarTextura()
+    {
+        switch (tipoEstrutura)
+        {
+        case TipoEstrutura::CHAO:
+            forma.setTexture(*pGG->getTextura(Texturas::chao));
+            break;
 
-	}
-	std::string Estrutura::salvar() {
-		salvarEstrutura();
-		return buffer.str();
-	}
-	void Estrutura::salvarEstrutura()
-	{
-		salvarEntidade();
-		switch (tipo) {
-		case TipoEstrutura::CHAO: {
-			buffer << "CHAO";
-			break;
-		}
-		case TipoEstrutura::PAREDE: {
-			buffer << "PAREDE";
-			break;
-		}
-		}
-	}
+        case TipoEstrutura::PAREDE:
+            forma.setTexture(*pGG->getTextura(Texturas::parede));
+            break;
+
+        default:
+            break;
+        }
+
+        setFigura(&forma);
+    }
+
+    void Estrutura::configurarTamanho(sf::Vector2f tamanho)
+    {
+        sf::FloatRect limites = forma.getLocalBounds();
+
+        if (limites.width > 0.f && limites.height > 0.f)
+        {
+            forma.setScale(
+                tamanho.x / limites.width,
+                tamanho.y / limites.height
+            );
+        }
+    }
+
+    void Estrutura::executar()
+    {
+        /*
+            Estrutura é chão/parede.
+            Ela é uma Entidade, mas é fixa.
+
+            Por isso NÃO chamamos:
+                aplicarGravidade();
+                mover();
+
+            Quem colide com ela é tratado no GerenciadorColisao.
+        */
+    }
+
+    void Estrutura::desenhar()
+    {
+        if (ativo)
+        {
+            Ente::desenhar();
+        }
+    }
+
+    std::string Estrutura::salvar()
+    {
+        salvarEntidade();
+
+        switch (tipoEstrutura)
+        {
+        case TipoEstrutura::CHAO:
+            buffer << "CHAO ";
+            break;
+
+        case TipoEstrutura::PAREDE:
+            buffer << "PAREDE ";
+            break;
+
+        default:
+            buffer << "NULO ";
+            break;
+        }
+
+        return buffer.str();
+    }
 }

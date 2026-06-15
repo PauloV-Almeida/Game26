@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Ente.h"
-#include <fstream>
-#include <sstream>
-#include <ostream>
 #include "Texturas.h"
 
+#include <sstream>
+#include <string>
 
 namespace Entidades
 {
@@ -14,37 +13,46 @@ namespace Entidades
     protected:
         int idUni;
         static int contarEntidades;
-        sf::Vector2f posicao;
+
         sf::Sprite forma;
-        sf::Vector2f vel;     
-        
+        sf::Vector2f vel;
+
         bool ativo;
         std::ostringstream buffer;
+
+        static constexpr float gravidade = 0.35f;
 
     public:
         Entidade();
         Entidade(sf::Vector2f pos);
         virtual ~Entidade();
- 
 
         sf::Vector2f getCentro() const;
         sf::Vector2f getPosicao() const;
-        int getIdUnico() const;
-        virtual sf::FloatRect getLimites() const;
-        bool ativado() const;
-        
-        void setIdUni(int id);
-        virtual void setAtivo(bool);
-        void setPosicao(float x, float y);
-        void setVelocidade(float x, float y);
+        sf::Vector2f getVelocidade() const;
+        sf::FloatRect getLimites() const;
 
+        int getIdUnico() const;
+        bool ativado() const;
+
+        void setIdUnico(int id);
+        virtual void setAtivo(bool at);
         void desativar();
-        void mover();
-        void mudarVelocidade(sf::Vector2f addVelo);
+
+        void setPosicao(float x, float y);
+        void setPosicao(sf::Vector2f pos);
+
+        void setVelocidade(float x, float y);
+        void setVelocidade(sf::Vector2f novaVel);
+
+        void mudarVelocidade(sf::Vector2f addVel);
+
+        virtual void aplicarGravidade();
+        virtual void mover();
 
         void salvarEntidade();
+
         virtual std::string salvar() = 0;
         virtual void executar() = 0;
-
     };
 }

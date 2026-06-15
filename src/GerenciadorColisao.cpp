@@ -71,6 +71,7 @@ namespace Gerenciadores
                 {
                     if (verificarColisao(jogador1, inimigo))
                     {
+						jogador1->colidir(inimigo);
                         inimigo->danificar(jogador1);
                     }
                 }
@@ -85,6 +86,7 @@ namespace Gerenciadores
                 {
                     if (verificarColisao(jogador2, inimigo))
                     {
+						jogador2->colidir(inimigo);
                         inimigo->danificar(jogador2);
                     }
                 }
