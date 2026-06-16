@@ -114,8 +114,8 @@ namespace Gerenciadores
 	{
 		sf::Texture tempText;
 		try {
-			if (!tempText.loadFromFile("texturas/fireball.PNG")) {
-				throw std::exception("Falha ao carregar textura fireball.PNG");
+			if (!tempText.loadFromFile("texturas/raio.PNG")) {
+				throw std::exception("Falha ao carregar textura raio.PNG");
 			}
 			mapTexturas.insert({ Texturas::projetil, tempText });
 

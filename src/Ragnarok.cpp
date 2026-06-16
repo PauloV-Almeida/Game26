@@ -17,6 +17,7 @@ Ragnarok::Ragnarok() :
     );
 
     pGEst = new Gerenciadores::GerenciadorEstado(jogador1, jogador2);
+    executar();
 }
 
 Ragnarok::~Ragnarok()

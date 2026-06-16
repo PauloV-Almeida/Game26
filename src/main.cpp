@@ -6,6 +6,7 @@ int main()
 {
     srand(static_cast<unsigned int>(time(nullptr)));
     Ragnarok jogo;
+	
 
     return 0;
 }
