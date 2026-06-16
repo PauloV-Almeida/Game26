@@ -19,7 +19,7 @@ namespace Gerenciadores
 		janAltura(ALTURA_JANELA),
 		padraoView(sf::FloatRect(0.f, 0.f, janLargura, janAltura))
 	{
-		janela = new sf::RenderWindow(sf::VideoMode(janLargura, janAltura), "Ragnarok++", sf::Style::Close | sf::Style::Titlebar);
+		janela = new sf::RenderWindow(sf::VideoMode(janLargura, janAltura), "Ragnarok++");
 		font = new sf::Font();
 		carregarTexturas();
 	

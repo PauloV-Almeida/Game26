@@ -103,7 +103,7 @@ namespace Fases {
 		hub.setPlayer(jogador1);
 		pGG->setView(view);
 
-		std::ifstream arquivo("../salvar/salvar.txt");
+		std::ifstream arquivo("salvar/salvar.txt");
 
 		if (!arquivo.is_open())
 		{
@@ -475,7 +475,7 @@ namespace Fases {
 	}
 
 	void Fase::salvar() {
-		std::ofstream arquivo("save.txt");
+		std::ofstream arquivo("salvar/save.txt");
 		if (arquivo.is_open()) {
 			arquivo << id << std::endl;
 			arquivo << jogador2Ativo << std::endl;
