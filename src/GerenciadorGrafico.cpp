@@ -93,13 +93,13 @@ namespace Gerenciadores
 			}
 			mapTexturas.insert({ Texturas::runa, tempText });
 
-			if (!tempText.loadFromFile("texturas/arvore.PNG")) {
-				throw std::exception("Falha ao carregar textura arvore.PNG");
+			if (!tempText.loadFromFile("texturas/parede.PNG")) {
+				throw std::exception("Falha ao carregar textura parede.PNG");
 			}
 			mapTexturas.insert({ Texturas::parede, tempText });
 
-			if (!tempText.loadFromFile("texturas/tileset_32x32.PNG")) {
-				throw std::exception("Falha ao carregar textura tileset_32x32.PNG");
+			if (!tempText.loadFromFile("texturas/chao.PNG")) {
+				throw std::exception("Falha ao carregar textura chao.PNG");
 			}
 			mapTexturas.insert({ Texturas::chao, tempText });
 
