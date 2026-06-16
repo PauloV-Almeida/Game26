@@ -32,7 +32,7 @@ namespace Fases
     class Fase : public State
     {
     protected:
-        static constexpr float TAM_TILE = 32.f;
+        static constexpr float TAM_TILE = 64.f;
 
 		std::string caminhoMapa;
 

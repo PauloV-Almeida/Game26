@@ -10,7 +10,7 @@ namespace Fases {
 		view(pGG->getPadraoView()),
 		areaPassagem(),
 		possuiPassagem(false),
-		caminhoMapa("./assents/mapaFloGelo.txt")
+		caminhoMapa("assets/mapaFloGelo.txt")
 	{
 		mediador = mediadorEventos::getMediadorEventos();
 		pontuacaoTotal = 0;

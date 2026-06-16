@@ -10,7 +10,7 @@ namespace Fases
         Fase(jg1, jg2, carregaArquivo)
     {
         id = 1;
-        caminhoMapa = "../assents/mapaFloGelo.txt";
+        caminhoMapa = "assets/mapaFloGelo.txt";
 
         if (carregaArquivo)
         {
