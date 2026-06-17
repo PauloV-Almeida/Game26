@@ -11,50 +11,35 @@ namespace Entidades
         {
         protected:
             int num_vidas;
-
-            bool noChao;
-            bool travado;
-
-            float velocidadeMovimento;
-            float velocidadeMaxima;
-            float forcaPulo;
-
-        protected:
-            void limitarVelocidade();
-            void salvarPersonagem();
-
+			float maxVelocidade;
+            float velMovimento;
+            sf::Clock RelogioTempoPulo;
+			float tempoPulo = 0.2;
+            int pulos = 2;
+            int dano = 2;
+            
+			Direcao direcao;
         public:
             Personagem();
             Personagem(sf::Vector2f pos);
             virtual ~Personagem();
 
-            int getNumVidas() const;
-            bool vivo() const;
-
-            bool getNoChao() const;
-            bool estaTravado() const;
-
-            float getVelocidadeMovimento() const;
-            float getVelocidadeMaxima() const;
-            float getForcaPulo() const;
-
-            void setNumVidas(int vidas);
-            void setNoChao(bool estado);
-            void setTravado(bool estado);
-
-            void setVelocidadeMovimento(float velocidade);
-            void setVelocidadeMaxima(float velocidade);
-            void setForcaPulo(float forca);
-
-            void tirarVida(int dano);
-            void recuperarVida(int qtd);
-
-            virtual void aplicarGravidade();
-            virtual void atualizarFisica();
-
-            virtual void colidiu(Direcao direcao);
             virtual void colidiu(Entidade* entidade, Direcao direcao);
 
+            const Direcao getDirecao() const;
+            const int getNumVidas() const;
+            const bool vivo() const;
+            const int getDanoBase() const;
+
+            void setNumVida(int vida);
+            void setPulos(int pulos);
+
+            virtual void aumentarPontos() = 0;
+            void tiraVida(int dano);
+            void setMoveVelocidade(float moveSpeed);
+			void atualizarFisica();
+
+            void salvarDataBuffer();
             virtual void executar() = 0;
             virtual std::string salvar() = 0;
         };

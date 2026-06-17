@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Ente.h"
+#include "Direcao.h"
 #include "Texturas.h"
 
 #include <sstream>
@@ -14,43 +15,38 @@ namespace Entidades
         int idUni;
         static int contarEntidades;
 
+		sf::Vector2f posicao;
         sf::Sprite forma;
-        sf::Vector2f vel;
+        sf::Vector2f velo;
 
         bool ativo;
         std::ostringstream buffer;
 
         static constexpr float gravidade = 0.35f;
-
+    protected:
+        void salvarDataBuffer();
     public:
         Entidade();
         Entidade(sf::Vector2f pos);
         virtual ~Entidade();
 
-        sf::Vector2f getCentro() const;
-        sf::Vector2f getPosicao() const;
-        sf::Vector2f getVelocidade() const;
-        sf::FloatRect getLimites() const;
-
-        int getIdUnico() const;
-        bool ativado() const;
-
+        const sf::Vector2f getCentro();
+        const sf::Vector2f getPosicao();
+        const virtual sf::FloatRect getLimites();
+        const int getIdUnico() const;
         void setIdUnico(int id);
+        
+        bool ativado() const;               
         virtual void setAtivo(bool at);
         void desativar();
 
         void setPosicao(float x, float y);
-        void setPosicao(sf::Vector2f pos);
-
         void setVelocidade(float x, float y);
-        void setVelocidade(sf::Vector2f novaVel);
-
+        
         void mudarVelocidade(sf::Vector2f addVel);
 
         virtual void aplicarGravidade();
         virtual void mover();
-
-        void salvarEntidade();
 
         virtual std::string salvar() = 0;
         virtual void executar() = 0;

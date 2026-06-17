@@ -5,117 +5,69 @@ int Entidades::Entidade::contarEntidades = 0;
 namespace Entidades
 {
     Entidade::Entidade() :
-        idUni(contarEntidades++),
-        forma(),
-        vel(0.f, 0.f),
-        ativo(true),
+		posicao(sf::Vector2f(0.f, 0.f)),
+        velo(0.f, 0.f),
         buffer()
     {
-        forma.setPosition(0.f, 0.f);
+		idUni = contarEntidades++;
+		ativo = 1;
+        forma.scale(3,3);
+        forma.setPosition(posicao);
         setFigura(&forma);
     }
 
     Entidade::Entidade(sf::Vector2f pos) :
-        idUni(contarEntidades++),
-        forma(),
-        vel(0.f, 0.f),
-        ativo(true),
+		posicao(pos),
+        velo(0.f, 0.f),
         buffer()
     {
-        forma.setPosition(pos);
+        idUni = contarEntidades++;
+        ativo = 1;
+        forma.scale(3, 3);
+        forma.setPosition(posicao);
         setFigura(&forma);
     }
 
     Entidade::~Entidade()
     {}
 
-    sf::Vector2f Entidade::getCentro() const
+    const sf::Vector2f Entidade::getCentro()
     {
-        sf::FloatRect limites = forma.getGlobalBounds();
+        sf::Vector2f center;
 
-        return sf::Vector2f(
-            limites.left + limites.width / 2.f,
-            limites.top + limites.height / 2.f
-        );
+        center.x = forma.getGlobalBounds().left + forma.getGlobalBounds().width / 2.f;
+
+        center.y = forma.getGlobalBounds().top + forma.getGlobalBounds().height / 2.f;
+
+        return center;
     }
 
-    sf::Vector2f Entidade::getPosicao() const
+    const sf::Vector2f Entidade::getPosicao()
     {
         return forma.getPosition();
     }
 
-    sf::Vector2f Entidade::getVelocidade() const
-    {
-        return vel;
-    }
-
-    sf::FloatRect Entidade::getLimites() const
-    {
-        return forma.getGlobalBounds();
-    }
-
-    int Entidade::getIdUnico() const
+    const int Entidade::getIdUnico() const
     {
         return idUni;
     }
 
-    bool Entidade::ativado() const
-    {
-        return ativo;
-    }
-
-    void Entidade::setIdUnico(int id)
-    {
-        idUni = id;
-    }
-
-    void Entidade::setAtivo(bool at)
-    {
-        ativo = at;
-    }
-
-    void Entidade::desativar()
-    {
-        ativo = false;
-    }
-
-    void Entidade::setPosicao(float x, float y)
-    {
-        forma.setPosition(x, y);
-    }
-
-    void Entidade::setPosicao(sf::Vector2f pos)
-    {
-        forma.setPosition(pos);
-    }
-
-    void Entidade::setVelocidade(float x, float y)
-    {
-        vel.x = x;
-        vel.y = y;
-    }
-
-    void Entidade::setVelocidade(sf::Vector2f novaVel)
-    {
-        vel = novaVel;
-    }
-
-    void Entidade::mudarVelocidade(sf::Vector2f addVel)
-    {
-        vel += addVel;
-    }
-
-    void Entidade::aplicarGravidade()
-    {
-        vel.y += gravidade;
-    }
+	const sf::FloatRect Entidade::getLimites()
+	{
+		return forma.getGlobalBounds();
+	}
 
     void Entidade::mover()
     {
-        forma.move(vel);
+		forma.move(velo);
     }
 
-    void Entidade::salvarEntidade()
+	void Entidade::mudarVelocidade(sf::Vector2f addVel)
+	{
+		velo += addVel;
+	}
+
+    void Entidade::salvarDataBuffer()
     {
         buffer.str("");
         buffer.clear();
@@ -159,7 +111,6 @@ namespace Entidades
             break;
 
         default:
-            buffer << "NULO ";
             break;
         }
 
@@ -167,7 +118,41 @@ namespace Entidades
         buffer << ativo << " ";
         buffer << getPosicao().x << " ";
         buffer << getPosicao().y << " ";
-        buffer << vel.x << " ";
-        buffer << vel.y << " ";
+        buffer << velo.x << " ";
+        buffer << velo.y << " ";
     }
+
+    void Entidade::desativar() {
+        ativo = 0;
+    }
+
+	bool Entidade::ativado() const {
+		return ativo;
+	}
+
+	void Entidade::setAtivo(bool at)
+	{
+		ativo = at;
+	}
+
+	void Entidade::setIdUnico(int id)
+	{
+		idUni = id;
+	}
+
+    void Entidade::aplicarGravidade()
+	{
+		velo.y += gravidade;
+	}
+
+	void Entidade::setPosicao(float x, float y)
+	{
+		forma.setPosition(x, y);
+	}
+
+	void Entidade::setVelocidade(float x, float y)
+	{
+		velo.x = x;
+		velo.y = y;
+	}
 }
