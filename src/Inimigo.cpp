@@ -13,10 +13,11 @@ namespace Entidades
             Personagem(pos),
             danoContatoRelogio(),
             danotempoContato(1.f),
-            nivel_maldade(0),
+            nivel_maldade(2),
             pJogador(jogador),
             raioVisao(250.f)
         {
+            setNivelMaldade(1 + (rand() % 10));
             quantidadeInimigos++;
         }
 
@@ -33,12 +34,14 @@ namespace Entidades
             return quantidadeInimigos;
         }
 
-        void Inimigo::setNivelMaldade(int maldade)
-        {
-            nivel_maldade = maldade;
+		void Inimigo::setNivelMaldade(int maldade)
+		{
+			nivel_maldade = maldade;
+		}
 
-            float escala = 1.f + static_cast<float>(nivel_maldade) / 10.f;
-            forma.setScale(escala, escala);
+        int Inimigo::getNivelMaldade()
+        {
+            return nivel_maldade;
         }
 
         void Inimigo::zerarInimigos()

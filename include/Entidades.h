@@ -44,6 +44,7 @@ namespace Entidades
         void setVelocidade(float x, float y);
         
         void mudarVelocidade(sf::Vector2f addVel);
+        const sf::Vector2f getVelocidade() const;
 
         virtual void aplicarGravidade();
         virtual void mover();

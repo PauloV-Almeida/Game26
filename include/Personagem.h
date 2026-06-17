@@ -17,6 +17,7 @@ namespace Entidades
 			float tempoPulo = 0.2;
             int pulos = 2;
             int dano = 2;
+            bool travado;
             
 			Direcao direcao;
         public:
@@ -34,6 +35,8 @@ namespace Entidades
             void setNumVida(int vida);
             void setPulos(int pulos);
 
+            bool estaTravado() const;
+            void setTravado(bool estado);
             
             void tiraVida(int dano);
             void setMoveVelocidade(float moveSpeed);

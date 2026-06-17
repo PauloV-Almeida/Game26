@@ -40,9 +40,9 @@ namespace Entidades
             colidivel = estado;
         }
 
-        void Obstaculo::salvarObstaculo()
+        void Obstaculo::salvarDataBuffer()
         {
-            salvarEntidade();
+            Entidade::salvarDataBuffer();
 
             buffer << danoso << " ";
             buffer << colidivel << " ";

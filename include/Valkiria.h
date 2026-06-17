@@ -9,25 +9,17 @@ namespace Entidades
         class Valkiria : public Inimigo
         {
         private:
-            float forcaEmpurraoBase;
-            float forcaEmpurraoMaxima;
-
-            float escalaX;
-            float escalaY;
-
-        private:
-            void empurrarJogador(Jogador* jogador);
+            float empurrar;
 
         public:
-            Valkiria();
-            Valkiria(sf::Vector2f pos);
-            Valkiria(sf::Vector2f pos, Jogador* j1, Jogador* j2 = nullptr);
-            ~Valkiria();
+            Valkiria(sf::Vector2f pos, Jogador* jogador);
+            virtual ~Valkiria();
 
-            void danificar(Jogador* jogador);
+            void danificar(Jogador* jogador) override;
 
-            void executar();
-            std::string salvar();
+            void executar() override;
+            std::string salvar() override;
+            void salvarDataBuffer();
         };
     }
 }

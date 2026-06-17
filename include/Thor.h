@@ -10,39 +10,23 @@ namespace Entidades
         class Thor : public Inimigo
         {
         private:
-            Projetil* projetilAtual;
+            short int forca;
 
-            float raioDisparo;
-            float intervaloDisparo;
-            float velocidadeProjetil;
-
-            int danoProjetil;
-
-            sf::Clock relogioDisparo;
-
-            float escalaX;
-            float escalaY;
-
-        private:
-            bool podeDisparar();
-            void dispararProjetil(Jogador* jogador);
+            Projetil* projetil;
+            sf::Clock relogioProjetil;
+            float intervaloProjetil;
 
         public:
-            Thor();
-            Thor(sf::Vector2f pos);
-            Thor(sf::Vector2f pos, Jogador* j1, Jogador* j2 = nullptr);
-            ~Thor();
+            Thor(sf::Vector2f pos, Jogador* jogador, Projetil* projetil = nullptr);
+            virtual ~Thor();
 
-            Projetil* getProjetilAtual() const;
+            void setProjetil(Projetil* pProjetil);
 
-            void setProjetilAtual(Projetil* projetil);
-            void setVelocidadeProjetil(float velocidade);
-            void setDanoProjetil(int dano);
+            void danificar(Jogador* jogador) override;
+            void executar() override;
 
-            void danificar(Jogador* jogador);
-
-            void executar();
-            std::string salvar();
+            std::string salvar() override;
+            void salvarDataBuffer();
         };
     }
 }

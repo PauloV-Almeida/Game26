@@ -15,15 +15,15 @@ namespace Entidades
     {
     private:
         int dano;
-        float velocidadeInicial;
+        int veloProjetil;
+
+        bool lancado;
 
         sf::Vector2f posicaoAlvo;
-        bool lancado;
 
     public:
         Projetil();
-        Projetil(sf::Vector2f posInicial, sf::Vector2f alvo);
-        Projetil(sf::Vector2f posInicial, sf::Vector2f alvo, float velocidade, int danoBase);
+        Projetil(sf::Vector2f pos);
         virtual ~Projetil();
 
         int getDano() const;
@@ -31,14 +31,16 @@ namespace Entidades
         sf::Vector2f getPosicaoAlvo() const;
 
         void setDano(int danoBase);
-        void setVelocidadeInicial(float velocidade);
+        void setVelocidadeInicial(int velocidade);
 
-        void lancar(sf::Vector2f posInicial, sf::Vector2f alvo);
+        void lancar(sf::Vector2f origem, sf::Vector2f alvo, int aumentoVelo);
 
         void colidir(Personagens::Jogador* jogador);
         void colidir(Estrutura* estrutura);
 
-        void executar();
-        std::string salvar();
+        void executar() override;
+
+        void salvarDataBuffer();
+        std::string salvar() override;
     };
 }

@@ -5,281 +5,148 @@ namespace Entidades
 {
     namespace Personagens
     {
-        Thor::Thor() :
-            Inimigo(),
-            projetilAtual(nullptr),
-            raioDisparo(420.f),
-            intervaloDisparo(2.0f),
-            velocidadeProjetil(7.0f),
-            danoProjetil(3),
-            relogioDisparo(),
-            escalaX(1.0f),
-            escalaY(1.0f)
+        Thor::Thor(sf::Vector2f pos, Jogador* jogador, Projetil* projetil) :
+            Inimigo(pos, jogador),
+            forca(3 + rand() % 5),
+            projetil(projetil),
+            relogioProjetil(),
+            intervaloProjetil(2.f)
         {
             id = Id::Thor;
 
-            num_vidas = 12;
+            setNivelMaldade(1 + rand() % 10);
 
-            danoBase = 2;
-            danoMaximo = 6;
+            /*
+                Boss:
+                nivel_maldade duplica/influencia muito a vida.
+            */
+            num_vidas = 10 + (getNivelMaldade() * 2);
 
-            nivel_maldade = 3;
-
-            raioVisao = 500.f;
-            raioAtaque = 60.f;
-
-            velocidadeMovimento = 0.9f;
-            velocidadeMaxima = 2.5f;
-
-            intervaloAtaque = 1.2f;
+            /*
+                forca aumenta o alcance do Thor.
+            */
+            raioVisao = 450.f + static_cast<float>(forca * 2);
 
             forma.setTexture(*pGG->getTextura(Texturas::thor));
-            forma.setScale(escalaX, escalaY);
+            forma.setTextureRect(sf::IntRect(0, 0, 81, 89));
 
-            setFigura(&forma);
-        }
-
-        Thor::Thor(sf::Vector2f pos) :
-            Inimigo(pos),
-            projetilAtual(nullptr),
-            raioDisparo(420.f),
-            intervaloDisparo(2.0f),
-            velocidadeProjetil(7.0f),
-            danoProjetil(3),
-            relogioDisparo(),
-            escalaX(1.0f),
-            escalaY(1.0f)
-        {
-            id = Id::Thor;
-
-            num_vidas = 12;
-
-            danoBase = 2;
-            danoMaximo = 6;
-
-            nivel_maldade = 3;
-
-            raioVisao = 500.f;
-            raioAtaque = 60.f;
-
-            velocidadeMovimento = 0.9f;
-            velocidadeMaxima = 2.5f;
-
-            intervaloAtaque = 1.2f;
-
-            forma.setTexture(*pGG->getTextura(Texturas::thor));
-            forma.setPosition(pos);
-            forma.setScale(escalaX, escalaY);
-
-            setFigura(&forma);
-        }
-
-        Thor::Thor(sf::Vector2f pos, Jogador* j1, Jogador* j2) :
-            Inimigo(pos, j1, j2),
-            projetilAtual(nullptr),
-            raioDisparo(420.f),
-            intervaloDisparo(2.0f),
-            velocidadeProjetil(7.0f),
-            danoProjetil(3),
-            relogioDisparo(),
-            escalaX(1.0f),
-            escalaY(1.0f)
-        {
-            id = Id::Thor;
-
-            num_vidas = 12;
-
-            danoBase = 2;
-            danoMaximo = 6;
-
-            nivel_maldade = 3;
-
-            raioVisao = 500.f;
-            raioAtaque = 60.f;
-
-            velocidadeMovimento = 0.9f;
-            velocidadeMaxima = 2.5f;
-
-            intervaloAtaque = 1.2f;
-
-            forma.setTexture(*pGG->getTextura(Texturas::thor));
-            forma.setPosition(pos);
-            forma.setScale(escalaX, escalaY);
+            /*
+                Boss pode ser maior, mas cuidado com tile 64.
+                1.1 deixa ele maior que inimigo comum sem ficar absurdo.
+            */
+            forma.setScale(1.1f, 1.1f);
 
             setFigura(&forma);
         }
 
         Thor::~Thor()
         {
-            /*
-                Atenção:
-                Se o projetilAtual estiver dentro da ListaEntidades,
-                quem deve deletar é a ListaEntidades.
-
-                Por isso aqui só limpamos o ponteiro.
-            */
-            projetilAtual = nullptr;
+            projetil = nullptr;
         }
 
-        Projetil* Thor::getProjetilAtual() const
+        void Thor::setProjetil(Projetil* pProjetil)
         {
-            return projetilAtual;
-        }
-
-        void Thor::setProjetilAtual(Projetil* projetil)
-        {
-            projetilAtual = projetil;
-        }
-
-        void Thor::setVelocidadeProjetil(float velocidade)
-        {
-            if (velocidade < 0.f)
-            {
-                velocidade = 0.f;
-            }
-
-            velocidadeProjetil = velocidade;
-        }
-
-        void Thor::setDanoProjetil(int dano)
-        {
-            if (dano < 0)
-            {
-                dano = 0;
-            }
-
-            danoProjetil = dano;
-        }
-
-        bool Thor::podeDisparar()
-        {
-            return relogioDisparo.getElapsedTime().asSeconds() >= intervaloDisparo;
-        }
-
-        void Thor::dispararProjetil(Jogador* jogador)
-        {
-            if (!jogador || !jogador->ativado() || !jogador->vivo())
-            {
-                return;
-            }
-
-            if (!podeDisparar())
-            {
-                return;
-            }
-
-            /*
-                O projétil mira na posição atual do jogador.
-                Depois disso, ele não persegue mais.
-            */
-            sf::Vector2f posInicial = getCentro();
-            sf::Vector2f posAlvo = jogador->getCentro();
-
-            if (!projetilAtual)
-            {
-                projetilAtual = new Projetil(
-                    posInicial,
-                    posAlvo,
-                    velocidadeProjetil,
-                    danoProjetil
-                );
-            }
-            else
-            {
-                projetilAtual->setDano(danoProjetil);
-                projetilAtual->setVelocidadeInicial(velocidadeProjetil);
-                projetilAtual->lancar(posInicial, posAlvo);
-            }
-
-            relogioDisparo.restart();
+            projetil = pProjetil;
         }
 
         void Thor::danificar(Jogador* jogador)
         {
-            if (!jogador || !jogador->ativado() || !jogador->vivo())
+            if (!jogador)
             {
                 return;
             }
 
-            /*
-                Ataque corpo a corpo:
-                só acontece se o jogador estiver bem perto.
-            */
-            if (!jogadorNoRaioAtaque(jogador))
+            if (!ativado() || !vivo())
             {
                 return;
             }
 
-            if (!podeAtacar())
+            if (danoContatoRelogio.getElapsedTime().asSeconds() >= danotempoContato)
             {
-                return;
+                /*
+                    Dano corpo a corpo do Thor:
+                    usa dano base herdado.
+                */
+                jogador->tiraVida(getDanoBase());
+
+                danoContatoRelogio.restart();
             }
-
-            int danoAtual = calcularDanoAtual();
-
-            jogador->tirarVida(danoAtual);
-
-            relogioAtaque.restart();
         }
 
         void Thor::executar()
         {
-            if (!ativo)
+            if (!ativado())
             {
                 return;
             }
 
-            Jogador* alvo = escolherAlvo();
-
-            if (alvo)
+            if (!vivo())
             {
-                float distancia = calcularDistancia(alvo);
+                setAtivo(false);
+                return;
+            }
+
+            if (jogadorNoAlcance())
+            {
+                perseguirJogador();
 
                 /*
-                    Se estiver perto, Thor persegue e o GerenciadorColisao
-                    chama danificar(jogador) quando houver colisão.
-
-                    Se estiver em distância média/longe, ele pode lançar projétil.
+                    Disparo do raio:
+                    Thor lança o projétil em direção à posição atual do jogador.
+                    O projétil sobe primeiro e depois cai por gravidade.
                 */
-                if (distancia <= raioVisao)
+                if (projetil && !projetil->foiLancado())
                 {
-                    perseguir(alvo);
-
-                    if (distancia > raioAtaque && distancia <= raioDisparo)
+                    if (relogioProjetil.getElapsedTime().asSeconds() >= intervaloProjetil)
                     {
-                        dispararProjetil(alvo);
+                        sf::Vector2f origem = getCentro();
+                        sf::Vector2f alvo = pJogador->getCentro();
+
+                        projetil->setDano(getDanoBase());
+                        projetil->lancar(origem, alvo, forca);
+
+                        relogioProjetil.restart();
                     }
-                }
-                else
-                {
-                    andarAleatorio();
                 }
             }
             else
             {
-                andarAleatorio();
+                velo.x = 0.f;
+            }
+
+            if (direcao == Direcao::LEFT)
+            {
+                // Se tiver textura esquerda do Thor:
+                // forma.setTexture(*pGG->getTextura(Texturas::thorEsq));
+            }
+            else
+            {
+                forma.setTexture(*pGG->getTextura(Texturas::thor));
             }
 
             atualizarFisica();
-
-            if (projetilAtual && projetilAtual->ativado())
-            {
-                projetilAtual->executar();
-            }
         }
 
         std::string Thor::salvar()
         {
-            salvarInimigo();
-
-            buffer << raioDisparo << " ";
-            buffer << intervaloDisparo << " ";
-            buffer << velocidadeProjetil << " ";
-            buffer << danoProjetil << " ";
-            buffer << escalaX << " ";
-            buffer << escalaY << " ";
-
+            salvarDataBuffer();
             return buffer.str();
+        }
+
+        void Thor::salvarDataBuffer()
+        {
+            Inimigo::salvarDataBuffer();
+
+            buffer << forca << " ";
+
+            if (projetil)
+            {
+                buffer << projetil->getIdUnico() << " ";
+            }
+            else
+            {
+                buffer << -1 << " ";
+            }
         }
     }
 }

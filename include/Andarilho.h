@@ -9,19 +9,17 @@ namespace Entidades
         class Andarilho : public Inimigo
         {
         private:
-            float escalaX;
-            float escalaY;
+            int forca;
 
         public:
-            Andarilho();
-            Andarilho(sf::Vector2f pos);
-            Andarilho(sf::Vector2f pos, Jogador* j1, Jogador* j2 = nullptr);
-            ~Andarilho();
+            Andarilho(sf::Vector2f pos, Jogador* jogador);
+            virtual ~Andarilho();
 
-            void danificar(Jogador* jogador);
+            void danificar(Jogador* jogador) override;
 
-            void executar();
-            std::string salvar();
+            void executar() override;
+            std::string salvar() override;
+            void salvarDataBuffer();
         };
     }
 }

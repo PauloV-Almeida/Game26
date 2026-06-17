@@ -27,7 +27,8 @@ namespace Entidades
             Jogador* getPlayer() const;
             static int getQuantidadeInimigos();
 
-            void setNivelMaldade(int maldade);
+			void setNivelMaldade(int maldade);
+            int getNivelMaldade();
             static void zerarInimigos();
             void diminuirInimigos();
 

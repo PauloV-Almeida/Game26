@@ -5,88 +5,19 @@ namespace Entidades
 {
     namespace Personagens
     {
-        Andarilho::Andarilho() :
-            Inimigo(),
-            escalaX(1.0f),
-            escalaY(1.0f)
+        Andarilho::Andarilho(sf::Vector2f pos, Jogador* jogador) :
+            Inimigo(pos, jogador),
+            forca((1 + (rand() % 10)))
         {
             id = Id::Andarilho;
 
-            num_vidas = 2;
 
-            danoBase = 1;
-            danoMaximo = 3;
-
-            nivel_maldade = 1;
-
-            raioVisao = 260.f;
-            raioAtaque = 45.f;
-
-            velocidadeMovimento = 0.8f;
-            velocidadeMaxima = 2.0f;
-
-            intervaloAtaque = 1.0f;
+            num_vidas = 5 + getNivelMaldade();
+            raioVisao = 250.f;
 
             forma.setTexture(*pGG->getTextura(Texturas::andarilho));
-            forma.setScale(escalaX, escalaY);
-
-            setFigura(&forma);
-        }
-
-        Andarilho::Andarilho(sf::Vector2f pos) :
-            Inimigo(pos),
-            escalaX(1.0f),
-            escalaY(1.0f)
-        {
-            id = Id::Andarilho;
-
-            num_vidas = 2;
-
-            danoBase = 1;
-            danoMaximo = 3;
-
-            nivel_maldade = 1;
-
-            raioVisao = 260.f;
-            raioAtaque = 45.f;
-
-            velocidadeMovimento = 0.8f;
-            velocidadeMaxima = 2.0f;
-
-            intervaloAtaque = 1.0f;
-
-            forma.setTexture(*pGG->getTextura(Texturas::andarilho));
-            forma.setPosition(pos);
-            forma.setScale(escalaX, escalaY);
-
-            setFigura(&forma);
-        }
-
-        Andarilho::Andarilho(sf::Vector2f pos, Jogador* j1, Jogador* j2) :
-            Inimigo(pos, j1, j2),
-            escalaX(1.0f),
-            escalaY(1.0f)
-        {
-            id = Id::Andarilho;
-
-            num_vidas = 2;
-
-            danoBase = 1;
-            danoMaximo = 3;
-
-            nivel_maldade = 1;
-
-            raioVisao = 260.f;
-            raioAtaque = 45.f;
-
-            velocidadeMovimento = 0.8f;
-            velocidadeMaxima = 2.0f;
-
-            intervaloAtaque = 1.0f;
-
-            forma.setTexture(*pGG->getTextura(Texturas::andarilho));
-            forma.setPosition(pos);
-            forma.setScale(escalaX, escalaY);
+            forma.setTextureRect(sf::IntRect(0, 0, 81, 89));
+            forma.setScale(0.7f, 0.7f);
 
             setFigura(&forma);
         }
@@ -96,54 +27,82 @@ namespace Entidades
 
         void Andarilho::danificar(Jogador* jogador)
         {
-            if (!jogador || !jogador->ativado() || !jogador->vivo())
+            if (!jogador)
             {
                 return;
             }
 
-            if (!jogadorNoRaioAtaque(jogador))
+            if (!ativado())
             {
                 return;
             }
 
-            if (!podeAtacar())
+            if (!vivo())
             {
                 return;
             }
 
-            int danoAtual = calcularDanoAtual();
+            if (danoContatoRelogio.getElapsedTime().asSeconds() >= danotempoContato)
+            {
+                /*
+                    Dano:
+                    - dano herdado de Personagem: getDanoBase()
+                    - forca aumenta o dano principal
+                    - nivel_maldade dá um bônus menor
+                */
+                int danoFinal = getDanoBase() + forca;
 
-            jogador->tirarVida(danoAtual);
+                jogador->tiraVida(danoFinal);
 
-            relogioAtaque.restart();
+                danoContatoRelogio.restart();
+            }
         }
 
         void Andarilho::executar()
         {
-            if (!ativo)
+            if (!ativado())
             {
                 return;
             }
 
-            /*
-                Usa o comportamento padrão do Inimigo:
-                - escolhe alvo
-                - persegue se estiver no raio de visão
-                - anda aleatório se não tiver alvo
-                - aplica gravidade
-                - move
-            */
-            Inimigo::executar();
+            if (!vivo())
+            {
+                setAtivo(false);
+                return;
+            }
+
+            if (jogadorNoAlcance())
+            {
+                perseguirJogador();
+            }
+            else
+            {
+                velo.x = 0.f;
+            }
+
+            if (direcao == Direcao::LEFT)
+            {
+                // Se depois tiver textura esquerda do andarilho, troca aqui.
+                // forma.setTexture(*pGG->getTextura(Texturas::andarilhoEsq));
+            }
+            else
+            {
+                forma.setTexture(*pGG->getTextura(Texturas::andarilho));
+            }
+
+            atualizarFisica();
         }
 
         std::string Andarilho::salvar()
         {
-            salvarInimigo();
-
-            buffer << escalaX << " ";
-            buffer << escalaY << " ";
-
+            salvarDataBuffer();
             return buffer.str();
+        }
+
+        void Andarilho::salvarDataBuffer()
+        {
+            Inimigo::salvarDataBuffer();
+            buffer << forca << " ";
         }
     }
 }

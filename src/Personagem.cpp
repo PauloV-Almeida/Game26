@@ -13,6 +13,7 @@ namespace Entidades
 			pulos = 2;
             velo.x = 0;
             velo.y = 0;
+			travado = false;
 			direcao = Direcao::RIGHT;
         }
 
@@ -25,6 +26,7 @@ namespace Entidades
             pulos = 2;
             velo.x = 0;
             velo.y = 0;
+			travado = false;
             direcao = Direcao::RIGHT;
 			setFigura(&forma);
         }
@@ -91,6 +93,21 @@ namespace Entidades
                 default: {
                     break;
                 }
+            }
+        }
+
+        bool Personagem::estaTravado() const
+        {
+            return travado;
+        }
+
+        void Personagem::setTravado(bool estado)
+        {
+            travado = estado;
+
+            if (travado)
+            {
+                velo.x = 0.f;
             }
         }
 

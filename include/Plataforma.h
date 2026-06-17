@@ -17,12 +17,13 @@ namespace Entidades
             Plataforma();
             Plataforma(sf::Vector2f pos);
             Plataforma(sf::Vector2f pos, sf::Vector2f tamanho);
-            ~Plataforma();
+            virtual ~Plataforma();
 
-            void executar();
-            void obstaculizar(Personagens::Jogador* jogador);
+            void executar() override;
+            void obstaculizar(Personagens::Jogador* jogador) override;
 
-            std::string salvar();
+            std::string salvar() override;
+            void salvarDataBuffer();
         };
     }
 }

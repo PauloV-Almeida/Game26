@@ -11,7 +11,7 @@ namespace Entidades
     {
 		idUni = contarEntidades++;
 		ativo = 1;
-        forma.scale(3,3);
+        forma.scale(0.7f, 0.7f);
         forma.setPosition(posicao);
         setFigura(&forma);
     }
@@ -23,7 +23,7 @@ namespace Entidades
     {
         idUni = contarEntidades++;
         ativo = 1;
-        forma.scale(3, 3);
+        forma.scale(0.7f, 0.7f);
         forma.setPosition(posicao);
         setFigura(&forma);
     }
@@ -66,6 +66,10 @@ namespace Entidades
 	{
 		velo += addVel;
 	}
+    const sf::Vector2f Entidade::getVelocidade() const
+    {
+        return velo;
+    }
 
     void Entidade::salvarDataBuffer()
     {

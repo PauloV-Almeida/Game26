@@ -27,8 +27,8 @@ namespace Entidades
             setVelocidade(0.f, 0.f);
 
             forma.setTexture(*pGG->getTextura(Texturas::jogador1));
-            forma.setTextureRect(sf::IntRect(0, 0, 16, 16));
-            forma.setScale(5.f, 5.f);
+            forma.setTextureRect(sf::IntRect(0, 0, 81, 89));
+            forma.setScale(0.7f, 0.7f);
 
             setFigura(&forma);
         }
@@ -54,8 +54,8 @@ namespace Entidades
             setVelocidade(0.f, 0.f);
 
             forma.setTexture(*pGG->getTextura(Texturas::jogador1));
-            forma.setTextureRect(sf::IntRect(0, 0, 16, 16));
-            forma.setScale(5.f, 5.f);
+            forma.setTextureRect(sf::IntRect(0, 0, 81, 89));
+            forma.setScale(0.7f, 0.7f);
 
             setFigura(&forma);
         }
@@ -287,6 +287,13 @@ namespace Entidades
         {
             if (!ativado())
             {
+                return;
+            }
+
+            if (estaTravado())
+            {
+                velo.x = 0.f;
+                atualizarFisica();
                 return;
             }
 

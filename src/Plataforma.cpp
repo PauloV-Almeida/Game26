@@ -9,7 +9,7 @@ namespace Entidades
             Obstaculo(),
             aceleracaoGelo(0.15f),
             velocidadeMaximaGelo(8.0f),
-			empuxo(gravidade)
+            empuxo(gravidade)
         {
             id = Id::Plataforma;
 
@@ -24,7 +24,7 @@ namespace Entidades
             Obstaculo(pos),
             aceleracaoGelo(0.15f),
             velocidadeMaximaGelo(8.0f),
-			empuxo(gravidade)
+            empuxo(gravidade)
         {
             id = Id::Plataforma;
 
@@ -32,7 +32,7 @@ namespace Entidades
             colidivel = true;
 
             forma.setTexture(*pGG->getTextura(Texturas::plataforma));
-            forma.setPosition(pos);
+            setPosicao(pos.x, pos.y);
 
             setFigura(&forma);
         }
@@ -41,7 +41,7 @@ namespace Entidades
             Obstaculo(pos),
             aceleracaoGelo(0.15f),
             velocidadeMaximaGelo(8.0f),
-			empuxo(gravidade)
+            empuxo(gravidade)
         {
             id = Id::Plataforma;
 
@@ -49,7 +49,7 @@ namespace Entidades
             colidivel = true;
 
             forma.setTexture(*pGG->getTextura(Texturas::plataforma));
-            forma.setPosition(pos);
+            setPosicao(pos.x, pos.y);
 
             sf::FloatRect limites = forma.getLocalBounds();
 
@@ -77,15 +77,14 @@ namespace Entidades
             aplicarGravidade();
 
             /*
-                Empuxo cancela a gravidade.
-                Assim a plataforma sofre gravidade por requisito,
-                mas permanece suspensa/fixa no mapa.
+                A plataforma sofre gravidade, mas o empuxo anula.
+                Resultado: ela continua parada no ar.
             */
-            vel.y -= empuxo;
+            velo.y -= empuxo;
 
-            if (vel.y > -0.01f && vel.y < 0.01f)
+            if (velo.y > -0.01f && velo.y < 0.01f)
             {
-                vel.y = 0.f;
+                velo.y = 0.f;
             }
 
             mover();
@@ -99,46 +98,63 @@ namespace Entidades
             }
 
             /*
-                Efeito de gelo:
-                se o jogador já está se movendo para algum lado,
-                aumenta um pouco a velocidade horizontal dele.
-
-                Não zeramos velocidade Y aqui porque você pediu para não fazer isso.
-                Quem resolve a colisão vertical é o GerenciadorColisao + Personagem::colidiu().
+                A plataforma só deve fazer o jogador escorregar
+                se ele estiver por cima dela.
             */
+            sf::FloatRect limJogador = jogador->getLimites();
+            sf::FloatRect limPlataforma = getLimites();
 
-            sf::Vector2f velJog = jogador->getVelocidade();
+            float baixoJogador = limJogador.top + limJogador.height;
+            float topoPlataforma = limPlataforma.top;
 
-            if (velJog.x > 0.f)
+            bool jogadorEmCima =
+                baixoJogador <= topoPlataforma + 5.f &&
+                baixoJogador >= topoPlataforma - 8.f;
+
+            if (!jogadorEmCima)
             {
-                velJog.x += aceleracaoGelo;
-
-                if (velJog.x > velocidadeMaximaGelo)
-                {
-                    velJog.x = velocidadeMaximaGelo;
-                }
-            }
-            else if (velJog.x < 0.f)
-            {
-                velJog.x -= aceleracaoGelo;
-
-                if (velJog.x < -velocidadeMaximaGelo)
-                {
-                    velJog.x = -velocidadeMaximaGelo;
-                }
+                return;
             }
 
-            jogador->setVelocidade(velJog);
+            if (jogador->getDirecao() == Direcao::RIGHT)
+            {
+                jogador->mudarVelocidade(sf::Vector2f(aceleracaoGelo, 0.f));
+            }
+            else if (jogador->getDirecao() == Direcao::LEFT)
+            {
+                jogador->mudarVelocidade(sf::Vector2f(-aceleracaoGelo, 0.f));
+            }
+
+            /*
+                Limite de velocidade horizontal.
+                Como velo é protected em Entidade/Personagem,
+                o ideal seria ter getVelocidade().
+                Se você já adicionou getVelocidade(), pode limitar aqui.
+            */
+            sf::Vector2f velJogador = jogador->getVelocidade();
+
+            if (velJogador.x > velocidadeMaximaGelo)
+            {
+                jogador->setVelocidade(velocidadeMaximaGelo, velJogador.y);
+            }
+            else if (velJogador.x < -velocidadeMaximaGelo)
+            {
+                jogador->setVelocidade(-velocidadeMaximaGelo, velJogador.y);
+            }
+        }
+
+        void Plataforma::salvarDataBuffer()
+        {
+            Obstaculo::salvarDataBuffer();
+
+            buffer << aceleracaoGelo << " ";
+            buffer << velocidadeMaximaGelo << " ";
+            buffer << empuxo << " ";
         }
 
         std::string Plataforma::salvar()
         {
-            salvarObstaculo();
-
-            buffer << aceleracaoGelo << " ";
-            buffer << velocidadeMaximaGelo << " ";
-			buffer << empuxo << " ";
-
+            salvarDataBuffer();
             return buffer.str();
         }
     }

@@ -23,7 +23,7 @@ namespace Entidades
         void configurarTamanho(sf::Vector2f tamanho);
 
         void executar();
-        void desenhar();
+        
 
         std::string salvar();
     };

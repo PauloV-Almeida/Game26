@@ -5,94 +5,36 @@ namespace Entidades
 {
     namespace Personagens
     {
-        Valkiria::Valkiria() :
-            Inimigo(),
-            forcaEmpurraoBase(3.5f),
-            forcaEmpurraoMaxima(7.0f),
-            escalaX(1.0f),
-            escalaY(1.0f)
+        Valkiria::Valkiria(sf::Vector2f pos, Jogador* jogador) :
+            Inimigo(pos, jogador),
+            empurrar(4.f)
         {
             id = Id::Valkiria;
 
-            num_vidas = 4;
+            /*
+                nivel_maldade:
+                - influencia a vida
+                - influencia o empurrão
+                - não aumenta diretamente o dano
+            */
+            setNivelMaldade(1 + (rand() % 10));
 
-            danoBase = 1;
-            danoMaximo = 4;
+            num_vidas = 8 + getNivelMaldade();
 
-            nivel_maldade = 2;
-
-            raioVisao = 320.f;
-            raioAtaque = 55.f;
-
-            velocidadeMovimento = 1.1f;
-            velocidadeMaxima = 3.0f;
-
-            intervaloAtaque = 1.2f;
-
-            forma.setTexture(*pGG->getTextura(Texturas::valkiria));
-            forma.setScale(escalaX, escalaY);
-
-            setFigura(&forma);
-        }
-
-        Valkiria::Valkiria(sf::Vector2f pos) :
-            Inimigo(pos),
-            forcaEmpurraoBase(3.5f),
-            forcaEmpurraoMaxima(7.0f),
-            escalaX(1.0f),
-            escalaY(1.0f)
-        {
-            id = Id::Valkiria;
-
-            num_vidas = 4;
-
-            danoBase = 1;
-            danoMaximo = 4;
-
-            nivel_maldade = 2;
-
-            raioVisao = 320.f;
-            raioAtaque = 55.f;
-
-            velocidadeMovimento = 1.1f;
-            velocidadeMaxima = 3.0f;
-
-            intervaloAtaque = 1.2f;
+            /*
+                A Valkiria pode enxergar um pouco mais que o Andarilho.
+                Se quiser mais difícil, aumenta esse valor.
+            */
+            raioVisao = 350.f + static_cast<float>(getNivelMaldade() * 10);
 
             forma.setTexture(*pGG->getTextura(Texturas::valkiria));
-            forma.setPosition(pos);
-            forma.setScale(escalaX, escalaY);
+            forma.setTextureRect(sf::IntRect(0, 0, 81, 89));
 
-            setFigura(&forma);
-        }
-
-        Valkiria::Valkiria(sf::Vector2f pos, Jogador* j1, Jogador* j2) :
-            Inimigo(pos, j1, j2),
-            forcaEmpurraoBase(3.5f),
-            forcaEmpurraoMaxima(7.0f),
-            escalaX(1.0f),
-            escalaY(1.0f)
-        {
-            id = Id::Valkiria;
-
-            num_vidas = 4;
-
-            danoBase = 1;
-            danoMaximo = 4;
-
-            nivel_maldade = 2;
-
-            raioVisao = 320.f;
-            raioAtaque = 55.f;
-
-            velocidadeMovimento = 1.1f;
-            velocidadeMaxima = 3.0f;
-
-            intervaloAtaque = 1.2f;
-
-            forma.setTexture(*pGG->getTextura(Texturas::valkiria));
-            forma.setPosition(pos);
-            forma.setScale(escalaX, escalaY);
+            /*
+                Escala fixa para não bugar com mapa 1920x1080 e tile 64x64.
+                Se o sprite ficar pequeno/grande, ajuste aqui.
+            */
+            forma.setScale(0.7f, 0.7f);
 
             setFigura(&forma);
         }
@@ -100,88 +42,96 @@ namespace Entidades
         Valkiria::~Valkiria()
         {}
 
-        void Valkiria::empurrarJogador(Jogador* jogador)
+        void Valkiria::danificar(Jogador* jogador)
         {
             if (!jogador)
             {
                 return;
             }
 
-            float forcaEmpurrao = forcaEmpurraoBase + static_cast<float>(nivel_maldade) * 0.5f;
-
-            if (forcaEmpurrao > forcaEmpurraoMaxima)
-            {
-                forcaEmpurrao = forcaEmpurraoMaxima;
-            }
-
-            sf::Vector2f minhaPos = getCentro();
-            sf::Vector2f posJogador = jogador->getCentro();
-
-            sf::Vector2f velJogador = jogador->getVelocidade();
-
-            if (posJogador.x < minhaPos.x)
-            {
-                velJogador.x = -forcaEmpurrao;
-            }
-            else
-            {
-                velJogador.x = forcaEmpurrao;
-            }
-
-            /*
-                Pequeno impulso para cima.
-                Isso dá sensação de pancada, mas sem exagerar.
-            */
-            velJogador.y = -2.0f;
-
-            jogador->setVelocidade(velJogador);
-        }
-
-        void Valkiria::danificar(Jogador* jogador)
-        {
-            if (!jogador || !jogador->ativado() || !jogador->vivo())
+            if (!ativado())
             {
                 return;
             }
 
-            if (!jogadorNoRaioAtaque(jogador))
+            if (!vivo())
             {
                 return;
             }
 
-            if (!podeAtacar())
+            if (danoContatoRelogio.getElapsedTime().asSeconds() >= danotempoContato)
             {
-                return;
+                /*
+                    Dano:
+                    usa apenas o dano base herdado de Personagem.
+                */
+                jogador->tiraVida(getDanoBase());
+
+                /*
+                    Empurrão:
+                    empurrar é a força base.
+                    nivel_maldade aumenta o knockback.
+                */
+                float forcaEmpurrao = empurrar + static_cast<float>(getNivelMaldade()) * 0.5f;
+
+                if (jogador->getCentro().x < getCentro().x)
+                {
+                    jogador->mudarVelocidade(sf::Vector2f(-forcaEmpurrao, -2.f));
+                }
+                else
+                {
+                    jogador->mudarVelocidade(sf::Vector2f(forcaEmpurrao, -2.f));
+                }
+
+                danoContatoRelogio.restart();
             }
-
-            int danoAtual = calcularDanoAtual();
-
-            jogador->tirarVida(danoAtual);
-            empurrarJogador(jogador);
-
-            relogioAtaque.restart();
         }
 
         void Valkiria::executar()
         {
-            if (!ativo)
+            if (!ativado())
             {
                 return;
             }
 
-            Inimigo::executar();
+            if (!vivo())
+            {
+                setAtivo(false);
+                return;
+            }
+
+            if (jogadorNoAlcance())
+            {
+                perseguirJogador();
+            }
+            else
+            {
+                velo.x = 0.f;
+            }
+
+            if (direcao == Direcao::LEFT)
+            {
+                // Se depois tiver textura esquerda:
+                // forma.setTexture(*pGG->getTextura(Texturas::valkiriaEsq));
+            }
+            else
+            {
+                forma.setTexture(*pGG->getTextura(Texturas::valkiria));
+            }
+
+            atualizarFisica();
         }
 
         std::string Valkiria::salvar()
         {
-            salvarInimigo();
-
-            buffer << forcaEmpurraoBase << " ";
-            buffer << forcaEmpurraoMaxima << " ";
-            buffer << escalaX << " ";
-            buffer << escalaY << " ";
-
+            salvarDataBuffer();
             return buffer.str();
+        }
+
+        void Valkiria::salvarDataBuffer()
+        {
+            Inimigo::salvarDataBuffer();
+            buffer << empurrar << " ";
         }
     }
 }

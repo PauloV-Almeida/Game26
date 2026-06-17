@@ -76,28 +76,15 @@ namespace Entidades
     void Estrutura::executar()
     {
         /*
-            Estrutura é chão/parede.
-            Ela é uma Entidade, mas é fixa.
-
-            Por isso NÃO chamamos:
-                aplicarGravidade();
-                mover();
-
-            Quem colide com ela é tratado no GerenciadorColisao.
+            Estrutura é fixa.
+            Não aplica gravidade e não se move.
+            A colisão com ela é tratada pelo GerenciadorColisao.
         */
-    }
-
-    void Estrutura::desenhar()
-    {
-        if (ativo)
-        {
-            Ente::desenhar();
-        }
     }
 
     std::string Estrutura::salvar()
     {
-        salvarEntidade();
+        Entidade::salvarDataBuffer();
 
         switch (tipoEstrutura)
         {

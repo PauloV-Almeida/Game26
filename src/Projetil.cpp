@@ -8,48 +8,40 @@ namespace Entidades
 {
     Projetil::Projetil() :
         Entidade(),
-        dano(3),
-        velocidadeInicial(7.0f),
-        posicaoAlvo(0.f, 0.f),
-        lancado(false)
+        dano(2),
+        veloProjetil(6),
+        lancado(false),
+        posicaoAlvo(0.f, 0.f)
     {
         id = Id::Projetil;
-        ativo = false;
+
+        setAtivo(false);
+        setVelocidade(0.f, 0.f);
 
         forma.setTexture(*pGG->getTextura(Texturas::projetil));
+        forma.setTextureRect(sf::IntRect(0, 0, 64, 64));
+        forma.setScale(1.f, 1.f);
+
         setFigura(&forma);
     }
 
-    Projetil::Projetil(sf::Vector2f posInicial, sf::Vector2f alvo) :
-        Entidade(posInicial),
-        dano(3),
-        velocidadeInicial(7.0f),
-        posicaoAlvo(alvo),
-        lancado(false)
+    Projetil::Projetil(sf::Vector2f pos) :
+        Entidade(pos),
+        dano(2),
+        veloProjetil(6),
+        lancado(false),
+        posicaoAlvo(0.f, 0.f)
     {
         id = Id::Projetil;
 
-        forma.setTexture(*pGG->getTextura(Texturas::projetil));
-        forma.setPosition(posInicial);
-        setFigura(&forma);
-
-        lancar(posInicial, alvo);
-    }
-
-    Projetil::Projetil(sf::Vector2f posInicial, sf::Vector2f alvo, float velocidade, int danoBase) :
-        Entidade(posInicial),
-        dano(danoBase),
-        velocidadeInicial(velocidade),
-        posicaoAlvo(alvo),
-        lancado(false)
-    {
-        id = Id::Projetil;
+        setAtivo(false);
+        setVelocidade(0.f, 0.f);
 
         forma.setTexture(*pGG->getTextura(Texturas::projetil));
-        forma.setPosition(posInicial);
-        setFigura(&forma);
+        forma.setTextureRect(sf::IntRect(0, 0, 64, 64));
+        forma.setScale(1.f, 1.f);
 
-        lancar(posInicial, alvo);
+        setFigura(&forma);
     }
 
     Projetil::~Projetil()
@@ -72,75 +64,85 @@ namespace Entidades
 
     void Projetil::setDano(int danoBase)
     {
-        if (danoBase < 0)
-        {
-            danoBase = 0;
-        }
-
         dano = danoBase;
     }
 
-    void Projetil::setVelocidadeInicial(float velocidade)
+    void Projetil::setVelocidadeInicial(int velocidade)
     {
-        if (velocidade < 0.f)
-        {
-            velocidade = 0.f;
-        }
-
-        velocidadeInicial = velocidade;
+        veloProjetil = velocidade;
     }
 
-    void Projetil::lancar(sf::Vector2f posInicial, sf::Vector2f alvo)
+    void Projetil::lancar(sf::Vector2f origem, sf::Vector2f alvo, int aumentoVelo)
     {
-        setPosicao(posInicial);
-        posicaoAlvo = alvo;
-
-        sf::Vector2f direcao(
-            alvo.x - posInicial.x,
-            alvo.y - posInicial.y
-        );
-
-        float modulo = std::sqrt(direcao.x * direcao.x + direcao.y * direcao.y);
-
-        if (modulo == 0.f)
+        if (lancado)
         {
-            modulo = 1.f;
+            return;
         }
 
-        direcao.x /= modulo;
-        direcao.y /= modulo;
-
-        vel.x = direcao.x * velocidadeInicial;
-        vel.y = direcao.y * velocidadeInicial;
-
-        ativo = true;
+        setAtivo(true);
         lancado = true;
+
+        setPosicao(origem.x, origem.y);
+        posicaoAlvo = alvo;
+
+        /*
+            Movimento de ensino superior:
+            O projétil é lançado com velocidade inicial e depois sofre gravidade.
+            Isso gera trajetória parabólica.
+        */
+
+        float dx = alvo.x - origem.x;
+
+        float velocidadeX = 0.f;
+
+        if (dx > 0.f)
+        {
+            velocidadeX = static_cast<float>(veloProjetil + aumentoVelo);
+        }
+        else
+        {
+            velocidadeX = -static_cast<float>(veloProjetil + aumentoVelo);
+        }
+
+        /*
+            Velocidade inicial vertical negativa:
+            em SFML, Y negativo sobe.
+            Depois aplicarGravidade() faz ele cair.
+        */
+        float velocidadeY = -10.f - static_cast<float>(aumentoVelo) * 0.4f;
+
+        setVelocidade(velocidadeX, velocidadeY);
     }
 
     void Projetil::colidir(Personagens::Jogador* jogador)
     {
-        if (!ativo || !jogador || !jogador->ativado())
+        if (!jogador || !lancado || !ativado())
         {
             return;
         }
 
-        jogador->tirarVida(dano);
-        desativar();
+        jogador->tiraVida(dano);
+
+        lancado = false;
+        setAtivo(false);
+        setVelocidade(0.f, 0.f);
     }
 
     void Projetil::colidir(Estrutura* estrutura)
     {
-        if (!ativo || !estrutura)
+        if (!estrutura || !lancado || !ativado())
         {
             return;
         }
 
-        desativar();
+        lancado = false;
+        setAtivo(false);
+        setVelocidade(0.f, 0.f);
     }
 
     void Projetil::executar()
     {
-        if (!ativo)
+        if (!ativado() || !lancado)
         {
             return;
         }
@@ -149,16 +151,20 @@ namespace Entidades
         mover();
     }
 
-    std::string Projetil::salvar()
+    void Projetil::salvarDataBuffer()
     {
-        salvarEntidade();
+        Entidade::salvarDataBuffer();
 
         buffer << dano << " ";
-        buffer << velocidadeInicial << " ";
+        buffer << veloProjetil << " ";
         buffer << posicaoAlvo.x << " ";
         buffer << posicaoAlvo.y << " ";
         buffer << lancado << " ";
+    }
 
+    std::string Projetil::salvar()
+    {
+        salvarDataBuffer();
         return buffer.str();
     }
 }
