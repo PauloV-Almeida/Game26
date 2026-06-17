@@ -34,7 +34,7 @@ namespace Entidades
             void setNumVida(int vida);
             void setPulos(int pulos);
 
-            virtual void aumentarPontos() = 0;
+            
             void tiraVida(int dano);
             void setMoveVelocidade(float moveSpeed);
 			void atualizarFisica();

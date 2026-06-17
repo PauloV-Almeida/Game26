@@ -7,7 +7,7 @@ namespace Entidades
         Personagem::Personagem() : 
             Entidade()
         {
-			num_vidas = 15;
+			num_vidas = 5;
 			maxVelocidade = 5;
             velMovimento = 3;
 			pulos = 2;
@@ -19,7 +19,7 @@ namespace Entidades
         Personagem::Personagem(sf::Vector2f pos) :
             Entidade(pos)
         {
-            num_vidas = 15;
+            num_vidas = 5;
             maxVelocidade = 5;
             velMovimento = 3;
             pulos = 2;
@@ -61,36 +61,36 @@ namespace Entidades
         void Personagem::colidiu(Entidade* entidade, Direcao direcao)
         {
             switch (direcao) {
-            case Direcao::DOWN: {
-                velo.y = 0;
-                forma.setPosition(forma.getPosition().x, (entidade->getLimites().top - getLimites().height));
-                pulos = 2;
-                break;
-            }
-            case Direcao::UP: {
-                velo.y = 0;
-                forma.setPosition(forma.getPosition().x, entidade->getLimites().top + entidade->getLimites().height);
-                break;
-            }
-            case Direcao::LEFT: {
-                velo.x = 0;
-                forma.setPosition(entidade->getLimites().left + entidade->getLimites().width, getLimites().top);
-                if (pulos == 0) {
-                    pulos = 1;
+                case Direcao::DOWN: {
+                    velo.y = 0;
+                    forma.setPosition(forma.getPosition().x, (entidade->getLimites().top - getLimites().height));
+                    pulos = 2;
+                    break;
                 }
-                break;
-            }
-            case Direcao::RIGHT: {
-                velo.x = 0;
-                forma.setPosition(entidade->getLimites().left - getLimites().width, getLimites().top);
-                if (pulos == 0) {
-                    pulos = 1;
+                case Direcao::UP: {
+                    velo.y = 0;
+                    forma.setPosition(forma.getPosition().x, entidade->getLimites().top + entidade->getLimites().height);
+                    break;
                 }
-                break;
-            }
-            default: {
-                break;
-            }
+                case Direcao::LEFT: {
+                    velo.x = 0;
+                    forma.setPosition(entidade->getLimites().left + entidade->getLimites().width, getLimites().top);
+                    if (pulos == 0) {
+                        pulos = 1;
+                    }
+                    break;
+                }
+                case Direcao::RIGHT: {
+                    velo.x = 0;
+                    forma.setPosition(entidade->getLimites().left - getLimites().width, getLimites().top);
+                    if (pulos == 0) {
+                        pulos = 1;
+                    }
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
         }
 
@@ -117,9 +117,6 @@ namespace Entidades
             buffer << pulos << " ";
         }
 
-        void Personagem::executar() {
-           
-        }
 
     }
 }

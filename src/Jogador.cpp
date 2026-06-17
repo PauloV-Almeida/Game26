@@ -7,60 +7,55 @@ namespace Entidades
     {
         Jogador::Jogador() :
             Personagem(),
-            idJogador(1),
-			pontos(0),
-            danoAtaque(1),
-            maxPulos(2),
-            pulosRestantes(2),
+            pontos(0),
+            velMax(6.f),
+            centro(0.f, 0.f),
             atacando(false),
-            olhandoDireita(true),
-            venceu(false),
-            areaAtaque(),
-            relogioAtaque(),
-            tempoAtaque(0.25f)
+            danoAplicadoAtaque(false),
+            jogadorDois(false),
+            tempoAtaque(0.18f),
+            intervaloAtaque(0.35f)
         {
+            ativo = true;
             id = Id::Jogador;
 
-            num_vidas = 5;
-            velocidadeMovimento = 3.5f;
-            velocidadeMaxima = 6.0f;
-            forcaPulo = 9.0f;
+            num_vidas = 15;
+            pulos = 2;
+            direcao = Direcao::RIGHT;
+
+            setPosicao(300.f, 0.f);
+            setVelocidade(0.f, 0.f);
 
             forma.setTexture(*pGG->getTextura(Texturas::jogador1));
-            forma.setPosition(0.f, 0.f);
-
-            areaAtaque.setSize(sf::Vector2f(35.f, 35.f));
-            areaAtaque.setFillColor(sf::Color(255, 255, 255, 80));
+            forma.setTextureRect(sf::IntRect(0, 0, 16, 16));
+            forma.setScale(5.f, 5.f);
 
             setFigura(&forma);
         }
 
-        Jogador::Jogador(int idJogador, sf::Vector2f pos) :
+        Jogador::Jogador(sf::Vector2f pos) :
             Personagem(pos),
-            idJogador(idJogador),
             pontos(0),
-            danoAtaque(1),
-            maxPulos(2),
-            pulosRestantes(2),
+            velMax(6.f),
+            centro(0.f, 0.f),
             atacando(false),
-            olhandoDireita(true),
-            venceu(false),
-            areaAtaque(),
-            relogioAtaque(),
-            tempoAtaque(0.25f)
+            danoAplicadoAtaque(false),
+            jogadorDois(false),
+            tempoAtaque(0.18f),
+            intervaloAtaque(0.35f)
         {
+            ativo = true;
             id = Id::Jogador;
 
-            num_vidas = 5;
-            velocidadeMovimento = 3.5f;
-            velocidadeMaxima = 6.0f;
-            forcaPulo = 9.0f;
+            num_vidas = 15;
+            pulos = 2;
+            direcao = Direcao::RIGHT;
 
-            atualizarTextura();
-            forma.setPosition(pos);
+            setVelocidade(0.f, 0.f);
 
-            areaAtaque.setSize(sf::Vector2f(35.f, 35.f));
-            areaAtaque.setFillColor(sf::Color(255, 255, 255, 80));
+            forma.setTexture(*pGG->getTextura(Texturas::jogador1));
+            forma.setTextureRect(sf::IntRect(0, 0, 16, 16));
+            forma.setScale(5.f, 5.f);
 
             setFigura(&forma);
         }
@@ -68,207 +63,199 @@ namespace Entidades
         Jogador::~Jogador()
         {}
 
-        int Jogador::getIdJogador() const
+        sf::Vector2f Jogador::getPosicao()
         {
-            return idJogador;
+            return forma.getPosition();
         }
 
-        int Jogador::getDanoAtaque() const
-        {
-            return danoAtaque;
-        }
-
-        bool Jogador::estaAtacando() const
-        {
-            return atacando;
-        }
-
-        bool Jogador::getVenceu() const
-        {
-            return venceu;
-        }
-
-        void Jogador::setVenceu(bool venceu)
-        {
-            this->venceu = venceu;
-        }
-
-        void Jogador::setDanoAtaque(int dano)
-        {
-            if (dano < 0)
-            {
-                dano = 0;
-            }
-
-            danoAtaque = dano;
-        }
-
-        void Jogador::moverEsquerda()
-        {
-            if (travado)
-            {
-                return;
-            }
-
-            vel.x -= velocidadeMovimento;
-            olhandoDireita = false;
-            atualizarTextura();
-        }
-
-        void Jogador::moverDireita()
-        {
-            if (travado)
-            {
-                return;
-            }
-
-            vel.x += velocidadeMovimento;
-            olhandoDireita = true;
-            atualizarTextura();
-        }
-
-        void Jogador::pular()
-        {
-            if (travado)
-            {
-                return;
-            }
-
-            if (pulosRestantes > 0)
-            {
-                vel.y = -forcaPulo;
-                noChao = false;
-                pulosRestantes--;
-            }
-        }
-
-        void Jogador::atacar()
-        {
-            if (travado)
-            {
-                return;
-            }
-
-            if (!atacando)
-            {
-                atacando = true;
-                relogioAtaque.restart();
-                atualizarAreaAtaque();
-            }
-        }
-
-        void Jogador::tratarEntrada()
-        {
-            if (idJogador == 1)
-            {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-                {
-                    moverEsquerda();
-                }
-
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-                {
-                    moverDireita();
-                }
-
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-                {
-                    pular();
-                }
-
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-                {
-                    atacar();
-                }
-            }
-            else if (idJogador == 2)
-            {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                {
-                    moverEsquerda();
-                }
-
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                {
-                    moverDireita();
-                }
-
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                {
-                    pular();
-                }
-
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
-                {
-                    atacar();
-                }
-            }
-        }
-
-        void Jogador::atualizarTextura()
-        {
-            if (idJogador == 1)
-            {
-                if (olhandoDireita)
-                {
-                    forma.setTexture(*pGG->getTextura(Texturas::jogador1));
-                }
-                else
-                {
-                    forma.setTexture(*pGG->getTextura(Texturas::jogador1Esq));
-                }
-            }
-            else
-            {
-                if (olhandoDireita)
-                {
-                    forma.setTexture(*pGG->getTextura(Texturas::jogador2));
-                }
-                else
-                {
-                    forma.setTexture(*pGG->getTextura(Texturas::jogador2Esq));
-                }
-            }
-        }
-
-        void Jogador::atualizarAreaAtaque()
-        {
-            sf::FloatRect limites = getLimites();
-
-            if (olhandoDireita)
-            {
-                areaAtaque.setPosition(
-                    limites.left + limites.width,
-                    limites.top + limites.height / 4.f
-                );
-            }
-            else
-            {
-                areaAtaque.setPosition(
-                    limites.left - areaAtaque.getSize().x,
-                    limites.top + limites.height / 4.f
-                );
-            }
-        }
-
-        int Jogador::getPontos() const
-        {
-            return pontos;
-        }
-
-        void Jogador::setPontos(int pontos)
+        void Jogador::setPontuacao(int pontos)
         {
             this->pontos = pontos;
         }
 
-        void Jogador::adicionarPontos(int pontos)
+        void Jogador::aumentarPontos()
         {
-            this->pontos += pontos;
+            pontos++;
         }
 
-        void Jogador::colidir(Inimigo* inimigo)
+        int Jogador::getPontos()
         {
-            if (!inimigo || !inimigo->ativado())
+            return pontos;
+        }
+
+        void Jogador::setJogadorDois(bool jg2)
+        {
+            jogadorDois = jg2;
+
+            if (jogadorDois)
+            {
+                forma.setTexture(*pGG->getTextura(Texturas::jogador2));
+            }
+            else
+            {
+                forma.setTexture(*pGG->getTextura(Texturas::jogador1));
+            }
+        }
+
+        void Jogador::movimentar(Direcao direcao)
+        {
+            switch (direcao)
+            {
+            case Direcao::UP:
+            {
+                if (pulos > 0)
+                {
+                    velo.y = -8.f;
+                    pulos--;
+                }
+
+                break;
+            }
+
+            case Direcao::DOWN:
+            {
+                this->direcao = Direcao::DOWN;
+                velo.y += 0.3f;
+                break;
+            }
+
+            case Direcao::LEFT:
+            {
+                this->direcao = Direcao::LEFT;
+
+                if (velo.x >= -velMax)
+                {
+                    velo.x -= 0.4f;
+                }
+
+                break;
+            }
+
+            case Direcao::RIGHT:
+            {
+                this->direcao = Direcao::RIGHT;
+
+                if (velo.x <= velMax)
+                {
+                    velo.x += 0.4f;
+                }
+
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
+            }
+        }
+
+        void Jogador::pararEixoX()
+        {
+            if (velo.x > velMax)
+            {
+                velo.x -= 0.4f;
+            }
+            else if (velo.x < -velMax)
+            {
+                velo.x += 0.4f;
+            }
+
+            if (velo.x != 0.f)
+            {
+                if (velo.x > 0.f)
+                {
+                    if (velo.x - 0.2f < 0.f)
+                    {
+                        velo.x = 0.f;
+                    }
+                    else
+                    {
+                        velo.x -= 0.2f;
+                    }
+                }
+                else
+                {
+                    if (velo.x + 0.2f > 0.f)
+                    {
+                        velo.x = 0.f;
+                    }
+                    else
+                    {
+                        velo.x += 0.2f;
+                    }
+                }
+            }
+        }
+
+        void Jogador::posicaoInicial()
+        {
+            setPosicao(100.f, 100.f);
+            setVelocidade(0.f, 0.f);
+        }
+
+        void Jogador::atacar()
+        {
+            if (relogioAtaque.getElapsedTime().asSeconds() >= intervaloAtaque)
+            {
+                atacando = true;
+                danoAplicadoAtaque = false;
+
+                relogioAtaque.restart();
+
+                // Efeito visual simples enquanto ataca.
+                forma.setColor(sf::Color(255, 180, 180));
+            }
+        }
+
+        sf::FloatRect Jogador::getAreaAtaque() const
+        {
+            sf::FloatRect corpo = forma.getGlobalBounds();
+
+            float larguraAtaque = corpo.width * 0.75f;
+            float alturaAtaque = corpo.height * 0.80f;
+
+            if (direcao == Direcao::LEFT)
+            {
+                return sf::FloatRect(
+                    corpo.left - larguraAtaque,
+                    corpo.top + corpo.height * 0.10f,
+                    larguraAtaque,
+                    alturaAtaque
+                );
+            }
+
+            return sf::FloatRect(
+                corpo.left + corpo.width,
+                corpo.top + corpo.height * 0.10f,
+                larguraAtaque,
+                alturaAtaque
+            );
+        }
+
+        void Jogador::atualizarAtaque()
+        {
+            if (atacando)
+            {
+                if (relogioAtaque.getElapsedTime().asSeconds() >= tempoAtaque)
+                {
+                    atacando = false;
+                    danoAplicadoAtaque = false;
+
+                    // Volta ao visual normal.
+                    forma.setColor(sf::Color::White);
+                }
+            }
+        }
+
+        void Jogador::colidir(Inimigo* pInimigo)
+        {
+            if (!pInimigo)
+            {
+                return;
+            }
+
+            if (!pInimigo->ativado())
             {
                 return;
             }
@@ -278,67 +265,88 @@ namespace Entidades
                 return;
             }
 
-            if (areaAtaque.getGlobalBounds().intersects(inimigo->getLimites()))
+            if (danoAplicadoAtaque)
             {
-                inimigo->tirarVida(danoAtaque);
+                return;
+            }
+
+            if (getAreaAtaque().intersects(pInimigo->getLimites()))
+            {
+                pInimigo->tiraVida(getDanoBase());
+                danoAplicadoAtaque = true;
+
+                if (!pInimigo->vivo())
+                {
+                    pInimigo->desativar();
+                    aumentarPontos();
+                }
             }
         }
 
         void Jogador::executar()
         {
-            if (!ativo)
+            if (!ativado())
             {
                 return;
             }
 
-            tratarEntrada();
-
-            if (atacando)
+            if (jogadorDois)
             {
-                atualizarAreaAtaque();
-
-                if (relogioAtaque.getElapsedTime().asSeconds() >= tempoAtaque)
+                if (direcao == Direcao::LEFT)
                 {
-                    atacando = false;
+                    forma.setTexture(*pGG->getTextura(Texturas::jogador2Esq));
+                }
+                else
+                {
+                    forma.setTexture(*pGG->getTextura(Texturas::jogador2));
+                }
+            }
+            else
+            {
+                if (direcao == Direcao::LEFT)
+                {
+                    forma.setTexture(*pGG->getTextura(Texturas::jogador1Esq));
+                }
+                else
+                {
+                    forma.setTexture(*pGG->getTextura(Texturas::jogador1));
                 }
             }
 
-            if (noChao)
-            {
-                pulosRestantes = maxPulos;
-            }
+            atualizarAtaque();
 
+            // Aqui entra gravidade + movimento.
             atualizarFisica();
-        }
-
-        void Jogador::desenhar()
-        {
-            if (!ativo)
-            {
-                return;
-            }
-
-            Ente::desenhar();
-
-            if (atacando)
-            {
-                pGG->desenhar(&areaAtaque);
-            }
         }
 
         std::string Jogador::salvar()
         {
-            salvarPersonagem();
-
-            buffer << idJogador << " ";
-            buffer << danoAtaque << " ";
-            buffer << maxPulos << " ";
-            buffer << pulosRestantes << " ";
-            buffer << atacando << " ";
-            buffer << olhandoDireita << " ";
-            buffer << venceu << " ";
-
+            salvarDataBuffer();
             return buffer.str();
+        }
+
+        void Jogador::salvarDataBuffer()
+        {
+            Personagem::salvarDataBuffer();
+
+            buffer << pontos << " ";
+            buffer << jogadorDois << " ";
+        }
+
+        void Jogador::resetarJogador()
+        {
+            setAtivo(true);
+            setVelocidade(0.f, 0.f);
+            setNumVida(15);
+            setPosicao(100.f, 100.f);
+            setPontuacao(0);
+            setPulos(2);
+
+            atacando = false;
+            danoAplicadoAtaque = false;
+            direcao = Direcao::RIGHT;
+
+            forma.setColor(sf::Color::White);
         }
     }
 }

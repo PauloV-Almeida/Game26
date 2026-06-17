@@ -32,7 +32,7 @@ namespace Entidades
 
         const sf::Vector2f getCentro();
         const sf::Vector2f getPosicao();
-        const virtual sf::FloatRect getLimites();
+        virtual const sf::FloatRect getLimites();
         const int getIdUnico() const;
         void setIdUnico(int id);
         

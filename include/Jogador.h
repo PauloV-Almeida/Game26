@@ -13,52 +13,45 @@ namespace Entidades
         class Jogador : public Personagem
         {
         private:
-            int idJogador;
             int pontos;
-
-            int danoAtaque;
-            int maxPulos;
-            int pulosRestantes;
+            float velMax;
 
             bool atacando;
-            bool olhandoDireita;
-            bool venceu;
+            bool danoAplicadoAtaque;
+            bool jogadorDois;
 
-            sf::RectangleShape areaAtaque;
             sf::Clock relogioAtaque;
             float tempoAtaque;
+            float intervaloAtaque;
 
         private:
-            void tratarEntrada();
-            void moverEsquerda();
-            void moverDireita();
-            void pular();
-            void atacar();
-
-            void atualizarTextura();
-            void atualizarAreaAtaque();
+            sf::FloatRect getAreaAtaque() const;
+            void atualizarAtaque();
 
         public:
             Jogador();
-            Jogador(int idJogador, sf::Vector2f pos);
+            Jogador(sf::Vector2f pos);
             ~Jogador();
 
-            int getIdJogador() const;
-            int getDanoAtaque() const;
-            int getPontos() const;
-            void setPontos(int pontos);
-            void adicionarPontos(int pontos);
-            bool estaAtacando() const;
-            bool getVenceu() const;
+            void setPontuacao(int pontos);
+            void aumentarPontos();
 
-            void setVenceu(bool venceu);
-            void setDanoAtaque(int dano);
+            void movimentar(Direcao direcao);
+            void posicaoInicial();
+            sf::Vector2f getPosicao();
+            void pararEixoX();
 
-            void colidir(Inimigo* inimigo);
+            void setJogadorDois(bool jg2);
+            int getPontos();
 
-            void executar();
-            void desenhar();
-            std::string salvar();
+            void atacar();
+            void colidir(Inimigo* pInimigo);
+
+            void executar() override;
+            std::string salvar() override;
+            void salvarDataBuffer();
+
+            void resetarJogador();
         };
     }
 }
