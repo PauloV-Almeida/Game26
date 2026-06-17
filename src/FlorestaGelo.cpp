@@ -95,6 +95,6 @@ namespace Fases
         hub.executar();
         hub.draw();
 
-        controladorEstado(1);
+        controladorEstado(id);
     }
 }

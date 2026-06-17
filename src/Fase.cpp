@@ -45,7 +45,7 @@ namespace Fases {
 				break;
 
 			case sf::Event::KeyPressed:
-				if (ev.key.code == sf::Keyboard::P)
+				if (ev.key.code == sf::Keyboard::J)
 				{
 					if (jogador2 && !jogador2Ativo)
 					{
@@ -57,7 +57,7 @@ namespace Fases {
 					}
 				}
 
-				if (ev.key.code == sf::Keyboard::Escape)
+				if (ev.key.code == sf::Keyboard::P)
 				{
 					mediador->notify(Actions::PAUSE);
 				}
@@ -73,24 +73,24 @@ namespace Fases {
 	{
 		pGG->limpar();
 		pGG->desenharFundo();
-
-		if (jogador1)
-		{
-			if (jogador2Ativo && jogador2)
-			{
-				sf::Vector2f centro;
-				centro.x = (jogador1->getCentro().x + jogador2->getCentro().x) / 2.f;
-				centro.y = (jogador1->getCentro().y + jogador2->getCentro().y) / 2.f;
-
-				view.setCenter(centro);
-			}
-			else
-			{
-				view.setCenter(jogador1->getCentro());
-			}
-		}
-
 		pGG->setView(view);
+		
+		
+		if (jogador2Ativo)
+		{
+			sf::Vector2f centro;
+			centro.x = (jogador1->getCentro().x + jogador2->getCentro().x) / 2.f;
+			centro.y = (jogador1->getCentro().y + jogador2->getCentro().y) / 2.f;
+
+			view.setCenter(centro);
+		}
+		else
+		{
+			view.setCenter(jogador1->getCentro());
+		}
+		
+
+		
 	}
 
 	int Fase::getPontuacaoTotal() const
@@ -104,234 +104,222 @@ namespace Fases {
 		pGG->setView(view);
 
 		std::ifstream arquivo("salvar/salvar.txt");
-
-		if (!arquivo.is_open())
-		{
-			criarCenario();
-			carregamentoPadrao();
-			return;
-		}
-
 		std::string linha;
-
-		std::getline(arquivo, linha);
-		std::istringstream linhaId(linha);
-		linhaId >> id;
-
-		std::getline(arquivo, linha);
-		std::istringstream linhaJ2(linha);
-		linhaJ2 >> jogador2Ativo;
-
-		while (std::getline(arquivo, linha))
-		{
-			std::istringstream entrada(linha);
-
-			std::string tipoEntidade;
-
-			int idEntidade;
-			int ativo;
-
-			float posicaoX;
-			float posicaoY;
-			float velocidadeX;
-			float velocidadeY;
-
-			entrada >> tipoEntidade;
-
-			entrada >> idEntidade;
-			entrada >> ativo;
-			entrada >> posicaoX;
-			entrada >> posicaoY;
-			entrada >> velocidadeX;
-			entrada >> velocidadeY;
-
-			if (tipoEntidade == "JOGADOR")
+		if (arquivo.is_open()) {
+			std::getline(arquivo, linha);
+			std::istringstream linhaOutput(linha);
+			while (std::getline(arquivo, linha))
 			{
-				int vida;
-				bool noChao;
-				bool travado;
-				float velocidadeMovimento;
-				float velocidadeMaxima;
-				float forcaPulo;
+				std::istringstream entrada(linha);
 
-				int idJogador;
-				int danoAtaque;
-				int maxPulos;
-				int pulosRestantes;
-				bool atacando;
-				bool olhandoDireita;
-				bool venceu;
+				std::string tipoEntidade;
 
-				entrada >> vida;
-				entrada >> noChao;
-				entrada >> travado;
-				entrada >> velocidadeMovimento;
-				entrada >> velocidadeMaxima;
-				entrada >> forcaPulo;
+				int idEntidade;
+				int ativo;
 
-				entrada >> idJogador;
-				entrada >> danoAtaque;
-				entrada >> maxPulos;
-				entrada >> pulosRestantes;
-				entrada >> atacando;
-				entrada >> olhandoDireita;
-				entrada >> venceu;
+				float posicaoX;
+				float posicaoY;
+				float velocidadeX;
+				float velocidadeY;
 
-				Entidades::Personagens::Jogador* jogador = nullptr;
+				entrada >> tipoEntidade;
 
-				if (idJogador == 1)
+				entrada >> idEntidade;
+				entrada >> ativo;
+				entrada >> posicaoX;
+				entrada >> posicaoY;
+				entrada >> velocidadeX;
+				entrada >> velocidadeY;
+
+				if (tipoEntidade == "JOGADOR")
 				{
-					jogador = jogador1;
+					int vida;
+					bool noChao;
+					bool travado;
+					float velocidadeMovimento;
+					float velocidadeMaxima;
+					float forcaPulo;
+
+					int idJogador;
+					int danoAtaque;
+					int maxPulos;
+					int pulosRestantes;
+					bool atacando;
+					bool olhandoDireita;
+					bool venceu;
+
+					entrada >> vida;
+					entrada >> noChao;
+					entrada >> travado;
+					entrada >> velocidadeMovimento;
+					entrada >> velocidadeMaxima;
+					entrada >> forcaPulo;
+
+					entrada >> idJogador;
+					entrada >> danoAtaque;
+					entrada >> maxPulos;
+					entrada >> pulosRestantes;
+					entrada >> atacando;
+					entrada >> olhandoDireita;
+					entrada >> venceu;
+
+					Entidades::Personagens::Jogador* jogador = nullptr;
+
+					if (idJogador == 1)
+					{
+						jogador = jogador1;
+					}
+					else
+					{
+						jogador = jogador2;
+					}
+
+					if (jogador)
+					{
+						jogador->setIdUnico(idEntidade);
+						jogador->setAtivo(ativo);
+						jogador->setPosicao(posicaoX, posicaoY);
+						jogador->setVelocidade(velocidadeX, velocidadeY);
+						jogador->setNumVidas(vida);
+						jogador->setNoChao(noChao);
+						jogador->setTravado(travado);
+						jogador->setVelocidadeMovimento(velocidadeMovimento);
+						jogador->setVelocidadeMaxima(velocidadeMaxima);
+						jogador->setForcaPulo(forcaPulo);
+						jogador->setDanoAtaque(danoAtaque);
+						jogador->setVenceu(venceu);
+					}
 				}
-				else
+				else if (tipoEntidade == "ANDARILHO")
 				{
-					jogador = jogador2;
-				}
+					Entidades::Personagens::Andarilho* andarilho =
+						new Entidades::Personagens::Andarilho(
+							sf::Vector2f(posicaoX, posicaoY),
+							jogador1,
+							jogador2Ativo ? jogador2 : nullptr
+						);
 
-				if (jogador)
+					andarilho->setIdUnico(idEntidade);
+					andarilho->setAtivo(ativo);
+					andarilho->setVelocidade(velocidadeX, velocidadeY);
+
+					listaEntidades.inserirNoFim(andarilho);
+					gC.incluirInimigo(andarilho);
+				}
+				else if (tipoEntidade == "VALKIRIA")
 				{
-					jogador->setIdUnico(idEntidade);
-					jogador->setAtivo(ativo);
-					jogador->setPosicao(posicaoX, posicaoY);
-					jogador->setVelocidade(velocidadeX, velocidadeY);
-					jogador->setNumVidas(vida);
-					jogador->setNoChao(noChao);
-					jogador->setTravado(travado);
-					jogador->setVelocidadeMovimento(velocidadeMovimento);
-					jogador->setVelocidadeMaxima(velocidadeMaxima);
-					jogador->setForcaPulo(forcaPulo);
-					jogador->setDanoAtaque(danoAtaque);
-					jogador->setVenceu(venceu);
+					Entidades::Personagens::Valkiria* valkiria =
+						new Entidades::Personagens::Valkiria(
+							sf::Vector2f(posicaoX, posicaoY),
+							jogador1,
+							jogador2Ativo ? jogador2 : nullptr
+						);
+
+					valkiria->setIdUnico(idEntidade);
+					valkiria->setAtivo(ativo);
+					valkiria->setVelocidade(velocidadeX, velocidadeY);
+
+					listaEntidades.inserirNoFim(valkiria);
+					gC.incluirInimigo(valkiria);
+				}
+				else if (tipoEntidade == "THOR")
+				{
+					Entidades::Projetil* projetil = new Entidades::Projetil();
+
+					Entidades::Personagens::Thor* thor =
+						new Entidades::Personagens::Thor(
+							sf::Vector2f(posicaoX, posicaoY),
+							jogador1,
+							jogador2Ativo ? jogador2 : nullptr
+						);
+
+					thor->setProjetilAtual(projetil);
+
+					thor->setIdUnico(idEntidade);
+					thor->setAtivo(ativo);
+					thor->setVelocidade(velocidadeX, velocidadeY);
+
+					listaEntidades.inserirNoFim(thor);
+					listaEntidades.inserirNoFim(projetil);
+
+					gC.incluirInimigo(thor);
+					gC.incluirProjetil(projetil);
+				}
+				else if (tipoEntidade == "PLATAFORMA")
+				{
+					Entidades::Obstaculos::Plataforma* plataforma =
+						new Entidades::Obstaculos::Plataforma(
+							sf::Vector2f(posicaoX, posicaoY),
+							sf::Vector2f(TAM_TILE, TAM_TILE)
+						);
+
+					plataforma->setIdUnico(idEntidade);
+					plataforma->setAtivo(ativo);
+					plataforma->setVelocidade(velocidadeX, velocidadeY);
+
+					listaEntidades.inserirNoFim(plataforma);
+					gC.incluirObstaculo(plataforma);
+				}
+				else if (tipoEntidade == "ESPINHO")
+				{
+					Entidades::Obstaculos::EspinhoVenenoso* espinho =
+						new Entidades::Obstaculos::EspinhoVenenoso(
+							sf::Vector2f(posicaoX, posicaoY),
+							sf::Vector2f(TAM_TILE, TAM_TILE)
+						);
+
+					espinho->setIdUnico(idEntidade);
+					espinho->setAtivo(ativo);
+					espinho->setVelocidade(velocidadeX, velocidadeY);
+
+					listaEntidades.inserirNoFim(espinho);
+					gC.incluirObstaculo(espinho);
+				}
+				else if (tipoEntidade == "RUNA")
+				{
+					Entidades::Obstaculos::Runa* runa =
+						new Entidades::Obstaculos::Runa(
+							sf::Vector2f(posicaoX, posicaoY),
+							sf::Vector2f(TAM_TILE, TAM_TILE)
+						);
+
+					runa->setIdUnico(idEntidade);
+					runa->setAtivo(ativo);
+					runa->setVelocidade(velocidadeX, velocidadeY);
+
+					listaEntidades.inserirNoFim(runa);
+					gC.incluirObstaculo(runa);
+				}
+				else if (tipoEntidade == "ESTRUTURA")
+				{
+					Entidades::Estrutura* estrutura =
+						new Entidades::Estrutura(
+							sf::Vector2f(posicaoX, posicaoY),
+							TipoEstrutura::CHAO,
+							sf::Vector2f(TAM_TILE, TAM_TILE)
+						);
+
+					estrutura->setIdUnico(idEntidade);
+					estrutura->setAtivo(ativo);
+
+					listaEntidades.inserirNoFim(estrutura);
+					gC.incluirEstrutura(estrutura);
 				}
 			}
-			else if (tipoEntidade == "ANDARILHO")
+
+			arquivo.close();
+
+			listaEntidades.inserirNoFim(jogador1);
+			gC.incluirJogador1(jogador1);
+			hub.setPlayer(jogador1);
+
+			if (jogador2Ativo && jogador2)
 			{
-				Entidades::Personagens::Andarilho* andarilho =
-					new Entidades::Personagens::Andarilho(
-						sf::Vector2f(posicaoX, posicaoY),
-						jogador1,
-						jogador2Ativo ? jogador2 : nullptr
-					);
-
-				andarilho->setIdUnico(idEntidade);
-				andarilho->setAtivo(ativo);
-				andarilho->setVelocidade(velocidadeX, velocidadeY);
-
-				listaEntidades.inserirNoFim(andarilho);
-				gC.incluirInimigo(andarilho);
+				listaEntidades.inserirNoFim(jogador2);
+				gC.incluirJogador2(jogador2);
+				hub.setPlayer2(jogador2);
 			}
-			else if (tipoEntidade == "VALKIRIA")
-			{
-				Entidades::Personagens::Valkiria* valkiria =
-					new Entidades::Personagens::Valkiria(
-						sf::Vector2f(posicaoX, posicaoY),
-						jogador1,
-						jogador2Ativo ? jogador2 : nullptr
-					);
 
-				valkiria->setIdUnico(idEntidade);
-				valkiria->setAtivo(ativo);
-				valkiria->setVelocidade(velocidadeX, velocidadeY);
-
-				listaEntidades.inserirNoFim(valkiria);
-				gC.incluirInimigo(valkiria);
-			}
-			else if (tipoEntidade == "THOR")
-			{
-				Entidades::Projetil* projetil = new Entidades::Projetil();
-
-				Entidades::Personagens::Thor* thor =
-					new Entidades::Personagens::Thor(
-						sf::Vector2f(posicaoX, posicaoY),
-						jogador1,
-						jogador2Ativo ? jogador2 : nullptr
-					);
-
-				thor->setProjetilAtual(projetil);
-
-				thor->setIdUnico(idEntidade);
-				thor->setAtivo(ativo);
-				thor->setVelocidade(velocidadeX, velocidadeY);
-
-				listaEntidades.inserirNoFim(thor);
-				listaEntidades.inserirNoFim(projetil);
-
-				gC.incluirInimigo(thor);
-				gC.incluirProjetil(projetil);
-			}
-			else if (tipoEntidade == "PLATAFORMA")
-			{
-				Entidades::Obstaculos::Plataforma* plataforma =
-					new Entidades::Obstaculos::Plataforma(
-						sf::Vector2f(posicaoX, posicaoY),
-						sf::Vector2f(TAM_TILE, TAM_TILE)
-					);
-
-				plataforma->setIdUnico(idEntidade);
-				plataforma->setAtivo(ativo);
-				plataforma->setVelocidade(velocidadeX, velocidadeY);
-
-				listaEntidades.inserirNoFim(plataforma);
-				gC.incluirObstaculo(plataforma);
-			}
-			else if (tipoEntidade == "ESPINHO")
-			{
-				Entidades::Obstaculos::EspinhoVenenoso* espinho =
-					new Entidades::Obstaculos::EspinhoVenenoso(
-						sf::Vector2f(posicaoX, posicaoY),
-						sf::Vector2f(TAM_TILE, TAM_TILE)
-					);
-
-				espinho->setIdUnico(idEntidade);
-				espinho->setAtivo(ativo);
-				espinho->setVelocidade(velocidadeX, velocidadeY);
-
-				listaEntidades.inserirNoFim(espinho);
-				gC.incluirObstaculo(espinho);
-			}
-			else if (tipoEntidade == "RUNA")
-			{
-				Entidades::Obstaculos::Runa* runa =
-					new Entidades::Obstaculos::Runa(
-						sf::Vector2f(posicaoX, posicaoY),
-						sf::Vector2f(TAM_TILE, TAM_TILE)
-					);
-
-				runa->setIdUnico(idEntidade);
-				runa->setAtivo(ativo);
-				runa->setVelocidade(velocidadeX, velocidadeY);
-
-				listaEntidades.inserirNoFim(runa);
-				gC.incluirObstaculo(runa);
-			}
-			else if (tipoEntidade == "ESTRUTURA")
-			{
-				Entidades::Estrutura* estrutura =
-					new Entidades::Estrutura(
-						sf::Vector2f(posicaoX, posicaoY),
-						TipoEstrutura::CHAO,
-						sf::Vector2f(TAM_TILE, TAM_TILE)
-					);
-
-				estrutura->setIdUnico(idEntidade);
-				estrutura->setAtivo(ativo);
-
-				listaEntidades.inserirNoFim(estrutura);
-				gC.incluirEstrutura(estrutura);
-			}
-		}
-
-		arquivo.close();
-
-		listaEntidades.inserirNoFim(jogador1);
-		gC.incluirJogador1(jogador1);
-		hub.setPlayer(jogador1);
-
-		if (jogador2Ativo && jogador2)
-		{
-			listaEntidades.inserirNoFim(jogador2);
-			gC.incluirJogador2(jogador2);
-			hub.setPlayer2(jogador2);
 		}
 	}
 
