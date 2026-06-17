@@ -9,27 +9,21 @@ namespace Entidades
         class EspinhoVenenoso : public Obstaculo
         {
         private:
-            int danoContato;
-            int danoVeneno;
-
-            float tempoVeneno;
-            bool venenoAtivo;
-
-            sf::Clock relogioVeneno;
-            sf::Clock relogioDanoContato;
-
-            float intervaloDanoContato;
+            int dano;
+            float intervaloDano;
+            sf::Clock relogioDano;
 
         public:
             EspinhoVenenoso();
             EspinhoVenenoso(sf::Vector2f pos);
             EspinhoVenenoso(sf::Vector2f pos, sf::Vector2f tamanho);
-            ~EspinhoVenenoso();
+            virtual ~EspinhoVenenoso();
 
-            void executar();
-            void obstaculizar(Personagens::Jogador* jogador);
+            void executar() override;
+            void obstaculizar(Personagens::Jogador* jogador) override;
 
-            std::string salvar();
+            std::string salvar() override;
+            void salvarDataBuffer();
         };
     }
 }

@@ -8,13 +8,15 @@ namespace Entidades
         Obstaculo::Obstaculo() :
             Entidade(),
             danoso(false),
-            colidivel(true)
+            colidivel(true),
+            empuxo(gravidade)
         {}
 
         Obstaculo::Obstaculo(sf::Vector2f pos) :
             Entidade(pos),
             danoso(false),
-            colidivel(true)
+            colidivel(true),
+            empuxo(gravidade)
         {}
 
         Obstaculo::~Obstaculo()
@@ -40,12 +42,28 @@ namespace Entidades
             colidivel = estado;
         }
 
+        void Obstaculo::atualizarFisicaObstaculo()
+        {
+            aplicarGravidade();
+
+            // Empuxo anula a gravidade.
+            velo.y -= empuxo;
+
+            if (velo.y > -0.01f && velo.y < 0.01f)
+            {
+                velo.y = 0.f;
+            }
+
+            mover();
+        }
+
         void Obstaculo::salvarDataBuffer()
         {
             Entidade::salvarDataBuffer();
 
             buffer << danoso << " ";
             buffer << colidivel << " ";
+            buffer << empuxo << " ";
         }
     }
 }

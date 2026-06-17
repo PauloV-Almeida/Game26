@@ -10,6 +10,7 @@ namespace Entidades
             tempoTravamento(2.0f),
             jogadorTravado(nullptr),
             travandoJogador(false),
+            jaAtivada(false),
             relogioTravamento()
         {
             id = Id::Runa;
@@ -26,6 +27,7 @@ namespace Entidades
             tempoTravamento(2.0f),
             jogadorTravado(nullptr),
             travandoJogador(false),
+            jaAtivada(false),
             relogioTravamento()
         {
             id = Id::Runa;
@@ -34,7 +36,7 @@ namespace Entidades
             colidivel = false;
 
             forma.setTexture(*pGG->getTextura(Texturas::runa));
-            forma.setPosition(pos);
+            setPosicao(pos.x, pos.y);
 
             setFigura(&forma);
         }
@@ -44,6 +46,7 @@ namespace Entidades
             tempoTravamento(2.0f),
             jogadorTravado(nullptr),
             travandoJogador(false),
+            jaAtivada(false),
             relogioTravamento()
         {
             id = Id::Runa;
@@ -52,7 +55,7 @@ namespace Entidades
             colidivel = false;
 
             forma.setTexture(*pGG->getTextura(Texturas::runa));
-            forma.setPosition(pos);
+            setPosicao(pos.x, pos.y);
 
             sf::FloatRect limites = forma.getLocalBounds();
 
@@ -78,13 +81,7 @@ namespace Entidades
 
         void Runa::executar()
         {
-            /*
-                A Runa é fixa.
-                Não aplica gravidade nem movimento.
-
-                Ela apenas controla o tempo de travamento do jogador.
-            */
-
+            atualizarFisicaObstaculo();
             if (travandoJogador && jogadorTravado)
             {
                 if (relogioTravamento.getElapsedTime().asSeconds() >= tempoTravamento)
@@ -104,10 +101,10 @@ namespace Entidades
             }
 
             /*
-                Se já tem alguém travado nessa Runa, não reinicia o tempo.
-                Isso evita o jogador ficar preso para sempre caso continue em cima dela.
+                Só ativa uma vez.
+                Depois de travar por 2 segundos, a runa não trava de novo.
             */
-            if (travandoJogador)
+            if (jaAtivada || travandoJogador)
             {
                 return;
             }
@@ -116,15 +113,18 @@ namespace Entidades
             jogadorTravado->setTravado(true);
 
             travandoJogador = true;
+            jaAtivada = true;
+
             relogioTravamento.restart();
         }
 
-        std::string Runa::salvar()
+        void Runa::salvarDataBuffer()
         {
-            salvarObstaculo();
+            Obstaculo::salvarDataBuffer();
 
             buffer << tempoTravamento << " ";
             buffer << travandoJogador << " ";
+            buffer << jaAtivada << " ";
 
             if (jogadorTravado)
             {
@@ -134,7 +134,11 @@ namespace Entidades
             {
                 buffer << -1 << " ";
             }
+        }
 
+        std::string Runa::salvar()
+        {
+            salvarDataBuffer();
             return buffer.str();
         }
     }

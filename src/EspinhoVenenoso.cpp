@@ -7,13 +7,9 @@ namespace Entidades
     {
         EspinhoVenenoso::EspinhoVenenoso() :
             Obstaculo(),
-            danoContato(1),
-            danoVeneno(1),
-            tempoVeneno(1.0f),
-            venenoAtivo(false),
-            relogioVeneno(),
-            relogioDanoContato(),
-            intervaloDanoContato(0.8f)
+            dano(1),
+            intervaloDano(0.8f),
+            relogioDano()
         {
             id = Id::Espinho;
 
@@ -26,13 +22,9 @@ namespace Entidades
 
         EspinhoVenenoso::EspinhoVenenoso(sf::Vector2f pos) :
             Obstaculo(pos),
-            danoContato(1),
-            danoVeneno(1),
-            tempoVeneno(1.0f),
-            venenoAtivo(false),
-            relogioVeneno(),
-            relogioDanoContato(),
-            intervaloDanoContato(0.8f)
+            dano(1),
+            intervaloDano(0.8f),
+            relogioDano()
         {
             id = Id::Espinho;
 
@@ -40,20 +32,16 @@ namespace Entidades
             colidivel = true;
 
             forma.setTexture(*pGG->getTextura(Texturas::espinho));
-            forma.setPosition(pos);
+            setPosicao(pos.x, pos.y);
 
             setFigura(&forma);
         }
 
         EspinhoVenenoso::EspinhoVenenoso(sf::Vector2f pos, sf::Vector2f tamanho) :
             Obstaculo(pos),
-            danoContato(1),
-            danoVeneno(1),
-            tempoVeneno(1.0f),
-            venenoAtivo(false),
-            relogioVeneno(),
-            relogioDanoContato(),
-            intervaloDanoContato(0.8f)
+            dano(1),
+            intervaloDano(0.8f),
+            relogioDano()
         {
             id = Id::Espinho;
 
@@ -61,7 +49,7 @@ namespace Entidades
             colidivel = true;
 
             forma.setTexture(*pGG->getTextura(Texturas::espinho));
-            forma.setPosition(pos);
+            setPosicao(pos.x, pos.y);
 
             sf::FloatRect limites = forma.getLocalBounds();
 
@@ -81,13 +69,12 @@ namespace Entidades
 
         void EspinhoVenenoso::executar()
         {
-            /*
-                Espinho é fixo.
-                Não aplica gravidade e não move.
+            if (!ativo)
+            {
+                return;
+            }
 
-                O dano de veneno é controlado no obstaculizar(),
-                porque ele depende do contato com o jogador.
-            */
+            atualizarFisicaObstaculo();
         }
 
         void EspinhoVenenoso::obstaculizar(Personagens::Jogador* jogador)
@@ -97,46 +84,24 @@ namespace Entidades
                 return;
             }
 
-            /*
-                Dano de contato:
-                Enquanto o jogador estiver colidindo com o espinho,
-                ele pode tomar dano, mas com intervalo para não perder
-                toda a vida em poucos frames.
-            */
-            if (relogioDanoContato.getElapsedTime().asSeconds() >= intervaloDanoContato)
+            if (relogioDano.getElapsedTime().asSeconds() >= intervaloDano)
             {
-                jogador->tirarVida(danoContato);
-                relogioDanoContato.restart();
-
-                /*
-                    Ativa o veneno.
-                    A lógica do veneno fica aqui, como você pediu.
-                */
-                venenoAtivo = true;
-                relogioVeneno.restart();
+                jogador->tiraVida(dano);
+                relogioDano.restart();
             }
+        }
 
-            /*
-                Veneno:
-                Depois de 1 segundo do contato, aplica mais 1 de dano
-                e desativa o veneno.
-            */
-            if (venenoAtivo && relogioVeneno.getElapsedTime().asSeconds() >= tempoVeneno)
-            {
-                jogador->tirarVida(danoVeneno);
-                venenoAtivo = false;
-            }
+        void EspinhoVenenoso::salvarDataBuffer()
+        {
+            Obstaculo::salvarDataBuffer();
+
+            buffer << dano << " ";
+            buffer << intervaloDano << " ";
         }
 
         std::string EspinhoVenenoso::salvar()
         {
-            salvarObstaculo();
-
-            buffer << danoContato << " ";
-            buffer << danoVeneno << " ";
-            buffer << tempoVeneno << " ";
-            buffer << venenoAtivo << " ";
-
+            salvarDataBuffer();
             return buffer.str();
         }
     }

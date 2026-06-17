@@ -13,6 +13,7 @@ namespace Entidades
 
             Personagens::Jogador* jogadorTravado;
             bool travandoJogador;
+            bool jaAtivada;
 
             sf::Clock relogioTravamento;
 
@@ -20,12 +21,13 @@ namespace Entidades
             Runa();
             Runa(sf::Vector2f pos);
             Runa(sf::Vector2f pos, sf::Vector2f tamanho);
-            ~Runa();
+            virtual ~Runa();
 
-            void executar();
-            void obstaculizar(Personagens::Jogador* jogador);
+            void executar() override;
+            void obstaculizar(Personagens::Jogador* jogador) override;
 
-            std::string salvar();
+            std::string salvar() override;
+            void salvarDataBuffer();
         };
     }
 }

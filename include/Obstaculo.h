@@ -17,6 +17,11 @@ namespace Entidades
             bool danoso;
             bool colidivel;
 
+            float empuxo;
+
+        protected:
+            void atualizarFisicaObstaculo();
+
         public:
             Obstaculo();
             Obstaculo(sf::Vector2f pos);
@@ -30,7 +35,8 @@ namespace Entidades
 
             virtual void executar() = 0;
             virtual void obstaculizar(Personagens::Jogador* jogador) = 0;
-			void salvarDataBuffer();
+
+            virtual void salvarDataBuffer();
             virtual std::string salvar() = 0;
         };
     }

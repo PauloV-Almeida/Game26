@@ -74,20 +74,7 @@ namespace Entidades
                 return;
             }
 
-            aplicarGravidade();
-
-            /*
-                A plataforma sofre gravidade, mas o empuxo anula.
-                Resultado: ela continua parada no ar.
-            */
-            velo.y -= empuxo;
-
-            if (velo.y > -0.01f && velo.y < 0.01f)
-            {
-                velo.y = 0.f;
-            }
-
-            mover();
+            atualizarFisicaObstaculo();
         }
 
         void Plataforma::obstaculizar(Personagens::Jogador* jogador)
