@@ -152,13 +152,15 @@ namespace Entidades
 
 	void Entidade::setPosicao(float x, float y)
 	{
-		forma.setPosition(x, y);
+        posicao.x = x;
+        posicao.y = y;
+        forma.setPosition(x, y);
 	}
 
 	void Entidade::setVelocidade(float x, float y)
 	{
 		velo.x = x;
 		velo.y = y;
-        forma.setPosition(x, y);
+        
 	}
 }

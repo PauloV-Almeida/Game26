@@ -8,8 +8,7 @@ namespace Entidades
         Plataforma::Plataforma() :
             Obstaculo(),
             aceleracaoGelo(0.15f),
-            velocidadeMaximaGelo(8.0f),
-            empuxo(gravidade)
+            velocidadeMaximaGelo(8.0f)
         {
             id = Id::Plataforma;
 
@@ -23,8 +22,7 @@ namespace Entidades
         Plataforma::Plataforma(sf::Vector2f pos) :
             Obstaculo(pos),
             aceleracaoGelo(0.15f),
-            velocidadeMaximaGelo(8.0f),
-            empuxo(gravidade)
+            velocidadeMaximaGelo(8.0f)
         {
             id = Id::Plataforma;
 
@@ -40,8 +38,7 @@ namespace Entidades
         Plataforma::Plataforma(sf::Vector2f pos, sf::Vector2f tamanho) :
             Obstaculo(pos),
             aceleracaoGelo(0.15f),
-            velocidadeMaximaGelo(8.0f),
-            empuxo(gravidade)
+            velocidadeMaximaGelo(8.0f)
         {
             id = Id::Plataforma;
 

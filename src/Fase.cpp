@@ -272,7 +272,7 @@ namespace Fases {
 
 					Entidades::Personagens::Thor* thor =
 						new Entidades::Personagens::Thor(
-							sf::Vector2f(900.f * 420.f, 250.f),
+							sf::Vector2f(posicaoX, posicaoY),
 							jogador1,
 							projetil
 						);

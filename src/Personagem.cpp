@@ -65,18 +65,18 @@ namespace Entidades
             switch (direcao) {
                 case Direcao::DOWN: {
                     velo.y = 0;
-                    forma.setPosition(forma.getPosition().x, (entidade->getLimites().top - getLimites().height));
+                    setPosicao(forma.getPosition().x, (entidade->getLimites().top - getLimites().height));
                     pulos = 2;
                     break;
                 }
                 case Direcao::UP: {
                     velo.y = 0;
-                    forma.setPosition(forma.getPosition().x, entidade->getLimites().top + entidade->getLimites().height);
+                    setPosicao(forma.getPosition().x, entidade->getLimites().top + entidade->getLimites().height);
                     break;
                 }
                 case Direcao::LEFT: {
                     velo.x = 0;
-                    forma.setPosition(entidade->getLimites().left + entidade->getLimites().width, getLimites().top);
+                    setPosicao(entidade->getLimites().left + entidade->getLimites().width, getLimites().top);
                     if (pulos == 0) {
                         pulos = 1;
                     }
@@ -84,7 +84,7 @@ namespace Entidades
                 }
                 case Direcao::RIGHT: {
                     velo.x = 0;
-                    forma.setPosition(entidade->getLimites().left - getLimites().width, getLimites().top);
+                    setPosicao(entidade->getLimites().left - getLimites().width, getLimites().top);
                     if (pulos == 0) {
                         pulos = 1;
                     }
