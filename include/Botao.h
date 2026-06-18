@@ -20,7 +20,7 @@ namespace Entidades {
 	public:
 		Button(sf::Vector2f pos, std::string txt = "", Actions action = Actions::NADA);
 		~Button();
-		virtual void getClicked(sf::Vector2i* mousePos);
+		virtual void getClicked(sf::Vector2f* mousePos);
 		void executar();
 	};
 

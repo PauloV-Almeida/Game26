@@ -7,10 +7,11 @@ namespace Fases
         Entidades::Personagens::Jogador* jg2,
         bool carregaArquivo
     ) :
-        Fase(jg1, jg2, carregaArquivo)
+        Fase(jg1, jg2, carregaArquivo),
+        projeteisThor()
     {
         id = 2;
-        caminhoMapa = "../assents/mapaArenaGelo.txt";
+        caminhoMapa = "assets/mapaArenaGelo.txt";
 
         if (carregaArquivo)
         {
@@ -24,77 +25,223 @@ namespace Fases
     }
 
     ArenaGelo::~ArenaGelo()
-    {}
-
-    void ArenaGelo::criarThor()
     {
+        /*
+            Não deletar os projéteis aqui se eles já estão na listaEntidades.
+            A listaEntidades.desalocar() da Fase já cuida disso.
+        */
+        projeteisThor.clear();
+    }
+
+    void ArenaGelo::criarProjetil()
+    {
+        std::ifstream arquivo(caminhoMapa);
+        std::string linha;
+
+        if (!arquivo.is_open())
+        {
+            return;
+        }
+
+        int quantidadePosicoesThor = 0;
+
+        while (std::getline(arquivo, linha))
+        {
+            std::istringstream entrada(linha);
+
+            int tile;
+
+            while (entrada >> tile)
+            {
+                if (tile == 8)
+                {
+                    quantidadePosicoesThor++;
+                }
+            }
+        }
+
+        arquivo.close();
+
+        if (quantidadePosicoesThor <= 0)
+        {
+            return;
+        }
+
         int quantidade = sortearQuantidade(MIN, maxThor);
+
+        if (quantidade > quantidadePosicoesThor)
+        {
+            quantidade = quantidadePosicoesThor;
+        }
 
         for (int i = 0; i < quantidade; i++)
         {
             Entidades::Projetil* projetil = new Entidades::Projetil();
 
+            projeteisThor.push_back(projetil);
+
+            listaEntidades.inserirNoFim(projetil);
+            gC.incluirProjetil(projetil);
+        }
+    }
+
+    void ArenaGelo::criarThor()
+    {
+        if (projeteisThor.empty())
+        {
+            return;
+        }
+
+        std::ifstream arquivo(caminhoMapa);
+        std::string linha;
+
+        if (!arquivo.is_open())
+        {
+            return;
+        }
+
+        std::vector<sf::Vector2f> posicoes;
+
+        int y = 0;
+
+        while (std::getline(arquivo, linha))
+        {
+            std::istringstream entrada(linha);
+
+            int tile;
+            int x = 0;
+
+            while (entrada >> tile)
+            {
+                if (tile == 8)
+                {
+                    posicoes.push_back(
+                        sf::Vector2f(TAM_TILE * x, TAM_TILE * y)
+                    );
+                }
+
+                x++;
+            }
+
+            y++;
+        }
+
+        arquivo.close();
+
+        if (posicoes.empty())
+        {
+            return;
+        }
+
+        int criados = 0;
+
+        while (!posicoes.empty() && criados < static_cast<int>(projeteisThor.size()))
+        {
+            int indice = rand() % posicoes.size();
+
             Entidades::Personagens::Thor* thor =
                 new Entidades::Personagens::Thor(
-                    sf::Vector2f(900.f + i * 420.f, 250.f),
+                    posicoes[indice],
                     jogador1,
-                    jogador2Ativo ? jogador2 : nullptr
+                    projeteisThor[criados]
                 );
 
-            thor->setProjetilAtual(projetil);
-
             listaEntidades.inserirNoFim(thor);
-            listaEntidades.inserirNoFim(projetil);
-
             gC.incluirInimigo(thor);
-            gC.incluirProjetil(projetil);
+
+            posicoes.erase(posicoes.begin() + indice);
+            criados++;
         }
     }
 
     void ArenaGelo::criarRuna()
     {
+        std::ifstream arquivo(caminhoMapa);
+        std::string linha;
+
+        if (!arquivo.is_open())
+        {
+            return;
+        }
+
+        std::vector<sf::Vector2f> posicoes;
+
+        int y = 0;
+
+        while (std::getline(arquivo, linha))
+        {
+            std::istringstream entrada(linha);
+
+            int tile;
+            int x = 0;
+
+            while (entrada >> tile)
+            {
+                /*
+                    Na ArenaGelo:
+                    5 = Runa
+
+                    Na FlorestaGelo:
+                    5 = Espinho
+
+                    Pode usar o mesmo número porque são mapas/fases diferentes.
+                */
+                if (tile == 5)
+                {
+                    posicoes.push_back(
+                        sf::Vector2f(TAM_TILE * x, TAM_TILE * y)
+                    );
+                }
+
+                x++;
+            }
+
+            y++;
+        }
+
+        arquivo.close();
+
+        if (posicoes.empty())
+        {
+            return;
+        }
+
         int quantidade = sortearQuantidade(MIN, MAX);
 
-        for (int i = 0; i < quantidade; i++)
+        int criadas = 0;
+
+        while (!posicoes.empty() && criadas < quantidade)
         {
+            int indice = rand() % posicoes.size();
+
             Entidades::Obstaculos::Runa* runa =
                 new Entidades::Obstaculos::Runa(
-                    sf::Vector2f(700.f + i * 300.f, 580.f),
+                    posicoes[indice],
                     sf::Vector2f(TAM_TILE, TAM_TILE)
                 );
 
             listaEntidades.inserirNoFim(runa);
             gC.incluirObstaculo(runa);
+
+            posicoes.erase(posicoes.begin() + indice);
+            criadas++;
         }
-    }
-
-    void ArenaGelo::criarProjetil()
-    {
-        /*
-            Como cada Thor precisa de um projétil próprio,
-            o projétil está sendo criado dentro de criarThor().
-
-            Esse método pode ser apagado depois do .h e do .cpp,
-            se você não for usá-lo separadamente.
-        */
     }
 
     void ArenaGelo::criarInimigos()
     {
         /*
-            Andarilho vem da Fase base.
-            Thor/Boss é específico da ArenaGelo.
+            Ordem importante:
+            primeiro cria os projéteis,
+            depois cria os Thor usando esses projéteis.
         */
         criarAndarilhos();
+        criarProjetil();
         criarThor();
     }
 
     void ArenaGelo::criarObstaculo()
     {
-        /*
-            Plataforma vem da Fase base.
-            Runa é específica da ArenaGelo.
-        */
         criarPlataformas();
         criarRuna();
     }
@@ -113,6 +260,6 @@ namespace Fases
         hub.executar();
         hub.draw();
 
-        controladorEstado(2);
+        controladorEstado(id);
     }
 }

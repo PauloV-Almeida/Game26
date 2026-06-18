@@ -32,8 +32,64 @@ namespace Fases {
 		return minimo + rand() % (maximo - minimo + 1);
 	}
 
+
+
 	void Fase::lidarEvent()
 	{
+		
+		if (jogador1 && jogador1->ativado())
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+			{
+				jogador1->movimentar(Direcao::LEFT);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			{
+				jogador1->movimentar(Direcao::RIGHT);
+			}
+			else
+			{
+				jogador1->pararEixoX();
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+			{
+					jogador1->movimentar(Direcao::UP);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			{
+					jogador1->atacar();
+			}
+		}
+
+		if (jogador2Ativo && jogador2 && jogador2->ativado())
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			{
+				jogador2->movimentar(Direcao::LEFT);
+			}
+			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			{
+				jogador2->movimentar(Direcao::RIGHT);
+			}
+			else
+			{
+				jogador2->pararEixoX();
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			{
+				jogador2->movimentar(Direcao::UP);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+			{
+				jogador2->atacar();
+			}
+		}
+		
+
 		sf::Event ev;
 
 		while (pGG->get_janela()->pollEvent(ev))
@@ -71,12 +127,7 @@ namespace Fases {
 
 	void Fase::executarJanela()
 	{
-		pGG->limpar();
-		pGG->desenharFundo();
-		pGG->setView(view);
-		
-		
-		if (jogador2Ativo)
+		if (jogador2Ativo && jogador2)
 		{
 			sf::Vector2f centro;
 			centro.x = (jogador1->getCentro().x + jogador2->getCentro().x) / 2.f;
@@ -84,13 +135,14 @@ namespace Fases {
 
 			view.setCenter(centro);
 		}
-		else
+		else if (jogador1)
 		{
 			view.setCenter(jogador1->getCentro());
 		}
-		
 
-		
+		pGG->limpar();
+		pGG->setView(view);
+		pGG->desenharFundo(id);
 	}
 
 	int Fase::getPontuacaoTotal() const
@@ -180,14 +232,8 @@ namespace Fases {
 						jogador->setAtivo(ativo);
 						jogador->setPosicao(posicaoX, posicaoY);
 						jogador->setVelocidade(velocidadeX, velocidadeY);
-						jogador->setNumVidas(vida);
-						jogador->setNoChao(noChao);
 						jogador->setTravado(travado);
-						jogador->setVelocidadeMovimento(velocidadeMovimento);
-						jogador->setVelocidadeMaxima(velocidadeMaxima);
-						jogador->setForcaPulo(forcaPulo);
-						jogador->setDanoAtaque(danoAtaque);
-						jogador->setVenceu(venceu);
+						
 					}
 				}
 				else if (tipoEntidade == "ANDARILHO")
@@ -195,8 +241,7 @@ namespace Fases {
 					Entidades::Personagens::Andarilho* andarilho =
 						new Entidades::Personagens::Andarilho(
 							sf::Vector2f(posicaoX, posicaoY),
-							jogador1,
-							jogador2Ativo ? jogador2 : nullptr
+							jogador1
 						);
 
 					andarilho->setIdUnico(idEntidade);
@@ -211,8 +256,7 @@ namespace Fases {
 					Entidades::Personagens::Valkiria* valkiria =
 						new Entidades::Personagens::Valkiria(
 							sf::Vector2f(posicaoX, posicaoY),
-							jogador1,
-							jogador2Ativo ? jogador2 : nullptr
+							jogador1
 						);
 
 					valkiria->setIdUnico(idEntidade);
@@ -228,12 +272,11 @@ namespace Fases {
 
 					Entidades::Personagens::Thor* thor =
 						new Entidades::Personagens::Thor(
-							sf::Vector2f(posicaoX, posicaoY),
+							sf::Vector2f(900.f * 420.f, 250.f),
 							jogador1,
-							jogador2Ativo ? jogador2 : nullptr
+							projetil
 						);
 
-					thor->setProjetilAtual(projetil);
 
 					thor->setIdUnico(idEntidade);
 					thor->setAtivo(ativo);
@@ -332,18 +375,66 @@ namespace Fases {
 
 	void Fase::criarAndarilhos()
 	{
-		int maxA = sortearQuantidade(MIN, MAX);
-		for (int i = 0; i < maxA; i++)
+		std::ifstream arquivo(caminhoMapa);
+		std::string linha;
+
+		if (!arquivo.is_open())
 		{
+			return;
+		}
+
+		std::vector<sf::Vector2f> posicoes;
+
+		int y = 0;
+
+		while (std::getline(arquivo, linha))
+		{
+			std::istringstream entrada(linha);
+
+			int tile;
+			int x = 0;
+
+			while (entrada >> tile)
+			{
+				if (tile == 6)
+				{
+					posicoes.push_back(
+						sf::Vector2f(TAM_TILE * x, TAM_TILE * y)
+					);
+				}
+
+				x++;
+			}
+
+			y++;
+		}
+
+		arquivo.close();
+
+		if (posicoes.empty())
+		{
+			return;
+		}
+
+		int quantidade = sortearQuantidade(MIN, MAX);
+
+		int criados = 0;
+
+		while (!posicoes.empty() && criados < quantidade)
+		{
+			int indice = rand() % posicoes.size();
+
 			Entidades::Personagens::Andarilho* andarilho =
 				new Entidades::Personagens::Andarilho(
-					sf::Vector2f(2500.f + (250.f * i), 300.f),
-					jogador1,
-					jogador2Ativo ? jogador2 : nullptr
+					posicoes[indice],
+					jogador1
 				);
 
 			listaEntidades.inserirNoFim(andarilho);
 			gC.incluirInimigo(andarilho);
+
+			posicoes.erase(posicoes.begin() + indice);
+			criados++;
 		}
 	}
 
@@ -357,37 +448,24 @@ namespace Fases {
 			return;
 		}
 
-		int quantidade = MIN + rand() % (MAX - MIN + 1);
-		int criadas = 0;
+		std::vector<sf::Vector2f> posicoes;
 
 		int y = 0;
 
-		while (std::getline(arquivo, linha) && criadas < quantidade)
+		while (std::getline(arquivo, linha))
 		{
+			std::istringstream entrada(linha);
+
+			int tile;
 			int x = 0;
 
-			for (auto& num : linha)
+			while (entrada >> tile)
 			{
-				if (criadas >= quantidade)
+				if (tile == 2)
 				{
-					break;
-				}
-
-				float posX = TAM_TILE * x;
-				float posY = TAM_TILE * y;
-
-				if (num == '2')
-				{
-					Entidades::Obstaculos::Plataforma* plataforma =
-						new Entidades::Obstaculos::Plataforma(
-							sf::Vector2f(posX, posY),
-							sf::Vector2f(TAM_TILE, TAM_TILE)
-						);
-
-					listaEntidades.inserirNoFim(plataforma);
-					gC.incluirObstaculo(plataforma);
-
-					criadas++;
+					posicoes.push_back(
+						sf::Vector2f(TAM_TILE * x, TAM_TILE * y)
+					);
 				}
 
 				x++;
@@ -397,6 +475,32 @@ namespace Fases {
 		}
 
 		arquivo.close();
+
+		if (posicoes.empty())
+		{
+			return;
+		}
+
+		int quantidade = sortearQuantidade(MIN, MAX);
+
+		int criadas = 0;
+
+		while (!posicoes.empty() && criadas < quantidade)
+		{
+			int indice = rand() % posicoes.size();
+
+			Entidades::Obstaculos::Plataforma* plataforma =
+				new Entidades::Obstaculos::Plataforma(
+					posicoes[indice],
+					sf::Vector2f(TAM_TILE, TAM_TILE)
+				);
+
+			listaEntidades.inserirNoFim(plataforma);
+			gC.incluirObstaculo(plataforma);
+
+			posicoes.erase(posicoes.begin() + indice);
+			criadas++;
+		}
 	}
 
 	bool Fase::jogadorChegouNaPassagem() const
@@ -463,7 +567,7 @@ namespace Fases {
 	}
 
 	void Fase::salvar() {
-		std::ofstream arquivo("salvar/save.txt");
+		std::ofstream arquivo("salvar/salvar.txt");
 		if (arquivo.is_open()) {
 			arquivo << id << std::endl;
 			arquivo << jogador2Ativo << std::endl;
@@ -476,45 +580,64 @@ namespace Fases {
 		std::ifstream arquivo(caminhoMapa);
 		std::string linha;
 
-		if (arquivo.is_open())
+		if (!arquivo.is_open())
 		{
-			int y = 0;
+			return;
+		}
 
-			while (std::getline(arquivo, linha))
+		int y = 0;
+
+		while (std::getline(arquivo, linha))
+		{
+			std::istringstream entrada(linha);
+
+			int tile;
+			int x = 0;
+
+			while (entrada >> tile)
 			{
-				int x = 0;
+				float posX = TAM_TILE * x;
+				float posY = TAM_TILE * y;
 
-				for (auto& num : linha)
+				if (tile == 1)
 				{
-					float posX = TAM_TILE * x;
-					float posY = TAM_TILE * y;
+					Entidades::Estrutura* estrutura =
+						new Entidades::Estrutura(
+							sf::Vector2f(posX, posY),
+							TipoEstrutura::CHAO,
+							sf::Vector2f(TAM_TILE, TAM_TILE)
+						);
 
-					if (num == '1')
+					listaEntidades.inserirNoFim(estrutura);
+					gC.incluirEstrutura(estrutura);
+				}
+				else if (tile == 3)
+				{
+					if (jogador1)
 					{
-						Entidades::Estrutura* estrutura =
-							new Entidades::Estrutura(
-								sf::Vector2f(posX, posY),
-								TipoEstrutura::CHAO,
-								sf::Vector2f(TAM_TILE, TAM_TILE)
-							);
-
-						listaEntidades.inserirNoFim(estrutura);
-						gC.incluirEstrutura(estrutura);
+						jogador1->setPosicao(posX, posY);
 					}
-					else if (num == '9')
+				}
+				else if (tile == 4)
+				{
+					if (jogador2)
 					{
-						areaPassagem = sf::FloatRect(posX, posY, TAM_TILE, TAM_TILE);
-						possuiPassagem = true;
+						jogador2->setPosicao(posX, posY);
 					}
-
-					x++;
+				}
+				else if (tile == 9)
+				{
+					areaPassagem = sf::FloatRect(posX, posY, TAM_TILE, TAM_TILE);
+					possuiPassagem = true;
 				}
 
-				y++;
+				x++;
 			}
 
-			arquivo.close();
+			y++;
 		}
+
+		arquivo.close();
 	}
 
 	int Fase::verificarQuantidadeInimigos()

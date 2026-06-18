@@ -7,14 +7,14 @@ Ragnarok::Ragnarok() :
     jogador2(nullptr)
 {
     jogador1 = new Entidades::Personagens::Jogador(
-        1,
         sf::Vector2f(100.f, 100.f)
     );
 
     jogador2 = new Entidades::Personagens::Jogador(
-        2,
         sf::Vector2f(140.f, 100.f)
     );
+
+    jogador2->setJogadorDois(true);
 
     pGEst = new Gerenciadores::GerenciadorEstado(jogador1, jogador2);
     executar();

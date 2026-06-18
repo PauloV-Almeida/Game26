@@ -48,7 +48,7 @@ void MenuRanking::executar()
 
 void MenuRanking::carregarRanking()
 {
-    std::ifstream arquivo("../salvar/ranking.txt");
+    std::ifstream arquivo("salvar/ranking.txt");
     std::multimap<int, std::string> ranking;
 
     if (arquivo.is_open())

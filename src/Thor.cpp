@@ -14,25 +14,35 @@ namespace Entidades
         {
             id = Id::Thor;
 
+            /*
+                Nivel de maldade:
+                usado para aumentar a vida do boss.
+            */
             setNivelMaldade(1 + rand() % 10);
 
             /*
                 Boss:
-                nivel_maldade duplica/influencia muito a vida.
+                vida maior que inimigo comum.
+                Exemplo:
+                nivel 1  -> 22 de vida
+                nivel 10 -> 40 de vida
             */
-            num_vidas = 10 + (getNivelMaldade() * 2);
+            num_vidas = 20 + (getNivelMaldade() * 2);
 
             /*
-                forca aumenta o alcance do Thor.
+                Forca:
+                aumenta o alcance do Thor.
+                Como forca vai de 3 a 7:
+                alcance vai de 570 a 730 pixels.
             */
-            raioVisao = 450.f + static_cast<float>(forca * 2);
+            raioVisao = 450.f + static_cast<float>(forca * 40);
 
             forma.setTexture(*pGG->getTextura(Texturas::thor));
             forma.setTextureRect(sf::IntRect(0, 0, 81, 89));
 
             /*
-                Boss pode ser maior, mas cuidado com tile 64.
-                1.1 deixa ele maior que inimigo comum sem ficar absurdo.
+                Boss pode ser um pouco maior que os outros inimigos.
+                81x89 com escala 1.1 fica aproximadamente 89x98 px.
             */
             forma.setScale(1.1f, 1.1f);
 
@@ -41,6 +51,10 @@ namespace Entidades
 
         Thor::~Thor()
         {
+            /*
+                Thor não deleta o projétil.
+                Quem desaloca é a listaEntidades da fase.
+            */
             projetil = nullptr;
         }
 
@@ -61,14 +75,13 @@ namespace Entidades
                 return;
             }
 
+            /*
+                Dano corpo a corpo do Thor.
+                Usa apenas o dano base herdado de Personagem.
+            */
             if (danoContatoRelogio.getElapsedTime().asSeconds() >= danotempoContato)
             {
-                /*
-                    Dano corpo a corpo do Thor:
-                    usa dano base herdado.
-                */
                 jogador->tiraVida(getDanoBase());
-
                 danoContatoRelogio.restart();
             }
         }
@@ -91,9 +104,11 @@ namespace Entidades
                 perseguirJogador();
 
                 /*
-                    Disparo do raio:
-                    Thor lança o projétil em direção à posição atual do jogador.
-                    O projétil sobe primeiro e depois cai por gravidade.
+                    Lançamento do raio:
+                    - O projétil é criado pela ArenaGelo.
+                    - O Thor apenas usa o ponteiro.
+                    - O projétil recebe velocidade inicial para cima.
+                    - Depois ele cai por causa da gravidade no executar() dele.
                 */
                 if (projetil && !projetil->foiLancado())
                 {
@@ -116,8 +131,13 @@ namespace Entidades
 
             if (direcao == Direcao::LEFT)
             {
-                // Se tiver textura esquerda do Thor:
-                // forma.setTexture(*pGG->getTextura(Texturas::thorEsq));
+                /*
+                    Se depois você criar textura do Thor olhando para esquerda,
+                    pode trocar aqui.
+
+                    Exemplo:
+                    forma.setTexture(*pGG->getTextura(Texturas::thorEsq));
+                */
             }
             else
             {

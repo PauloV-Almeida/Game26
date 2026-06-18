@@ -60,6 +60,7 @@ namespace Entidades
     void Entidade::mover()
     {
 		forma.move(velo);
+		posicao = forma.getPosition();
     }
 
 	void Entidade::mudarVelocidade(sf::Vector2f addVel)
@@ -158,5 +159,6 @@ namespace Entidades
 	{
 		velo.x = x;
 		velo.y = y;
+        forma.setPosition(x, y);
 	}
 }

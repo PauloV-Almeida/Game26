@@ -20,7 +20,7 @@ namespace Entidades
     Button::~Button()
     {}
 
-    void Button::getClicked(sf::Vector2i* mousePos)
+    void Button::getClicked(sf::Vector2f* mousePos)
     {
         if (!mousePos)
         {
@@ -29,12 +29,7 @@ namespace Entidades
 
         sf::FloatRect bounds = buttonText.getGlobalBounds();
 
-        sf::Vector2f mouseWorld(
-            static_cast<float>(mousePos->x),
-            static_cast<float>(mousePos->y)
-        );
-
-        if (bounds.contains(mouseWorld))
+        if (bounds.contains(*mousePos))
         {
             mediador->notify(buttonAction);
         }

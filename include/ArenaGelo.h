@@ -2,12 +2,16 @@
 
 #include "Fase.h"
 
+#include <vector>
+
 namespace Fases
 {
     class ArenaGelo : public Fase
     {
     private:
         const int maxThor = 4;
+
+        std::vector<Entidades::Projetil*> projeteisThor;
 
     public:
         ArenaGelo(
@@ -16,10 +20,12 @@ namespace Fases
             bool carregaArquivo = false
         );
 
-        ~ArenaGelo();
+        virtual ~ArenaGelo();
+
         void criarThor();
         void criarRuna();
-		void criarProjetil();
+        void criarProjetil();
+
         void criarInimigos();
         void criarObstaculo();
         void executar();

@@ -34,7 +34,7 @@ namespace Gerenciadores
         sf::FloatRect padraoView;
         sf::Font* font;
         sf::RenderWindow* janela;
-		sf::Vector2i mousePos;
+		sf::Vector2f mousePos;
         
         static GerenciadorGrafico* instance;
         GerenciadorGrafico();
@@ -44,7 +44,7 @@ namespace Gerenciadores
 
         static GerenciadorGrafico* get_instance();
 		const sf::FloatRect getPadraoView();
-		sf::Vector2i* getMousePos();
+		sf::Vector2f* getMousePos();
 		sf::Font* getFont();
 		bool estaAberto();
 		sf::RenderWindow* get_janela();
@@ -63,7 +63,7 @@ namespace Gerenciadores
 		void carregarProjeteis();
 		void carregarFundo();
 		void carregarTexturaJogador();
-		void desenharFundo();
+		void desenharFundo(int idFase);
 		void desenhar(sf::Drawable* figura);
 		void desenharEnte(Ente* ente);
 		void atualizarMousePos();

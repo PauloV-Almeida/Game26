@@ -71,7 +71,7 @@ namespace Gerenciadores {
                 jogador1->setPosicao(100.f, 100.f);
                 jogador1->setVelocidade(0.f, 0.f);
                 jogador1->setAtivo(true);
-                jogador1->setNumVidas(5);
+                
             }
 
             if (jogador2)
@@ -79,7 +79,7 @@ namespace Gerenciadores {
                 jogador2->setPosicao(140.f, 100.f);
                 jogador2->setVelocidade(0.f, 0.f);
                 jogador2->setAtivo(true);
-                jogador2->setNumVidas(5);
+                
             }
         }
 

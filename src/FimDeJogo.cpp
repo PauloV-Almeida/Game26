@@ -35,7 +35,7 @@ void FimJogo::salvarRanking()
         nomeJogador = "JOGADOR";
     }
 
-    std::ofstream arquivo("../salvar/ranking.txt", std::ios::app);
+    std::ofstream arquivo("salvar/ranking.txt", std::ios::app);
 
     if (arquivo.is_open())
     {

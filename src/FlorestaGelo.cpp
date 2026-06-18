@@ -28,36 +28,131 @@ namespace Fases
 
     void FlorestaGelo::criarValkiria()
     {
+        std::ifstream arquivo(caminhoMapa);
+        std::string linha;
+
+        if (!arquivo.is_open())
+        {
+            return;
+        }
+
+        std::vector<sf::Vector2f> posicoes;
+
+        int y = 0;
+
+        while (std::getline(arquivo, linha))
+        {
+            std::istringstream entrada(linha);
+
+            int tile;
+            int x = 0;
+
+            while (entrada >> tile)
+            {
+                if (tile == 7)
+                {
+                    posicoes.push_back(
+                        sf::Vector2f(TAM_TILE * x, TAM_TILE * y)
+                    );
+                }
+
+                x++;
+            }
+
+            y++;
+        }
+
+        arquivo.close();
+
+        if (posicoes.empty())
+        {
+            return;
+        }
+
         int quantidade = sortearQuantidade(MIN, maxValkiria);
 
-        for (int i = 0; i < quantidade; i++)
+        int criadas = 0;
+
+        while (!posicoes.empty() && criadas < quantidade)
         {
+            int indice = rand() % posicoes.size();
+
             Entidades::Personagens::Valkiria* valkiria =
                 new Entidades::Personagens::Valkiria(
-                    sf::Vector2f(900.f + i * 320.f, 300.f),
-                    jogador1,
-                    jogador2Ativo ? jogador2 : nullptr
+                    posicoes[indice],
+                    jogador1
                 );
 
             listaEntidades.inserirNoFim(valkiria);
             gC.incluirInimigo(valkiria);
+
+            posicoes.erase(posicoes.begin() + indice);
+            criadas++;
         }
     }
 
     void FlorestaGelo::criarEspinhoVenenoso()
     {
+        std::ifstream arquivo(caminhoMapa);
+        std::string linha;
+
+        if (!arquivo.is_open())
+        {
+            return;
+        }
+
+        std::vector<sf::Vector2f> posicoes;
+
+        int y = 0;
+
+        while (std::getline(arquivo, linha))
+        {
+            std::istringstream entrada(linha);
+
+            int tile;
+            int x = 0;
+
+            while (entrada >> tile)
+            {
+                if (tile == 5)
+                {
+                    posicoes.push_back(
+                        sf::Vector2f(TAM_TILE * x, TAM_TILE * y)
+                    );
+                }
+
+                x++;
+            }
+
+            y++;
+        }
+
+        arquivo.close();
+
+        if (posicoes.empty())
+        {
+            return;
+        }
+
         int quantidade = sortearQuantidade(MIN, MAX);
 
-        for (int i = 0; i < quantidade; i++)
+        int criados = 0;
+
+        while (!posicoes.empty() && criados < quantidade)
         {
+            int indice = rand() % posicoes.size();
+
             Entidades::Obstaculos::EspinhoVenenoso* espinho =
                 new Entidades::Obstaculos::EspinhoVenenoso(
-                    sf::Vector2f(800.f + i * 256.f, 650.f),
+                    posicoes[indice],
                     sf::Vector2f(TAM_TILE, TAM_TILE)
                 );
 
             listaEntidades.inserirNoFim(espinho);
             gC.incluirObstaculo(espinho);
+
+            posicoes.erase(posicoes.begin() + indice);
+            criados++;
         }
     }
 
