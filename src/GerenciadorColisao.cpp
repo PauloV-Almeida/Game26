@@ -183,6 +183,11 @@ namespace Gerenciadores
                 continue;
             }
 
+            if (!projetil->podeColidir())
+            {
+                continue;
+            }
+
             if (jogador1 && jogador1->ativado())
             {
                 if (verificarColisao(projetil, jogador1))

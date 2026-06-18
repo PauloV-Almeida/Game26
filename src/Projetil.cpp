@@ -11,7 +11,8 @@ namespace Entidades
         dano(2),
         veloProjetil(6),
         lancado(false),
-        posicaoAlvo(0.f, 0.f)
+        posicaoAlvo(0.f, 0.f),
+        tempoSemColisao(0.15f)
     {
         id = Id::Projetil;
 
@@ -30,7 +31,8 @@ namespace Entidades
         dano(2),
         veloProjetil(6),
         lancado(false),
-        posicaoAlvo(0.f, 0.f)
+        posicaoAlvo(0.f, 0.f),
+        tempoSemColisao(0.15f)
     {
         id = Id::Projetil;
 
@@ -46,6 +48,11 @@ namespace Entidades
 
     Projetil::~Projetil()
     {}
+
+    bool Projetil::podeColidir() const
+    {
+        return relogioLancamento.getElapsedTime().asSeconds() >= tempoSemColisao;
+    }
 
     int Projetil::getDano() const
     {
@@ -82,14 +89,18 @@ namespace Entidades
         setAtivo(true);
         lancado = true;
 
-        setPosicao(origem.x, origem.y);
         posicaoAlvo = alvo;
 
         /*
-            Movimento de ensino superior:
-            O projétil é lançado com velocidade inicial e depois sofre gravidade.
-            Isso gera trajetória parabólica.
+            Ajusta para o centro do sprite ficar na origem,
+            em vez do canto superior esquerdo nascer no centro do Thor.
         */
+        sf::FloatRect limites = forma.getGlobalBounds();
+
+        setPosicao(
+            origem.x - limites.width / 2.f,
+            origem.y - limites.height / 2.f - 20.f
+        );
 
         float dx = alvo.x - origem.x;
 
@@ -104,14 +115,11 @@ namespace Entidades
             velocidadeX = -static_cast<float>(veloProjetil + aumentoVelo);
         }
 
-        /*
-            Velocidade inicial vertical negativa:
-            em SFML, Y negativo sobe.
-            Depois aplicarGravidade() faz ele cair.
-        */
         float velocidadeY = -10.f - static_cast<float>(aumentoVelo) * 0.4f;
 
         setVelocidade(velocidadeX, velocidadeY);
+
+        relogioLancamento.restart();
     }
 
     void Projetil::colidir(Personagens::Jogador* jogador)

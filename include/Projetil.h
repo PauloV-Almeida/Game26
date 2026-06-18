@@ -21,6 +21,9 @@ namespace Entidades
 
         sf::Vector2f posicaoAlvo;
 
+        sf::Clock relogioLancamento;
+        float tempoSemColisao;
+
     public:
         Projetil();
         Projetil(sf::Vector2f pos);
@@ -29,6 +32,8 @@ namespace Entidades
         int getDano() const;
         bool foiLancado() const;
         sf::Vector2f getPosicaoAlvo() const;
+
+        bool podeColidir() const;
 
         void setDano(int danoBase);
         void setVelocidadeInicial(int velocidade);
