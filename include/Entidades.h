@@ -20,6 +20,7 @@ namespace Entidades
         sf::Vector2f velo;
 
         bool ativo;
+		bool noChao;
         std::ostringstream buffer;
 
         static constexpr float gravidade = 0.35f;

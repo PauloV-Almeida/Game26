@@ -81,7 +81,7 @@ namespace Listas
 
     void ListaEntidades::salvar()
     {
-        std::ofstream arquivo("Save.txt", std::ios::app);
+        std::ofstream arquivo("salvar/salvar.txt", std::ios::app);
 
         if (arquivo.is_open())
         {

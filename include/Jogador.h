@@ -24,9 +24,16 @@ namespace Entidades
             float tempoAtaque;
             float intervaloAtaque;
 
+            sf::Sprite spriteAtaque;
+
+            float empurraoAtaque;
+            float larguraAtaque;
+            float alturaAtaque;
+
         private:
             sf::FloatRect getAreaAtaque() const;
             void atualizarAtaque();
+            void posicionarSpriteAtaque();
 
         public:
             Jogador();
@@ -45,6 +52,7 @@ namespace Entidades
             int getPontos();
 
             void atacar();
+            void desenhar();
             void colidir(Inimigo* pInimigo);
 
             void executar() override;

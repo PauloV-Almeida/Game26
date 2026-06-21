@@ -21,5 +21,6 @@ enum class Texturas
     andarilho,
     valkiria,
     thor,
-    projetil
+    projetil,
+    ataque
 };

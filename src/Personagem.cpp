@@ -62,37 +62,67 @@ namespace Entidades
 
         void Personagem::colidiu(Entidade* entidade, Direcao direcao)
         {
-            switch (direcao) {
-                case Direcao::DOWN: {
-                    velo.y = 0;
-                    setPosicao(forma.getPosition().x, (entidade->getLimites().top - getLimites().height));
-                    pulos = 2;
-                    break;
-                }
-                case Direcao::UP: {
-                    velo.y = 0;
-                    setPosicao(forma.getPosition().x, entidade->getLimites().top + entidade->getLimites().height);
-                    break;
-                }
-                case Direcao::LEFT: {
-                    velo.x = 0;
-                    setPosicao(entidade->getLimites().left + entidade->getLimites().width, getLimites().top);
-                    if (pulos == 0) {
-                        pulos = 1;
-                    }
-                    break;
-                }
-                case Direcao::RIGHT: {
-                    velo.x = 0;
-                    setPosicao(entidade->getLimites().left - getLimites().width, getLimites().top);
-                    if (pulos == 0) {
-                        pulos = 1;
-                    }
-                    break;
-                }
-                default: {
-                    break;
-                }
+            switch (direcao)
+            {
+            case Direcao::DOWN:
+            {
+                velo.y = 0.f;
+
+                setPosicao(
+                    getPosicao().x,
+                    entidade->getLimites().top - getLimites().height
+                );
+
+                /*
+                    Tocou no chão/plataforma:
+                    recupera os dois pulos.
+                */
+                pulos = 2;
+                noChao = true;
+
+                break;
+            }
+
+            case Direcao::UP:
+            {
+                velo.y = 0.f;
+
+                setPosicao(
+                    getPosicao().x,
+                    entidade->getLimites().top + entidade->getLimites().height
+                );
+
+                break;
+            }
+
+            case Direcao::LEFT:
+            {
+                velo.x = 0.f;
+
+                setPosicao(
+                    entidade->getLimites().left + entidade->getLimites().width,
+                    getPosicao().y
+                );
+
+                break;
+            }
+
+            case Direcao::RIGHT:
+            {
+                velo.x = 0.f;
+
+                setPosicao(
+                    entidade->getLimites().left - getLimites().width,
+                    getPosicao().y
+                );
+
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
             }
         }
 

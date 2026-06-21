@@ -33,11 +33,6 @@ namespace Gerenciadores
 
         janela->setFramerateLimit(60);
 
-        /*
-            View padrão 1280x720.
-            Mesmo que a janela seja redimensionada, a lógica do jogo continua
-            trabalhando nessa resolução base.
-        */
         sf::View view(sf::FloatRect(0.f, 0.f, janLargura, janAltura));
         janela->setView(view);
 
@@ -166,7 +161,15 @@ namespace Gerenciadores
             }
 
             mapTexturas.insert({ Texturas::projetil, tempText });
+
+            if (!tempText.loadFromFile("texturas/ataque.png"))
+            {
+                throw std::runtime_error("Falha ao carregar textura ataque.png");
+            }
+
+            mapTexturas.insert({ Texturas::ataque, tempText });
         }
+
         catch (const std::exception& e)
         {
             std::cerr << "Exceção capturada durante o carregamento das texturas dos projeteis:\n"
@@ -186,43 +189,44 @@ namespace Gerenciadores
                 throw std::runtime_error("Erro ao carregar a fonte");
             }
 
-            if (!fundo1.loadFromFile("Fundo/Floresta_Gelo.PNG"))
+            const float LARGURA_MAPA = 3840.f;
+            const float ALTURA_MAPA = 2176.f;
+
+            if (!fundo1.loadFromFile("Fundo/Floresta_Gelo.png"))
             {
-                throw std::runtime_error("Falha ao carregar textura Floresta_Gelo.PNG");
+                throw std::runtime_error("Falha ao carregar textura Floresta_Gelo.png");
             }
 
             fundoSprite1.setTexture(fundo1);
+            fundoSprite1.setPosition(0.f, 0.f);
 
-            /*
-                Ajusta o fundo para cobrir a janela 1280x720.
-                Melhor do que usar setScale(4, 4) fixo.
-            */
             if (fundo1.getSize().x > 0 && fundo1.getSize().y > 0)
             {
                 fundoSprite1.setScale(
-                    janLargura / static_cast<float>(fundo1.getSize().x),
-                    janAltura / static_cast<float>(fundo1.getSize().y)
+                    LARGURA_MAPA / static_cast<float>(fundo1.getSize().x),
+                    ALTURA_MAPA / static_cast<float>(fundo1.getSize().y)
                 );
             }
 
-            if (!fundo2.loadFromFile("Fundo/Arena_Gelo.PNG"))
+            if (!fundo2.loadFromFile("Fundo/Arena_Gelo.png"))
             {
-                throw std::runtime_error("Falha ao carregar textura Arena_Gelo.PNG");
+                throw std::runtime_error("Falha ao carregar textura Arena_Gelo.png");
             }
 
             fundoSprite2.setTexture(fundo2);
+            fundoSprite2.setPosition(0.f, 0.f);
 
             if (fundo2.getSize().x > 0 && fundo2.getSize().y > 0)
             {
                 fundoSprite2.setScale(
-                    janLargura / static_cast<float>(fundo2.getSize().x),
-                    janAltura / static_cast<float>(fundo2.getSize().y)
+                    LARGURA_MAPA / static_cast<float>(fundo2.getSize().x),
+                    ALTURA_MAPA / static_cast<float>(fundo2.getSize().y)
                 );
             }
 
-            if (!tempText.loadFromFile("Fundo/imgMenu.PNG"))
+            if (!tempText.loadFromFile("Fundo/imgMenu.png"))
             {
-                throw std::runtime_error("Falha ao carregar textura imgMenu.PNG");
+                throw std::runtime_error("Falha ao carregar textura imgMenu.png");
             }
 
             mapTexturas.insert({ Texturas::fundoMenu, tempText });

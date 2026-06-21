@@ -11,6 +11,7 @@ namespace Entidades
     {
 		idUni = contarEntidades++;
 		ativo = 1;
+        noChao = false;
         forma.scale(0.7f, 0.7f);
         forma.setPosition(posicao);
         setFigura(&forma);
@@ -23,6 +24,7 @@ namespace Entidades
     {
         idUni = contarEntidades++;
         ativo = 1;
+        noChao = false;
         forma.scale(0.7f, 0.7f);
         forma.setPosition(posicao);
         setFigura(&forma);

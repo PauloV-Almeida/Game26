@@ -52,12 +52,9 @@ namespace Fases {
 				jogador1->pararEixoX();
 			}
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-			{
-					jogador1->movimentar(Direcao::UP);
-			}
+			
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
 					jogador1->atacar();
 			}
@@ -78,10 +75,7 @@ namespace Fases {
 				jogador2->pararEixoX();
 			}
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-			{
-				jogador2->movimentar(Direcao::UP);
-			}
+			
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
 			{
@@ -101,6 +95,22 @@ namespace Fases {
 				break;
 
 			case sf::Event::KeyPressed:
+				if (ev.key.code == sf::Keyboard::W)
+				{
+					if (jogador1 && jogador1->ativado())
+					{
+						jogador1->movimentar(Direcao::UP);
+					}
+				}
+
+				if (ev.key.code == sf::Keyboard::Up)
+				{
+					if (jogador2Ativo && jogador2 && jogador2->ativado())
+					{
+						jogador2->movimentar(Direcao::UP);
+					}
+				}
+
 				if (ev.key.code == sf::Keyboard::J)
 				{
 					if (jogador2 && !jogador2Ativo)
@@ -113,10 +123,11 @@ namespace Fases {
 					}
 				}
 
-				if (ev.key.code == sf::Keyboard::P)
+				if (ev.key.code == sf::Keyboard::Escape)
 				{
 					mediador->notify(Actions::PAUSE);
 				}
+
 				break;
 
 			default:
@@ -127,7 +138,10 @@ namespace Fases {
 
 	void Fase::executarJanela()
 	{
-		if (jogador2Ativo && jogador2)
+		bool jogador1Vivo = jogador1 && jogador1->ativado() && jogador1->vivo();
+		bool jogador2Vivo = jogador2Ativo && jogador2 && jogador2->ativado() && jogador2->vivo();
+
+		if (jogador1Vivo && jogador2Vivo)
 		{
 			sf::Vector2f centro;
 			centro.x = (jogador1->getCentro().x + jogador2->getCentro().x) / 2.f;
@@ -135,9 +149,13 @@ namespace Fases {
 
 			view.setCenter(centro);
 		}
-		else if (jogador1)
+		else if (jogador1Vivo)
 		{
 			view.setCenter(jogador1->getCentro());
+		}
+		else if (jogador2Vivo)
+		{
+			view.setCenter(jogador2->getCentro());
 		}
 
 		pGG->limpar();
@@ -352,14 +370,10 @@ namespace Fases {
 
 			arquivo.close();
 
-			listaEntidades.inserirNoFim(jogador1);
-			gC.incluirJogador1(jogador1);
 			hub.setPlayer(jogador1);
 
 			if (jogador2Ativo && jogador2)
 			{
-				listaEntidades.inserirNoFim(jogador2);
-				gC.incluirJogador2(jogador2);
 				hub.setPlayer2(jogador2);
 			}
 
@@ -534,18 +548,56 @@ namespace Fases {
 		bool jogador1Morreu = jogador1 && !jogador1->vivo();
 		bool jogador2Morreu = jogador2Ativo && jogador2 && !jogador2->vivo();
 
-		if (jogador1Morreu || jogador2Morreu)
+		/*
+			Se o jogador 1 morreu, ele é desativado.
+			Isso remove ele da lógica e, se a lista desenha apenas entidades ativas,
+			também remove da tela.
+		*/
+		if (jogador1Morreu && jogador1->ativado())
 		{
-			mediador->notify(Actions::GAME_OVER);
-			return;
+			jogador1->setAtivo(false);
+			jogador1->setVelocidade(0.f, 0.f);
+		}
+
+		/*
+			Se o jogador 2 morreu, ele é desativado.
+		*/
+		if (jogador2Morreu && jogador2->ativado())
+		{
+			jogador2->setAtivo(false);
+			jogador2->setVelocidade(0.f, 0.f);
+		}
+
+		/*
+			Caso tenha só o jogador 1 ativo na partida:
+			morreu -> game over.
+		*/
+		if (!jogador2Ativo)
+		{
+			if (!jogador1 || !jogador1->ativado())
+			{
+				mediador->notify(Actions::GAME_OVER);
+				return;
+			}
+		}
+		/*
+			Caso tenha dois jogadores:
+			game over só quando os dois estiverem mortos/desativados.
+		*/
+		else
+		{
+			bool jogador1Fora = !jogador1 || !jogador1->ativado();
+			bool jogador2Fora = !jogador2 || !jogador2->ativado();
+
+			if (jogador1Fora && jogador2Fora)
+			{
+				mediador->notify(Actions::GAME_OVER);
+				return;
+			}
 		}
 
 		if (idFase == 1)
 		{
-			/*
-				Na fase 1, passa de fase quando o jogador
-				chega no tile 9 do mapa.
-			*/
 			if (jogadorChegouNaPassagem())
 			{
 				mediador->notify(Actions::PASSOU_DE_FASE);
@@ -554,10 +606,6 @@ namespace Fases {
 		}
 		else if (idFase == 2)
 		{
-			/*
-				Na fase 2, termina quando todos os inimigos
-				forem derrotados.
-			*/
 			if (verificarQuantidadeInimigos() == 0)
 			{
 				mediador->notify(Actions::GAME_OVER);

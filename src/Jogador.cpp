@@ -13,7 +13,10 @@ namespace Entidades
             danoAplicadoAtaque(false),
             jogadorDois(false),
             tempoAtaque(0.18f),
-            intervaloAtaque(0.35f)
+            intervaloAtaque(0.35f),
+            empurraoAtaque(7.f),
+            larguraAtaque(32.f),
+            alturaAtaque(32.f)
         {
             ativo = true;
             id = Id::Jogador;
@@ -29,6 +32,10 @@ namespace Entidades
             forma.setTextureRect(sf::IntRect(0, 0, 81, 89));
             forma.setScale(0.7f, 0.7f);
 
+            spriteAtaque.setTexture(*pGG->getTextura(Texturas::ataque));
+            spriteAtaque.setTextureRect(sf::IntRect(0, 0, 64, 64));
+            spriteAtaque.setColor(sf::Color::White);
+
             setFigura(&forma);
         }
 
@@ -40,7 +47,10 @@ namespace Entidades
             danoAplicadoAtaque(false),
             jogadorDois(false),
             tempoAtaque(0.18f),
-            intervaloAtaque(0.35f)
+            intervaloAtaque(0.35f),
+            empurraoAtaque(7.f),
+            larguraAtaque(32.f),
+            alturaAtaque(32.f)
         {
             ativo = true;
             id = Id::Jogador;
@@ -54,6 +64,10 @@ namespace Entidades
             forma.setTexture(*pGG->getTextura(Texturas::jogador1));
             forma.setTextureRect(sf::IntRect(0, 0, 81, 89));
             forma.setScale(0.7f, 0.7f);
+
+            spriteAtaque.setTexture(*pGG->getTextura(Texturas::ataque));
+            spriteAtaque.setTextureRect(sf::IntRect(0, 0, 64, 64));
+            spriteAtaque.setColor(sf::Color::White);
 
             setFigura(&forma);
         }
@@ -101,10 +115,12 @@ namespace Entidades
             {
             case Direcao::UP:
             {
+                
                 if (pulos > 0)
                 {
                     velo.y = -8.f;
                     pulos--;
+                    noChao = false;
                 }
 
                 break;
@@ -199,10 +215,9 @@ namespace Entidades
                 atacando = true;
                 danoAplicadoAtaque = false;
 
-                relogioAtaque.restart();
+                posicionarSpriteAtaque();
 
-                // Efeito visual simples enquanto ataca.
-                forma.setColor(sf::Color(255, 180, 180));
+                relogioAtaque.restart();
             }
         }
 
@@ -210,14 +225,13 @@ namespace Entidades
         {
             sf::FloatRect corpo = forma.getGlobalBounds();
 
-            float larguraAtaque = corpo.width * 0.75f;
-            float alturaAtaque = corpo.height * 0.80f;
+            float top = corpo.top + corpo.height * 0.25f;
 
             if (direcao == Direcao::LEFT)
             {
                 return sf::FloatRect(
                     corpo.left - larguraAtaque,
-                    corpo.top + corpo.height * 0.10f,
+                    top,
                     larguraAtaque,
                     alturaAtaque
                 );
@@ -225,23 +239,39 @@ namespace Entidades
 
             return sf::FloatRect(
                 corpo.left + corpo.width,
-                corpo.top + corpo.height * 0.10f,
+                top,
                 larguraAtaque,
                 alturaAtaque
             );
+        }
+
+        void Jogador::posicionarSpriteAtaque()
+        {
+            sf::FloatRect area = getAreaAtaque();
+
+            spriteAtaque.setPosition(area.left, area.top);
+
+            sf::FloatRect local = spriteAtaque.getLocalBounds();
+
+            if (local.width > 0.f && local.height > 0.f)
+            {
+                spriteAtaque.setScale(
+                    area.width / local.width,
+                    area.height / local.height
+                );
+            }
         }
 
         void Jogador::atualizarAtaque()
         {
             if (atacando)
             {
+                posicionarSpriteAtaque();
+
                 if (relogioAtaque.getElapsedTime().asSeconds() >= tempoAtaque)
                 {
                     atacando = false;
                     danoAplicadoAtaque = false;
-
-                    // Volta ao visual normal.
-                    forma.setColor(sf::Color::White);
                 }
             }
         }
@@ -270,7 +300,19 @@ namespace Entidades
 
             if (getAreaAtaque().intersects(pInimigo->getLimites()))
             {
-                pInimigo->tiraVida(getDanoBase());
+                pInimigo->tiraVida(getDanoBase() + 3);
+
+                float direcaoEmpurrao = 1.f;
+
+                if (direcao == Direcao::LEFT)
+                {
+                    direcaoEmpurrao = -1.f;
+                }
+
+                pInimigo->mudarVelocidade(
+                    sf::Vector2f(empurraoAtaque * direcaoEmpurrao, -2.5f)
+                );
+
                 danoAplicadoAtaque = true;
 
                 if (!pInimigo->vivo())
@@ -322,6 +364,17 @@ namespace Entidades
 
             // Aqui entra gravidade + movimento.
             atualizarFisica();
+        }
+
+        void Jogador::desenhar()
+        {
+            Ente::desenhar();
+
+            if (atacando)
+            {
+                posicionarSpriteAtaque();
+                pGG->desenhar(&spriteAtaque);
+            }
         }
 
         std::string Jogador::salvar()

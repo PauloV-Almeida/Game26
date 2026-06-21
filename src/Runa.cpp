@@ -16,7 +16,7 @@ namespace Entidades
             id = Id::Runa;
 
             danoso = false;
-            colidivel = false;
+            colidivel = true;
 
             forma.setTexture(*pGG->getTextura(Texturas::runa));
             setFigura(&forma);
@@ -33,7 +33,7 @@ namespace Entidades
             id = Id::Runa;
 
             danoso = false;
-            colidivel = false;
+            colidivel = true;
 
             forma.setTexture(*pGG->getTextura(Texturas::runa));
             setPosicao(pos.x, pos.y);
@@ -52,7 +52,7 @@ namespace Entidades
             id = Id::Runa;
 
             danoso = false;
-            colidivel = false;
+            colidivel = true;
 
             forma.setTexture(*pGG->getTextura(Texturas::runa));
             setPosicao(pos.x, pos.y);
@@ -81,7 +81,13 @@ namespace Entidades
 
         void Runa::executar()
         {
+            if (!ativado())
+            {
+                return;
+            }
+
             atualizarFisicaObstaculo();
+
             if (travandoJogador && jogadorTravado)
             {
                 if (relogioTravamento.getElapsedTime().asSeconds() >= tempoTravamento)
