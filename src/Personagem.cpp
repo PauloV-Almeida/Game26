@@ -46,6 +46,11 @@ namespace Entidades
         void Personagem::setNumVida(int vida)
         {
             num_vidas = vida;
+
+            if (num_vidas < 0)
+            {
+                num_vidas = 0;
+            }
         }
         void Personagem::setPulos(int nP)
         {
@@ -150,6 +155,11 @@ namespace Entidades
         void Personagem::tiraVida(int dano)
         {
             num_vidas -= dano;
+
+            if (num_vidas < 0)
+            {
+                num_vidas = 0;
+            }
         }
         void Personagem::setMoveVelocidade(float veloMovi)
 

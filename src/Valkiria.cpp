@@ -61,17 +61,8 @@ namespace Entidades
 
             if (danoContatoRelogio.getElapsedTime().asSeconds() >= danotempoContato)
             {
-                /*
-                    Dano:
-                    usa apenas o dano base herdado de Personagem.
-                */
                 jogador->tiraVida(getDanoBase());
-
-                /*
-                    Empurrão:
-                    empurrar é a força base.
-                    nivel_maldade aumenta o knockback.
-                */
+                             
                 float forcaEmpurrao = empurrar + static_cast<float>(getNivelMaldade()) * 0.5f;
 
                 if (jogador->getCentro().x < getCentro().x)
@@ -107,16 +98,6 @@ namespace Entidades
             else
             {
                 velo.x = 0.f;
-            }
-
-            if (direcao == Direcao::LEFT)
-            {
-                // Se depois tiver textura esquerda:
-                // forma.setTexture(*pGG->getTextura(Texturas::valkiriaEsq));
-            }
-            else
-            {
-                forma.setTexture(*pGG->getTextura(Texturas::valkiria));
             }
 
             atualizarFisica();

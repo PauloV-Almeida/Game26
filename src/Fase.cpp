@@ -15,6 +15,9 @@ namespace Fases {
 		mediador = mediadorEventos::getMediadorEventos();
 		pontuacaoTotal = 0;
 		id = 0;
+
+		Entidades::Personagens::Inimigo::setJogador2Global(jogador2);
+
 		gC.incluirJogador1(jogador1);
 		listaEntidades.inserirNoFim(jogador1);
 		hub.setPlayer(jogador1);
@@ -115,6 +118,10 @@ namespace Fases {
 				{
 					if (jogador2 && !jogador2Ativo)
 					{
+						jogador2->setAtivo(true);
+
+						Entidades::Personagens::Inimigo::setJogador2Global(jogador2);
+
 						hub.setPlayer2(jogador2);
 						jogador2Ativo = true;
 

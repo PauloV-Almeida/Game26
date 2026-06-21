@@ -44,12 +44,7 @@ namespace Entidades
 
             if (danoContatoRelogio.getElapsedTime().asSeconds() >= danotempoContato)
             {
-                /*
-                    Dano:
-                    - dano herdado de Personagem: getDanoBase()
-                    - forca aumenta o dano principal
-                    - nivel_maldade dá um bônus menor
-                */
+               
                 int danoFinal = getDanoBase() + forca;
 
                 jogador->tiraVida(danoFinal);
@@ -78,16 +73,6 @@ namespace Entidades
             else
             {
                 velo.x = 0.f;
-            }
-
-            if (direcao == Direcao::LEFT)
-            {
-                // Se depois tiver textura esquerda do andarilho, troca aqui.
-                // forma.setTexture(*pGG->getTextura(Texturas::andarilhoEsq));
-            }
-            else
-            {
-                forma.setTexture(*pGG->getTextura(Texturas::andarilho));
             }
 
             atualizarFisica();

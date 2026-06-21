@@ -18,13 +18,20 @@ namespace Entidades
 
             int nivel_maldade;
             Jogador* pJogador;
-            float raioVisao;
+            static Jogador* jogador2Global;
 
+
+            float raioVisao;
+        protected:
+            bool jogadorValido(Jogador* jogador) const;
+            float calcularDistancia(Jogador* jogador);
+            Jogador* escolherMelhorAlvo();
         public:
             Inimigo(sf::Vector2f pos, Jogador* jogador);
             virtual ~Inimigo();
 
             Jogador* getPlayer() const;
+            static void setJogador2Global(Jogador* jogador2);
             static int getQuantidadeInimigos();
 
 			void setNivelMaldade(int maldade);

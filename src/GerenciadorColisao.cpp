@@ -66,34 +66,67 @@ namespace Gerenciadores
 
     void GerenciadorColisao::tratarColisoesJogsInimigos()
     {
-        if (jogador1 && jogador1->ativado())
+        if (jogador1 && jogador1->ativado() && jogador1->vivo())
         {
             for (auto& inimigo : inimigos)
             {
-                if (inimigo && inimigo->ativado())
+                if (!inimigo || !inimigo->ativado() || !inimigo->vivo())
                 {
-                    jogador1->colidir(inimigo);
+                    continue;
+                }
 
-                    if (verificarColisao(jogador1, inimigo))
-                    {
-                        inimigo->danificar(jogador1);
-                    }
+                /*
+                    Ataque do jogador:
+                    precisa ser testado mesmo sem o corpo encostar,
+                    porque agora o ataque tem uma sprite/área na frente.
+                */
+                jogador1->colidir(inimigo);
+
+                /*
+                    Se o ataque matou/desativou o inimigo,
+                    não precisa mais tratar colisão física.
+                */
+                if (!inimigo->ativado() || !inimigo->vivo())
+                {
+                    continue;
+                }
+
+                /*
+                    Colisão física do corpo:
+                    impede o jogador de atravessar o inimigo.
+                */
+                if (verificarColisao(jogador1, inimigo))
+                {
+                    empurrarPersonagem(jogador1, inimigo);
+
+                    /*
+                        Dano de contato do inimigo no jogador.
+                    */
+                    inimigo->danificar(jogador1);
                 }
             }
         }
 
-        if (jogador2 && jogador2->ativado())
+        if (jogador2 && jogador2->ativado() && jogador2->vivo())
         {
             for (auto& inimigo : inimigos)
             {
-                if (inimigo && inimigo->ativado())
+                if (!inimigo || !inimigo->ativado() || !inimigo->vivo())
                 {
-                    jogador2->colidir(inimigo);
+                    continue;
+                }
 
-                    if (verificarColisao(jogador2, inimigo))
-                    {
-                        inimigo->danificar(jogador2);
-                    }
+                jogador2->colidir(inimigo);
+
+                if (!inimigo->ativado() || !inimigo->vivo())
+                {
+                    continue;
+                }
+
+                if (verificarColisao(jogador2, inimigo))
+                {
+                    empurrarPersonagem(jogador2, inimigo);
+                    inimigo->danificar(jogador2);
                 }
             }
         }
