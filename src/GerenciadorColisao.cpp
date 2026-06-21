@@ -413,11 +413,23 @@ namespace Gerenciadores
 
     void GerenciadorColisao::colisao()
     {
-        
-
         tratarColisoesJogsEstruturas();
         tratarColisoesJogsObstaculos();
+
+        /*
+            Depois resolve colisão com inimigos.
+            Aqui o inimigo pode empurrar o jogador.
+        */
         tratarColisoesJogsInimigos();
+
+        /*
+            Correção extra:
+            se o inimigo empurrou o jogador para dentro de uma parede,
+            resolvemos parede/chão de novo.
+        */
+        tratarColisoesJogsEstruturas();
+        tratarColisoesJogsObstaculos();
+
         tratarColisaoProjeteis();
         tratarColisaoInimigos();
         tratarColisoesObstaculosEstruturas();

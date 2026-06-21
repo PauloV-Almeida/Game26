@@ -184,7 +184,19 @@ namespace Fases
 
     int Fase::getPontuacaoTotal() const
     {
-        return pontuacaoTotal;
+        int total = 0;
+
+        if (jogador1)
+        {
+            total += jogador1->getPontos();
+        }
+
+        if (jogador2)
+        {
+            total += jogador2->getPontos();
+        }
+
+        return total;
     }
 
     void Fase::carregarSalvamento()

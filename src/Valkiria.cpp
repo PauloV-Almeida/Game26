@@ -9,7 +9,7 @@ namespace Entidades
             Inimigo(pos, jogador),
             empurrar(4.f),
             empurraoForte(false),
-            multiplicadorEmpurraoForte(2.5f)
+            multiplicadorEmpurraoForte(1.5f)
         {
             id = Id::Valkiria;
 
