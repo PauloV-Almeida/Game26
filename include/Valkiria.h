@@ -10,7 +10,8 @@ namespace Entidades
         {
         private:
             float empurrar;
-
+            bool empurraoForte;
+            float multiplicadorEmpurraoForte;
         public:
             Valkiria(sf::Vector2f pos, Jogador* jogador);
             virtual ~Valkiria();

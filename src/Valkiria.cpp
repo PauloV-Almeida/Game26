@@ -7,33 +7,19 @@ namespace Entidades
     {
         Valkiria::Valkiria(sf::Vector2f pos, Jogador* jogador) :
             Inimigo(pos, jogador),
-            empurrar(4.f)
+            empurrar(4.f),
+            empurraoForte(false),
+            multiplicadorEmpurraoForte(2.5f)
         {
             id = Id::Valkiria;
 
-            /*
-                nivel_maldade:
-                - influencia a vida
-                - influencia o empurrão
-                - não aumenta diretamente o dano
-            */
-            setNivelMaldade(1 + (rand() % 10));
+            setNivelMaldade(1 + rand() % 10);
 
             num_vidas = 8 + getNivelMaldade();
-
-            /*
-                A Valkiria pode enxergar um pouco mais que o Andarilho.
-                Se quiser mais difícil, aumenta esse valor.
-            */
-            raioVisao = 350.f + static_cast<float>(getNivelMaldade() * 10);
+            raioVisao = 350.f + getNivelMaldade() * 10.f;
 
             forma.setTexture(*pGG->getTextura(Texturas::valkiria));
             forma.setTextureRect(sf::IntRect(0, 0, 81, 89));
-
-            /*
-                Escala fixa para não bugar com mapa 1920x1080 e tile 64x64.
-                Se o sprite ficar pequeno/grande, ajuste aqui.
-            */
             forma.setScale(0.7f, 0.7f);
 
             setFigura(&forma);
@@ -49,12 +35,7 @@ namespace Entidades
                 return;
             }
 
-            if (!ativado())
-            {
-                return;
-            }
-
-            if (!vivo())
+            if (!ativado() || !vivo())
             {
                 return;
             }
@@ -62,18 +43,34 @@ namespace Entidades
             if (danoContatoRelogio.getElapsedTime().asSeconds() >= danotempoContato)
             {
                 jogador->tiraVida(getDanoBase());
-                             
-                float forcaEmpurrao = empurrar + static_cast<float>(getNivelMaldade()) * 0.5f;
+
+                float forcaEmpurrao = empurrar + getNivelMaldade() * 0.5f;
+                float forcaVertical = -2.f;
+
+                if (empurraoForte)
+                {
+                    forcaEmpurrao *= multiplicadorEmpurraoForte;
+                    forcaVertical = -5.f;
+                }
 
                 if (jogador->getCentro().x < getCentro().x)
                 {
-                    jogador->mudarVelocidade(sf::Vector2f(-forcaEmpurrao, -2.f));
+                    jogador->mudarVelocidade(
+                        sf::Vector2f(-forcaEmpurrao, forcaVertical)
+                    );
                 }
                 else
                 {
-                    jogador->mudarVelocidade(sf::Vector2f(forcaEmpurrao, -2.f));
+                    jogador->mudarVelocidade(
+                        sf::Vector2f(forcaEmpurrao, forcaVertical)
+                    );
                 }
 
+                /*
+                    Depois de usar o empurrão forte, volta ao normal.
+                */
+                empurraoForte = false;
+               
                 danoContatoRelogio.restart();
             }
         }
@@ -94,11 +91,19 @@ namespace Entidades
             if (jogadorNoAlcance())
             {
                 perseguirJogador();
+
+             
+                if (!empurraoForte && rand() % 100 == 1)
+                {
+                    empurraoForte = true;
+                
+                }
             }
             else
             {
                 velo.x = 0.f;
             }
+
 
             atualizarFisica();
         }

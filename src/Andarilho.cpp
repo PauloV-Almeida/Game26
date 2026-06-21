@@ -7,7 +7,7 @@ namespace Entidades
     {
         Andarilho::Andarilho(sf::Vector2f pos, Jogador* jogador) :
             Inimigo(pos, jogador),
-            forca((1 + (rand() % 10)))
+            forca((1 + (rand() % 4)))
         {
             id = Id::Andarilho;
 

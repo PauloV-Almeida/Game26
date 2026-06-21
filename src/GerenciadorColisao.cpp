@@ -75,33 +75,18 @@ namespace Gerenciadores
                     continue;
                 }
 
-                /*
-                    Ataque do jogador:
-                    precisa ser testado mesmo sem o corpo encostar,
-                    porque agora o ataque tem uma sprite/área na frente.
-                */
                 jogador1->colidir(inimigo);
 
-                /*
-                    Se o ataque matou/desativou o inimigo,
-                    não precisa mais tratar colisão física.
-                */
                 if (!inimigo->ativado() || !inimigo->vivo())
                 {
                     continue;
                 }
 
-                /*
-                    Colisão física do corpo:
-                    impede o jogador de atravessar o inimigo.
-                */
+    
                 if (verificarColisao(jogador1, inimigo))
                 {
                     empurrarPersonagem(jogador1, inimigo);
 
-                    /*
-                        Dano de contato do inimigo no jogador.
-                    */
                     inimigo->danificar(jogador1);
                 }
             }

@@ -12,6 +12,7 @@ namespace Entidades
         veloProjetil(6),
         lancado(false),
         posicaoAlvo(0.f, 0.f),
+        pThor(nullptr),
         tempoSemColisao(0.15f)
     {
         id = Id::Projetil;
@@ -32,6 +33,7 @@ namespace Entidades
         veloProjetil(6),
         lancado(false),
         posicaoAlvo(0.f, 0.f),
+        pThor(nullptr),
         tempoSemColisao(0.15f)
     {
         id = Id::Projetil;
@@ -64,9 +66,29 @@ namespace Entidades
         return lancado;
     }
 
+    void Projetil::setLancado(bool estado)
+    {
+        lancado = estado;
+    }
+
+    void Projetil::setPosicaoAlvo(sf::Vector2f alvo)
+    {
+        posicaoAlvo = alvo;
+    }
+
     sf::Vector2f Projetil::getPosicaoAlvo() const
     {
         return posicaoAlvo;
+    }
+
+    void Projetil::setThor(Personagens::Thor* thor)
+    {
+        pThor = thor;
+    }
+
+    Personagens::Thor* Projetil::getThor() const
+    {
+        return pThor;
     }
 
     void Projetil::setDano(int danoBase)

@@ -124,18 +124,15 @@ namespace Entidades
 
         bool Inimigo::jogadorNoAlcance()
         {
-            if (!pJogador)
+            Jogador* alvo = escolherMelhorAlvo();
+
+            if (!alvo)
             {
                 return false;
             }
 
-            sf::Vector2f dist;
-            dist.x = pJogador->getCentro().x - getCentro().x;
-            dist.y = pJogador->getCentro().y - getCentro().y;
-
-            float modDist = sqrt((dist.x * dist.x) + (dist.y * dist.y));
-
-            return modDist < raioVisao;
+            pJogador = alvo;
+            return true;
         }
 
         void Inimigo::perseguirJogador()

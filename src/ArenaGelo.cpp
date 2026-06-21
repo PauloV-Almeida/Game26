@@ -26,10 +26,7 @@ namespace Fases
 
     ArenaGelo::~ArenaGelo()
     {
-        /*
-            Não deletar os projéteis aqui se eles já estão na listaEntidades.
-            A listaEntidades.desalocar() da Fase já cuida disso.
-        */
+        
         projeteisThor.clear();
     }
 
