@@ -1,6 +1,6 @@
 #include "../include/GerenciadorGrafico.h"
 #include "../include/Ente.h"
-
+//Referencia Monitor Felipe Simbalista
 #include <stdexcept>
 
 namespace Gerenciadores

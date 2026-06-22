@@ -1,6 +1,6 @@
 #include "../include/ListaEntidades.h"
 #include <fstream>
-
+//Referencia Monitor Felipe Simbalista
 namespace Listas
 {
     ListaEntidades::ListaEntidades() :
