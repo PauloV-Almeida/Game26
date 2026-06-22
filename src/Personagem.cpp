@@ -8,7 +8,7 @@ namespace Entidades
             Entidade()
         {
 			num_vidas = 5;
-			maxVelocidade = 5;
+			
             velMovimento = 3;
 			pulos = 2;
             velo.x = 0;
@@ -21,7 +21,7 @@ namespace Entidades
             Entidade(pos)
         {
             num_vidas = 5;
-            maxVelocidade = 5;
+            
             velMovimento = 3;
             pulos = 2;
             velo.x = 0;
@@ -161,11 +161,7 @@ namespace Entidades
                 num_vidas = 0;
             }
         }
-        void Personagem::setMoveVelocidade(float veloMovi)
-
-        {
-            this->velMovimento = veloMovi;
-        }
+        
 
         void Personagem::salvarDataBuffer()
         {

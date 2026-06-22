@@ -383,13 +383,7 @@ namespace Gerenciadores
         mousePos = janela->mapPixelToCoords(pixelPos);
     }
 
-    void GerenciadorGrafico::setFrameLimit(int fps)
-    {
-        if (janela)
-        {
-            janela->setFramerateLimit(fps);
-        }
-    }
+    
 
     void GerenciadorGrafico::fechar()
     {

@@ -36,7 +36,6 @@ namespace Fases
 
 		std::string caminhoMapa;
 
-        int pontuacaoTotal;
         int id;
 
         sf::View view;

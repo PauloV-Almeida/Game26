@@ -28,13 +28,17 @@ Ragnarok::~Ragnarok()
         pGEst = nullptr;
     }
 
-    /*
-        Os jogadores entram na ListaEntidades da fase.
-        Então cuidado para não deletar duas vezes.
-        Se a ListaEntidades desalocar os jogadores, não delete aqui.
-    */
-    jogador1 = nullptr;
-    jogador2 = nullptr;
+    if (jogador1)
+    {
+        delete jogador1;
+        jogador1 = nullptr;
+    }
+
+    if (jogador2)
+    {
+        delete jogador2;
+        jogador2 = nullptr;
+    }
 }
 
 void Ragnarok::executar()

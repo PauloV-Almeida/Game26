@@ -50,7 +50,7 @@ namespace Gerenciadores
 		sf::RenderWindow* get_janela();
 		sf::Texture* getTextura(Texturas);
 		
-		void setFrameLimit(int fps);
+		
 		void setView(sf::View);
 
 		

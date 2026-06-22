@@ -2,15 +2,7 @@
 
 namespace Gerenciadores
 {
-    void GerenciadorEstado::setJogador1(Entidades::Personagens::Jogador* jogador)
-    {
-        jogador1 = jogador;
-    }
-
-    void GerenciadorEstado::setJogador2(Entidades::Personagens::Jogador* jogador)
-    {
-        jogador2 = jogador;
-    }
+    
 
     GerenciadorEstado::GerenciadorEstado(
         Entidades::Personagens::Jogador* jogador_1,
@@ -18,7 +10,6 @@ namespace Gerenciadores
     ) :
         jogador1(jogador_1),
         jogador2(jogador_2),
-        janela(nullptr),
         stack(),
         pendingChange(Actions::NADA)
     {
@@ -33,7 +24,7 @@ namespace Gerenciadores
 
         jogador1 = nullptr;
         jogador2 = nullptr;
-        janela = nullptr;
+        
     }
 
     void GerenciadorEstado::aplicarMudancas()

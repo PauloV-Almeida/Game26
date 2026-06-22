@@ -11,10 +11,9 @@ namespace Entidades
         {
         protected:
             int num_vidas;
-			float maxVelocidade;
+			
             float velMovimento;
-            sf::Clock RelogioTempoPulo;
-			float tempoPulo = 0.2;
+
             int pulos = 2;
             int dano = 2;
             bool travado;
@@ -39,7 +38,7 @@ namespace Entidades
             void setTravado(bool estado);
             
             void tiraVida(int dano);
-            void setMoveVelocidade(float moveSpeed);
+            
 			void atualizarFisica();
 
             void salvarDataBuffer();

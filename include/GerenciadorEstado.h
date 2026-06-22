@@ -24,7 +24,7 @@ namespace Gerenciadores
         Entidades::Personagens::Jogador* jogador1;
         Entidades::Personagens::Jogador* jogador2;
 
-        sf::RenderWindow* janela;
+
 
         std::vector<State*> stack;
         Actions pendingChange;
@@ -35,10 +35,7 @@ namespace Gerenciadores
             Entidades::Personagens::Jogador* jogador_2
         );
 
-        ~GerenciadorEstado();
-
-        void setJogador1(Entidades::Personagens::Jogador* jogador);
-        void setJogador2(Entidades::Personagens::Jogador* jogador);
+        ~GerenciadorEstado();        
 
         void aplicarMudancas();
         void update(Actions act);

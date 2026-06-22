@@ -1,6 +1,8 @@
 #include "../include/Fase.h"
 
 #include <vector>
+#include <unordered_map>
+#include <utility>
 
 namespace Fases
 {
@@ -19,7 +21,7 @@ namespace Fases
         caminhoMapa("assets/mapaFloGelo.txt")
     {
         mediador = mediadorEventos::getMediadorEventos();
-        pontuacaoTotal = 0;
+       
         id = 0;
 
         Entidades::Personagens::Inimigo::setJogador2Global(jogador2);
