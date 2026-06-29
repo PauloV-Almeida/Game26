@@ -1,5 +1,5 @@
 #pragma once
-//Referencia Monitor Felipe Simbalista
+// Baseado No Filepe Simpalista https://github.com/Sk-3/jogoSimao1
 #include "Lista.h"
 #include "Entidades.h"
 
